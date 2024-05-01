@@ -75,7 +75,7 @@ export default async function Index() {
           <div className="flex flex-col items-center text-center gap-4">
             <StickyNoteIcon className="h-12 w-12 text-fuchsia-500" />
             <h3 className="text-2xl font-bold">Tabs</h3>
-            <p className="text-gray-500 dark:text-gray-400">Guitar, bass, and keys chords, tablature, and lyrics</p>
+            <p className="text-gray-500 dark:text-gray-400">Study guitar, bass, and piano chord charts, tablature, and lyrics</p>
           </div>
           <div className="flex flex-col items-center text-center gap-4">
             <MusicIcon className="h-12 w-12 text-cyan-500" />
@@ -86,7 +86,7 @@ export default async function Index() {
             <VideoIcon className="h-12 w-12 text-green-500" />
             <h3 className="text-2xl font-bold">Videos</h3>
             <p className="text-gray-500 dark:text-gray-400">
-              Watch Lessons and Performances to get some tips for your playing
+              Watch lessons and performances to get some tips for your playing
             </p>
           </div>
         </div>
