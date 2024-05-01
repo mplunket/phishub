@@ -1,11 +1,10 @@
-import AuthButton from "../components/AuthButton";
-import { createClient } from "@/utils/supabase/server";
-
 /**
  * v0 by Vercel.
  * @see https://v0.dev/t/tHC3fXa8bSH
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
+import { createClient } from "@/utils/supabase/server";
+import AuthButton from "../components/AuthButton";
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
@@ -24,10 +23,12 @@ export default async function Index() {
   };
 
   const isSupabaseConnected = canInitSupabaseClient();
+
   return (
     <>
-      <section className="w-full py-24 bg-gradient-to-r from-[#6366F1] to-[#9333EA] text-white">
-        <div className="container px-4 md:px-6 flex flex-col items-center text-center">
+      <section className="w-full pt-8 pb-24 bg-gradient-to-r from-[#6366F1] to-[#9333EA] text-white">
+        <div className="flex justify-end pr-8">{isSupabaseConnected && <AuthButton />}</div>
+        <div className="container mx-auto px-4 md:px-6 py-16 flex flex-col items-center text-center">
           <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">phis<span className="text-violet-300">hub</span></h1>
           <p className="mt-4 text-xl md:text-2xl text-gray-300">The #1 Site for Phish Musicians</p>
           <div className="mt-8 w-full max-w-xl">
@@ -42,21 +43,21 @@ export default async function Index() {
               </div>
               <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-md shadow-lg z-10 ">
                 <div className="py-2">
-                  <Link className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer" href="#">
+                  <Link className="flex items-center px-4 py-2 hover:bg-gray-100 border-b-gray-300 cursor-pointer" href="#">
                     <MusicIcon className="h-6 w-6 mr-3 text-cyan-500 flex-shrink-0" />
                     <div className="flex flex-col items-start">
                       <div className="flex font-medium text-gray-500">Reba</div>
                       <Badge variant="song">Song</Badge>
                     </div>
                   </Link>
-                  <Link className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer" href="#">
+                  <Link className="flex items-center px-4 py-2 hover:bg-gray-100 border-b-gray-300 cursor-pointer" href="#">
                     <StickyNoteIcon className="h-6 w-6 mr-3 text-fuchsia-500 flex-shrink-0" />
                     <div className="flex flex-col items-start">
                       <div className="font-medium text-gray-500">Reba</div>
                       <Badge variant="tab">Tab</Badge>
                     </div>
                   </Link>
-                  <Link className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer" href="#">
+                  <Link className="flex items-center px-4 py-2 hover:bg-gray-100 border-b-gray-300 cursor-pointer" href="#">
                     <VideoIcon className="h-6 w-6 mr-3 text-green-500 flex-shrink-0" />
                     <div className="flex flex-col items-start">
                       <div className="font-medium text-gray-500">Phish - Reba - 7/13/14 - Randalls Island NYC</div>
@@ -70,7 +71,7 @@ export default async function Index() {
         </div>
       </section>
       <section className="w-full py-12 md:py-24 bg-white dark:bg-gray-900">
-        <div className="container px-4 md:px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="container mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="flex flex-col items-center text-center gap-4">
             <StickyNoteIcon className="h-12 w-12 text-fuchsia-500" />
             <h3 className="text-2xl font-bold">Tabs</h3>
