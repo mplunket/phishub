@@ -29,7 +29,7 @@ export default async function Index() {
       <section className="w-full pt-8 pb-24 bg-gradient-to-r from-[#6366F1] to-[#9333EA] text-white">
         <div className="flex justify-end pr-8">{isSupabaseConnected && <AuthButton />}</div>
         <div className="container mx-auto px-4 md:px-6 py-16 flex flex-col items-center text-center">
-          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">phis<span className="text-violet-300">hub</span></h1>
+          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">phis<span className="text-violet-200">h</span><span className="text-violet-300">ub</span></h1>
           <p className="mt-4 text-xl md:text-2xl text-gray-300">The #1 Site for Phish Musicians</p>
           <div className="mt-8 w-full max-w-xl">
             <div className="relative">
@@ -42,22 +42,22 @@ export default async function Index() {
                 <SearchIcon className="h-6 w-6 text-gray-500" />
               </div>
               <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-md shadow-lg z-10 ">
-                <div className="py-2">
-                  <Link className="flex items-center px-4 py-2 hover:bg-gray-100 border-b-gray-300 cursor-pointer" href="#">
+                <div className="p-2">
+                  <Link className="flex items-center px-4 py-2 hover:bg-gray-100 border-b-2 border-b-gray-100 rounded-md cursor-pointer" href="#">
                     <MusicIcon className="h-6 w-6 mr-3 text-cyan-500 flex-shrink-0" />
                     <div className="flex flex-col items-start">
                       <div className="flex font-medium text-gray-500">Reba</div>
                       <Badge variant="song">Song</Badge>
                     </div>
                   </Link>
-                  <Link className="flex items-center px-4 py-2 hover:bg-gray-100 border-b-gray-300 cursor-pointer" href="#">
+                  <Link className="flex items-center px-4 py-2 hover:bg-gray-100 border-b-gray-500 rounded-md cursor-pointer" href="#">
                     <StickyNoteIcon className="h-6 w-6 mr-3 text-fuchsia-500 flex-shrink-0" />
                     <div className="flex flex-col items-start">
                       <div className="font-medium text-gray-500">Reba</div>
                       <Badge variant="tab">Tab</Badge>
                     </div>
                   </Link>
-                  <Link className="flex items-center px-4 py-2 hover:bg-gray-100 border-b-gray-300 cursor-pointer" href="#">
+                  <Link className="flex items-center px-4 py-2 hover:bg-gray-100 border-b-gray-500 rounded-md cursor-pointer" href="#">
                     <VideoIcon className="h-6 w-6 mr-3 text-green-500 flex-shrink-0" />
                     <div className="flex flex-col items-start">
                       <div className="font-medium text-gray-500">Phish - Reba - 7/13/14 - Randalls Island NYC</div>
