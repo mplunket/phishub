@@ -74,17 +74,17 @@ export default async function Index() {
         <div className="container mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="flex flex-col items-center text-center gap-4">
             <StickyNoteIcon className="h-12 w-12 text-fuchsia-500" />
-            <h3 className="text-2xl font-bold">Tabs</h3>
+            <h3 className="text-2xl font-bold dark:text-gray-100">Tabs</h3>
             <p className="text-gray-500 dark:text-gray-400">Study guitar, bass, and piano chord charts, tablature, and lyrics</p>
           </div>
           <div className="flex flex-col items-center text-center gap-4">
             <MusicIcon className="h-12 w-12 text-cyan-500" />
-            <h3 className="text-2xl font-bold">Songs</h3>
+            <h3 className="text-2xl font-bold dark:text-gray-100">Songs</h3>
             <p className="text-gray-500 dark:text-gray-400">Dive into Phish's entire catalog of originals and covers</p>
           </div>
           <div className="flex flex-col items-center text-center gap-4">
             <VideoIcon className="h-12 w-12 text-green-500" />
-            <h3 className="text-2xl font-bold">Videos</h3>
+            <h3 className="text-2xl font-bold dark:text-gray-100">Videos</h3>
             <p className="text-gray-500 dark:text-gray-400">
               Watch lessons and performances to get some tips for your playing
             </p>
