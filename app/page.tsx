@@ -5,9 +5,10 @@
  */
 import { createClient } from "@/utils/supabase/server";
 import AuthButton from "../components/AuthButton";
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 export default async function Index() {
 
@@ -26,11 +27,11 @@ export default async function Index() {
 
   return (
     <>
-      <section className="w-full pt-8 pb-24 bg-gradient-to-r from-[#6366F1] to-[#9333EA] text-white">
+      <section className="w-full pt-8 pb-12 md:pb-24 bg-gradient-to-r from-[#6366F1] to-[#9333EA] text-white">
         <div className="flex justify-end pr-8">{isSupabaseConnected && <AuthButton />}</div>
         <div className="container mx-auto px-4 md:px-6 py-16 flex flex-col items-center text-center">
           <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">phis<span className="text-violet-200">h</span><span className="text-violet-300">ub</span></h1>
-          <p className="mt-4 text-xl md:text-2xl text-gray-300">The #1 Site for Phish Musicians</p>
+          <p className="mt-4 text-xl md:text-2xl text-gray-300">The #1 Site for Musicians Who Love Phish</p>
           <div className="mt-8 w-full max-w-xl">
             <div className="relative">
               <Input
@@ -41,7 +42,7 @@ export default async function Index() {
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                 <SearchIcon className="h-6 w-6 text-gray-500" />
               </div>
-              <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-md shadow-lg z-10 ">
+              <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-md shadow-lg z-10 hidden ">
                 <div className="p-2">
                   <Link className="flex items-center px-4 py-2 hover:bg-gray-100 border-b-2 border-b-gray-100 rounded-md cursor-pointer" href="#">
                     <MusicIcon className="h-6 w-6 mr-3 text-cyan-500 flex-shrink-0" />
@@ -75,12 +76,12 @@ export default async function Index() {
           <div className="flex flex-col items-center text-center gap-4">
             <StickyNoteIcon className="h-12 w-12 text-fuchsia-500" />
             <h3 className="text-2xl font-bold dark:text-gray-100">Tabs</h3>
-            <p className="text-gray-500 dark:text-gray-400">Study guitar, bass, and piano chord charts, tablature, and lyrics</p>
+            <p className="text-gray-500 dark:text-gray-400">Study, organize, and contribute guitar, bass, and piano chord charts, tablature, and lyrics</p>
           </div>
           <div className="flex flex-col items-center text-center gap-4">
             <MusicIcon className="h-12 w-12 text-cyan-500" />
             <h3 className="text-2xl font-bold dark:text-gray-100">Songs</h3>
-            <p className="text-gray-500 dark:text-gray-400">Dive into Phish's entire catalog of originals and covers</p>
+            <p className="text-gray-500 dark:text-gray-400">Explore Phish's entire catalog of originals and covers with helpful resources</p>
           </div>
           <div className="flex flex-col items-center text-center gap-4">
             <VideoIcon className="h-12 w-12 text-green-500" />
@@ -89,6 +90,14 @@ export default async function Index() {
               Watch lessons and performances to get some tips for your playing
             </p>
           </div>
+        </div>
+      </section>
+      <section className="w-full py-12 md:py-18 bg-white">
+        <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-400 text-center">Ready to get started?</h2>
+        <div className="text-center py-10">
+          <Button variant="secondary">
+            <Link href="/login">Sign Up</Link>
+          </Button>
         </div>
       </section>
     </>
