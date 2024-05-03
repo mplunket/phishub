@@ -92,13 +92,16 @@ export default async function Index() {
           </div>
         </div>
       </section>
-      <section className="w-full py-12 md:py-18 bg-white">
-        <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-400 text-center">Ready to get started?</h2>
+      <section className="w-full py-12 md:py-18 bg-slate-800 dark:bg-white">
+        <h2 className="px-4 text-4xl md:text-5xl font-extrabold tracking-tight text-gray-400 text-center">Ready to get started?</h2>
         <div className="text-center py-10">
           <Button variant="secondary">
             <Link href="/login">Sign Up</Link>
           </Button>
         </div>
+      </section>
+      <section className="footer py-8 text-sm">
+        This site voluntarily complies with the Phish fan web site policy at <Link href="https://www.phish.com/faq/web-guidelines">https://www.phish.com/faq/web-guidelines</Link>.
       </section>
     </>
   )
