@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { ChevronRight } from "lucide-react";
 
 export default async function AuthButton() {
   const supabase = createClient();
@@ -26,10 +27,11 @@ export default async function AuthButton() {
       </form>
     </div>
   ) : (
-    <Button variant="secondary" asChild>
+    <Button variant="secondary" className="group">
       <Link href="/login">
         Login
       </Link>
+      <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
     </Button>
   );
 }

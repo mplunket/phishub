@@ -8,6 +8,7 @@ import AuthButton from "../components/AuthButton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 export default async function Index() {
@@ -71,7 +72,7 @@ export default async function Index() {
           </div>
         </div>
       </section>
-      <section className="w-full py-12 md:py-24 bg-white dark:bg-gray-900">
+      <section className="w-full py-12 md:py-24 bg-white dark:bg-slate-900">
         <div className="container mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="flex flex-col items-center text-center gap-4">
             <StickyNoteIcon className="h-12 w-12 text-fuchsia-500" />
@@ -92,16 +93,16 @@ export default async function Index() {
           </div>
         </div>
       </section>
-      <section className="w-full py-12 md:py-18 bg-slate-800 dark:bg-white">
-        <h2 className="px-4 text-4xl md:text-5xl font-extrabold tracking-tight text-gray-400 text-center">Ready to get started?</h2>
+      <section className="w-full py-12 md:py-18 bg-slate-900 dark:bg-slate-100 dark:bg-gradient-to-b dark:from-slate-200 dark:to-white">
+        <h2 className="px-4 text-4xl md:text-5xl text-center font-extrabold tracking-tight text-slate-400 dark:text-gray-500">Ready to get started?</h2>
         <div className="text-center py-10">
-          <Button variant="secondary">
-            <Link href="/login">Sign Up</Link>
+          <Button variant="secondary" className="group">
+            <Link href="/login">Sign Up for the <span className="text-fuchsia-500">Beta</span></Link> <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Button>
         </div>
       </section>
-      <section className="footer py-8 text-sm">
-        This site voluntarily complies with the Phish fan web site policy at <Link href="https://www.phish.com/faq/web-guidelines">https://www.phish.com/faq/web-guidelines</Link>.
+      <section className="w-full footer py-8 text-center text-sm bg-slate-900 text-slate-300 dark:bg-white dark:text-slate-900">
+        This site voluntarily complies with the Phish fan web site policy at <Link className="underline dark:hover:text-slate-500 hover:text-slate-100" href="https://www.phish.com/faq/web-guidelines">https://www.phish.com/faq/web-guidelines</Link>.
       </section>
     </>
   )
