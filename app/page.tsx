@@ -1,193 +1,290 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/tHC3fXa8bSH
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
 import { createClient } from "@/utils/supabase/server";
 import AuthButton from "../components/AuthButton";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ChevronRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { ChevronRight, GuitarIcon, FileMusicIcon, AudioWaveformIcon, VideoIcon } from "lucide-react";
 import Link from "next/link";
+import {
+  Bell,
+  CircleUser,
+  Home,
+  LineChart,
+  Menu,
+  Package,
+  Package2,
+  Search,
+  ShoppingCart,
+  Users,
+} from "lucide-react"
 
 export default async function Index() {
+  const supabase = createClient();
 
-  const canInitSupabaseClient = () => {
-    // This function is just for the interactive tutorial.
-    // Feel free to remove it once you have Supabase connected.
-    try {
-      createClient();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const isSupabaseConnected = canInitSupabaseClient();
-
-  return (
-    <>
-      <section className="w-full pt-8 pb-12 md:pb-24 bg-gradient-to-r from-[#6366F1] to-[#9333EA] text-white">
-        <div className="flex justify-end pr-8">{isSupabaseConnected && <AuthButton />}</div>
-        <div className="container mx-auto px-4 md:px-6 py-16 flex flex-col items-center text-center">
-          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">phis<span className="text-violet-200">h</span><span className="text-violet-300">ub</span></h1>
-          <p className="mt-4 text-xl md:text-2xl text-gray-300">The #1 Site for Musicians Who Love Phish</p>
-          <div className="mt-8 w-full max-w-xl">
-            <div className="relative">
-              <Input
-                className="w-full h-12 px-4 pr-12 rounded-full bg-white text-gray-900 text-lg focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:ring-offset-2 shadow-lg"
-                placeholder="ex. 'Reba'"
-                type="text"
-              />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                <SearchIcon className="h-6 w-6 text-gray-500" />
-              </div>
-              <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-md shadow-lg z-10 hidden ">
-                <div className="p-2">
-                  <Link className="flex items-center px-4 py-2 hover:bg-gray-100 border-b-2 border-b-gray-100 rounded-md cursor-pointer" href="#">
-                    <MusicIcon className="h-6 w-6 mr-3 text-cyan-500 flex-shrink-0" />
-                    <div className="flex flex-col items-start">
-                      <div className="flex font-medium text-gray-500">Reba</div>
-                      <Badge variant="song">Song</Badge>
-                    </div>
-                  </Link>
-                  <Link className="flex items-center px-4 py-2 hover:bg-gray-100 border-b-gray-500 rounded-md cursor-pointer" href="#">
-                    <StickyNoteIcon className="h-6 w-6 mr-3 text-fuchsia-500 flex-shrink-0" />
-                    <div className="flex flex-col items-start">
-                      <div className="font-medium text-gray-500">Reba</div>
-                      <Badge variant="tab">Tab</Badge>
-                    </div>
-                  </Link>
-                  <Link className="flex items-center px-4 py-2 hover:bg-gray-100 border-b-gray-500 rounded-md cursor-pointer" href="#">
-                    <VideoIcon className="h-6 w-6 mr-3 text-green-500 flex-shrink-0" />
-                    <div className="flex flex-col items-start">
-                      <div className="font-medium text-gray-500">Phish - Reba - 7/13/14 - Randalls Island NYC</div>
-                      <Badge variant="video">Video</Badge>
-                    </div>
-                  </Link>
-                </div>
-              </div>
+  if (user) {
+    return (
+      <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+        <div className="hidden border-r bg-muted/40 md:block">
+          <div className="flex h-full max-h-screen flex-col gap-2">
+            <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+              <Link href="/" className="flex items-center gap-2 font-semibold">
+                <Package2 className="h-6 w-6" />
+                <span className="">phishub</span>
+              </Link>
+              <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
+                <Bell className="h-4 w-4" />
+                <span className="sr-only">Toggle notifications</span>
+              </Button>
+            </div>
+            <div className="flex-1">
+              <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+                <Link
+                  href="#"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                >
+                  <Home className="h-4 w-4" />
+                  Songs
+                </Link>
+                <Link
+                  href="#"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                >
+                  <ShoppingCart className="h-4 w-4" />
+                  Tabs
+                  <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
+                    6
+                  </Badge>
+                </Link>
+                <Link
+                  href="#"
+                  className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
+                >
+                  <Package className="h-4 w-4" />
+                  Lyrics{" "}
+                </Link>
+                <Link
+                  href="#"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                >
+                  <Users className="h-4 w-4" />
+                  Lessons
+                </Link>
+                <Link
+                  href="#"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                >
+                  <LineChart className="h-4 w-4" />
+                  Performances
+                </Link>
+              </nav>
+            </div>
+            <div className="mt-auto p-4">
+              <Card x-chunk="dashboard-02-chunk-0">
+                <CardHeader className="p-2 pt-0 md:p-4">
+                  <CardTitle>Upgrade to Pro</CardTitle>
+                  <CardDescription>
+                    Unlock all features and get unlimited access to our support
+                    team.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
+                  <Button size="sm" className="w-full">
+                    Upgrade
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
-      </section>
-      <section className="w-full py-12 md:py-24 bg-white dark:bg-slate-900">
-        <div className="container mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="flex flex-col items-center text-center gap-4">
-            <StickyNoteIcon className="h-12 w-12 text-fuchsia-500" />
-            <h3 className="text-2xl font-bold dark:text-gray-100">Tabs</h3>
-            <p className="text-gray-500 dark:text-gray-400">Study, organize, and contribute guitar, bass, and piano chord charts, tablature, and lyrics</p>
-          </div>
-          <div className="flex flex-col items-center text-center gap-4">
-            <MusicIcon className="h-12 w-12 text-cyan-500" />
-            <h3 className="text-2xl font-bold dark:text-gray-100">Songs</h3>
-            <p className="text-gray-500 dark:text-gray-400">Explore Phish's entire catalog of originals and covers with helpful resources</p>
-          </div>
-          <div className="flex flex-col items-center text-center gap-4">
-            <VideoIcon className="h-12 w-12 text-green-500" />
-            <h3 className="text-2xl font-bold dark:text-gray-100">Videos</h3>
-            <p className="text-gray-500 dark:text-gray-400">
-              Watch lessons and performances to get some tips for your playing
-            </p>
-          </div>
+        <div className="flex flex-col">
+          <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="shrink-0 md:hidden"
+                >
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle navigation menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="flex flex-col">
+                <nav className="grid gap-2 text-lg font-medium">
+                  <Link
+                    href="#"
+                    className="flex items-center gap-2 text-lg font-semibold"
+                  >
+                    <Package2 className="h-6 w-6" />
+                    <span className="sr-only">phishub</span>
+                  </Link>
+                  <Link
+                    href="#"
+                    className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+                  >
+                    <Home className="h-5 w-5" />
+                    Songs
+                  </Link>
+                  <Link
+                    href="#"
+                    className="mx-[-0.65rem] flex items-center gap-4 rounded-xl bg-muted px-3 py-2 text-foreground hover:text-foreground"
+                  >
+                    <ShoppingCart className="h-5 w-5" />
+                    Tabs
+                    <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
+                      6
+                    </Badge>
+                  </Link>
+                  <Link
+                    href="#"
+                    className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+                  >
+                    <Package className="h-5 w-5" />
+                    Lyrics
+                  </Link>
+                  <Link
+                    href="#"
+                    className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+                  >
+                    <Users className="h-5 w-5" />
+                    Lessons
+                  </Link>
+                  <Link
+                    href="#"
+                    className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+                  >
+                    <LineChart className="h-5 w-5" />
+                    Performances
+                  </Link>
+                </nav>
+                <div className="mt-auto">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Upgrade to Pro</CardTitle>
+                      <CardDescription>
+                        Unlock all features and get unlimited access to our
+                        support team.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button size="sm" className="w-full">
+                        Upgrade
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+              </SheetContent>
+            </Sheet>
+            <div className="w-full flex-1">
+              <form>
+                <div className="relative">
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="search"
+                    placeholder="Search products..."
+                    className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
+                  />
+                </div>
+              </form>
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="secondary" size="icon" className="rounded-full">
+                  <CircleUser className="h-5 w-5" />
+                  <span className="sr-only">Toggle user menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem>Support</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Logout</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </header>
+          <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+            <div className="flex items-center">
+              <h1 className="text-lg font-semibold md:text-2xl">Inventory</h1>
+            </div>
+            <div
+              className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm" x-chunk="dashboard-02-chunk-1"
+            >
+              <div className="flex flex-col items-center gap-1 text-center">
+                <h3 className="text-2xl font-bold tracking-tight">
+                  You have no products
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  You can start selling as soon as you add a product.
+                </p>
+                <Button className="mt-4">Add Product</Button>
+              </div>
+            </div>
+          </main>
         </div>
-      </section>
-      <section className="w-full py-12 md:py-18 bg-slate-900 dark:bg-slate-100 dark:bg-gradient-to-b dark:from-slate-200 dark:to-white">
-        <h2 className="px-4 text-4xl md:text-5xl text-center font-extrabold tracking-tight text-slate-400 dark:text-gray-500">Ready to get started?</h2>
-        <div className="text-center py-10">
-          <Button variant="secondary" className="group">
-            <Link href="/login">Sign Up for the <span className="text-fuchsia-500">Beta</span></Link> <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Button>
-        </div>
-      </section>
-      <section className="w-full footer py-8 text-center text-sm bg-slate-900 text-slate-300 dark:bg-white dark:text-slate-900">
-        This site voluntarily complies with the Phish fan web site policy at <Link className="underline dark:hover:text-slate-500 hover:text-slate-100" href="https://www.phish.com/faq/web-guidelines">https://www.phish.com/faq/web-guidelines</Link>.
-      </section>
-    </>
-  )
-}
+      </div>
+    )
+  } else {
+    return (
+      <>
+        <section className="w-full pt-8 pb-12 bg-gradient-to-r from-[#6366F1] to-[#9333EA] text-white">
+          <div className="container mx-auto px-4 md:px-6 py-12 flex flex-col items-center text-center">
+            <div className="flex items-center">
+              <GuitarIcon className="h-24 w-24" />
+              <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">phis<span className="text-violet-200">h</span><span className="text-violet-300">ub</span></h1>
+            </div>
+            <p className="mt-4 text-xl md:text-2xl text-gray-300">The #1 Site for Musicians Who Love Phish</p>
+            <div className="text-center pt-10">
+              <Button variant="secondary" className="group">
+                <Link href="/signup">Sign Up for the <span className="text-fuchsia-500">Beta</span></Link> <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </div>
+          </div>
+        </section>
+        <section className="w-full py-24 bg-white dark:bg-slate-900">
+          <div className="container mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="flex flex-col items-center text-center gap-4">
+              <FileMusicIcon className="h-12 w-12 text-fuchsia-500" />
+              <h3 className="text-2xl font-bold dark:text-gray-100">Tabs</h3>
+              <p className="text-gray-500 dark:text-gray-400">Study, organize, and contribute guitar, bass, and piano chord charts, tablature, and lyrics</p>
+            </div>
+            <div className="flex flex-col items-center text-center gap-4">
+              <AudioWaveformIcon className="h-12 w-12 text-cyan-500" />
+              <h3 className="text-2xl font-bold dark:text-gray-100">Songs</h3>
+              <p className="text-gray-500 dark:text-gray-400">Explore Phish's entire catalog of originals and covers with helpful resources</p>
+            </div>
+            <div className="flex flex-col items-center text-center gap-4">
+              <VideoIcon className="h-12 w-12 text-green-500" />
+              <h3 className="text-2xl font-bold dark:text-gray-100">Videos</h3>
+              <p className="text-gray-500 dark:text-gray-400">
+                Watch lessons and performances to get some tips for your playing
+              </p>
+            </div>
+          </div>
+        </section>
+      </>
+    )
+  }
 
-function MusicIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M9 18V5l12-2v13" />
-      <circle cx="6" cy="18" r="3" />
-      <circle cx="18" cy="16" r="3" />
-    </svg>
-  )
-}
-
-
-function SearchIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="11" cy="11" r="8" />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
-  )
-}
-
-
-function StickyNoteIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z" />
-      <path d="M15 3v6h6" />
-    </svg>
-  )
-}
-
-
-function VideoIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m22 8-6 4 6 4V8Z" />
-      <rect width="14" height="12" x="2" y="6" rx="2" ry="2" />
-    </svg>
-  )
 }
