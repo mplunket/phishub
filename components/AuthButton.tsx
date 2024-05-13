@@ -20,10 +20,9 @@ export default async function AuthButton() {
   };
 
   return user ? (
-    <div className="flex items-center gap-4">
-      Hey, {user.email}!
+    <div className="w-full items-center gap-4">
       <form action={signOut}>
-        <Button variant="secondary">Logout</Button>
+        <Button variant="secondary" className="w-full">Logout</Button>
       </form>
     </div>
   ) : (
