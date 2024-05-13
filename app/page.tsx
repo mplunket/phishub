@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { ChevronRight, GuitarIcon, FileMusicIcon, AudioWaveformIcon, MicVocalIcon, VideoIcon, BookOpenCheckIcon } from "lucide-react";
+import { ChevronRight, GuitarIcon, FileMusicIcon, AudioWaveformIcon, MicVocalIcon, VideoIcon, BookOpenCheckIcon, HeartIcon } from "lucide-react";
 import Link from "next/link";
 import {
   Bell,
@@ -139,9 +139,10 @@ export default async function Index() {
                     href="#"
                     className="flex items-center gap-2 text-lg font-semibold"
                   >
-                    <GuitarIcon className="h-6 w-6" />
-                    <h6 className="text-lg md:text-xl font-extrabold tracking-tight dark:white">phis<span className="text-violet-800 dark:text-violet-200">h</span><span className="text-violet-700 dark:text-violet-300">ub</span></h6>
+                    <GuitarIcon className="h-8 w-8" />
+                    <h6 className="text-xl md:text-2xl font-extrabold tracking-tight dark:white">phis<span className="text-violet-800 dark:text-violet-200">h</span><span className="text-violet-700 dark:text-violet-300">ub</span></h6>
                   </Link>
+                  <div className="mt-2 border-b"></div>
                   <Link
                     href="#"
                     className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
@@ -228,7 +229,6 @@ export default async function Index() {
                 <DropdownMenuItem>Settings</DropdownMenuItem>
                 <DropdownMenuItem>Support</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Logout</DropdownMenuItem>
                 <AuthButton />
               </DropdownMenuContent>
             </DropdownMenu>
@@ -244,8 +244,8 @@ export default async function Index() {
                 <h3 className="text-2xl font-bold tracking-tight">
                   You have no favorites
                 </h3>
-                <p className="text-sm text-muted-foreground">
-                  Click the Favorite button by any song, tab, performance, or lesson
+                <p className="text-sm text-muted-foreground px-4 py-2">
+                  Click the <HeartIcon className="inline h-4 w-4" /> button by any song, tab, performance, or lesson to add it to your My Favorites list.
                 </p>
                 <Button className="mt-4">View Songs</Button>
               </div>
