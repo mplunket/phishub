@@ -3,7 +3,12 @@ import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { SubmitButton } from "../../components/SubmitButton";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, GuitarIcon } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import SignUpWithOAuth from "@/components/SignUpWithOAuth";
 
 export default function Login({
   searchParams,
@@ -54,7 +59,7 @@ export default function Login({
 
   return (
     <section className="w-full h-screen pt-8 pb-12 md:pb-24 bg-gradient-to-r from-[#6366F1] to-[#9333EA] text-white">
-      <div className="container mx-auto flex-1 flex flex-col w-full py-12 px-8 sm:max-w-md justify-center gap-2">
+      <div className="container mx-auto flex-1 flex flex-col w-full py-6 px-8 sm:max-w-md justify-center gap-2">
         <Link
           href="/"
           className="absolute left-8 top-8 py-2 px-4 rounded-md no-underline text-foreground bg-btn-background hover:bg-btn-background-hover flex items-center group text-sm"
@@ -63,49 +68,56 @@ export default function Login({
           Back
         </Link>
 
-        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-center">phis<span className="text-violet-200">h</span><span className="text-violet-300">ub</span></h1>
-        <form className="animate-in flex-1 flex flex-col w-full justify-center py-12 gap-2 text-foreground">
-          <label className="text-md" htmlFor="email">
-            Email
-          </label>
-          <input
-            className="rounded-md px-4 py-2 bg-inherit border mb-4"
-            name="email"
-            placeholder="you@example.com"
-            required
-          />
-          <label className="text-md" htmlFor="password">
-            Password
-          </label>
-          <input
-            className="rounded-md px-4 py-2 bg-inherit border mb-6"
-            type="password"
-            name="password"
-            placeholder="••••••••"
-            required
-          />
-          <SubmitButton
-            formAction={signIn}
-            className="bg-white rounded-md px-4 py-2 text-indigo-500 mb-2"
-            pendingText="Signing In..."
-          >
-            Log In
-          </SubmitButton>
-          <SubmitButton
-            formAction={signUp}
-            className="bg-[#9333EA] hover:bg-[#a657f0] border border-foreground/20 rounded-md px-4 py-2 text-white mb-2"
-            pendingText="Signing Up..."
-          >
-            Sign Up
-          </SubmitButton>
-          {searchParams?.message && (
-            <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">
-              {searchParams.message}
-            </p>
-          )}
-        </form>
+        <div className="flex items-center">
+          <GuitarIcon className="h-24 w-24" />
+          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">phis<span className="text-violet-200">h</span><span className="text-violet-300">ub</span></h1>
+        </div>
+        <Card className="mx-auto max-w-sm mt-6">
+          <CardHeader>
+            <CardTitle className="text-xl">Sign In</CardTitle>
+            <CardDescription>
+              Log in to phishub
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4">
+              <form className="animate-in flex-1 flex flex-col w-full justify-center pt-6 gap-2 text-foreground">
+                <div className="grid gap-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="hpb@phish.com"
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input id="password" name="password" type="password" />
+                </div>
+                <Button type="submit" className="w-full"
+                  formAction={signIn}>
+                  Log In
+                </Button>
+
+              </form>
+              <SignUpWithOAuth />
+            </div>
+            <div className="mt-4 text-center text-sm">
+              Forgot password?{" "}
+              <Link href="/forgot" className="underline">
+                Click here
+              </Link>
+            </div>
+            {searchParams?.message && (
+              <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">
+                {searchParams.message}
+              </p>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </section>
-
   );
 }
