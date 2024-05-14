@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import AuthButton from "../components/AuthButton";
+import SearchBar from "@/components/SearchBar";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge"
 import {
   Card,
   CardContent,
@@ -17,7 +17,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { ChevronRight, GuitarIcon, FileMusicIcon, AudioWaveformIcon, MicVocalIcon, VideoIcon, BookOpenCheckIcon, HeartIcon } from "lucide-react";
 import Link from "next/link";
@@ -25,13 +24,7 @@ import {
   Bell,
   CircleUser,
   Home,
-  LineChart,
-  Menu,
-  Package,
-  Package2,
-  Search,
-  ShoppingCart,
-  Users,
+  Menu
 } from "lucide-react"
 
 export default async function Index() {
@@ -44,15 +37,15 @@ export default async function Index() {
   if (user) {
     return (
       <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] bg-white dark:bg-slate-900">
-        <div className="hidden border-r bg-muted/40 md:block">
+        <div className="hidden bg-muted/40 md:block">
           <div className="flex h-full max-h-screen flex-col gap-2">
-            <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+            <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6 bg-gradient-to-r from-[#6366F1] to-[#9333EA] text-white">
               <Link href="/" className="flex items-center gap-2 font-semibold">
                 <GuitarIcon className="h-6 w-6" />
-                <h6 className="text-sm md:text-base font-extrabold tracking-tight dark:white">phis<span className="text-violet-800 dark:text-violet-200">h</span><span className="text-violet-700 dark:text-violet-300">ub</span></h6>
+                <h6 className="text-xl md:2xl font-extrabold tracking-tight">phis<span className="text-violet-200">h</span><span className="text-violet-300">ub</span></h6>
               </Link>
               <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
-                <Bell className="h-4 w-4" />
+                <Bell className="h-4 w-4 text-black" />
                 <span className="sr-only">Toggle notifications</span>
               </Button>
             </div>
@@ -121,7 +114,7 @@ export default async function Index() {
           </div>
         </div>
         <div className="flex flex-col">
-          <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+          <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6 bg-[#9333EA]">
             <Sheet>
               <SheetTrigger asChild>
                 <Button
@@ -139,8 +132,8 @@ export default async function Index() {
                     href="#"
                     className="flex items-center gap-2 text-lg font-semibold"
                   >
-                    <GuitarIcon className="h-8 w-8" />
-                    <h6 className="text-xl md:text-2xl font-extrabold tracking-tight dark:white">phis<span className="text-violet-800 dark:text-violet-200">h</span><span className="text-violet-700 dark:text-violet-300">ub</span></h6>
+                    <GuitarIcon className="h-8 w-8 text-[#6366F1]" />
+                    <h6 className="text-xl md:text-2xl font-extrabold tracking-tight text-[#6366F1] dark:white">phis<span className="text-violet-400 dark:text-violet-200">h</span><span className="text-violet-300 dark:text-violet-300">ub</span></h6>
                   </Link>
                   <div className="mt-2 border-b"></div>
                   <Link
@@ -204,18 +197,7 @@ export default async function Index() {
                 </div>
               </SheetContent>
             </Sheet>
-            <div className="w-full flex-1">
-              <form>
-                <div className="relative">
-                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="search"
-                    placeholder="Search products..."
-                    className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
-                  />
-                </div>
-              </form>
-            </div>
+            <SearchBar />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="secondary" size="icon" className="rounded-full">
@@ -226,8 +208,8 @@ export default async function Index() {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Support</DropdownMenuItem>
+                <DropdownMenuItem><Link href="/profile">My Profile</Link></DropdownMenuItem>
+                <DropdownMenuItem><Link href="/settings">Settings</Link></DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <AuthButton />
               </DropdownMenuContent>
@@ -245,7 +227,7 @@ export default async function Index() {
                   You have no favorites
                 </h3>
                 <p className="text-sm text-muted-foreground px-4 py-2">
-                  Click the <HeartIcon className="inline h-4 w-4" /> button by any song, tab, performance, or lesson to add it to your My Favorites list.
+                  Click the <HeartIcon className="inline h-4 w-4 hover:fill-red-400 cursor-pointer" /> button by any song, tab, performance, or lesson to add it to your My Favorites list.
                 </p>
                 <Button className="mt-4">View Songs</Button>
               </div>
