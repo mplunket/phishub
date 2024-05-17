@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
-import AuthButton from "../components/AuthButton";
+import Splash from "@/components/Splash";
 import SearchBar from "@/components/SearchBar";
+import UserDropdownMenu from "@/components/UserDropdownMenu";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,20 +10,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { ChevronRight, GuitarIcon, FileMusicIcon, AudioWaveformIcon, MicVocalIcon, VideoIcon, BookOpenCheckIcon, HeartIcon } from "lucide-react";
+import { GuitarIcon, FileMusicIcon, AudioWaveformIcon, MicVocalIcon, VideoIcon, BookOpenCheckIcon, HeartIcon } from "lucide-react";
 import Link from "next/link";
 import {
-  Bell,
-  CircleUser,
   Home,
   Menu
 } from "lucide-react"
@@ -49,63 +40,47 @@ export default async function Index() {
               <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
                 <Link
                   href="#"
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-slate-600 hover:bg-slate-100"
                 >
                   <Home className="h-4 w-4" />
                   Home
                 </Link>
                 <Link
                   href="#"
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-slate-600 hover:bg-slate-100"
                 >
                   <FileMusicIcon className="h-4 w-4 text-fuchsia-500" />
                   Tabs
                 </Link>
                 <Link
                   href="#"
-                  className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
+                  className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-slate-600 hover:bg-slate-100"
                 >
                   <AudioWaveformIcon className="h-4 w-4 text-cyan-500" />
                   Songs
                 </Link>
                 <Link
                   href="#"
-                  className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
+                  className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-slate-600 hover:bg-slate-100"
                 >
                   <MicVocalIcon className="h-4 w-4 text-violet-500" />
                   Lyrics
                 </Link>
                 <Link
                   href="#"
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-slate-600 hover:bg-slate-100"
                 >
                   <BookOpenCheckIcon className="h-4 w-4 text-yellow-500" />
                   Lessons
                 </Link>
                 <Link
                   href="#"
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-slate-600 hover:bg-slate-100"
                 >
                   <VideoIcon className="h-4 w-4 text-green-500" />
                   Performances
                 </Link>
               </nav>
-            </div>
-            <div className="mt-auto p-4">
-              <Card x-chunk="dashboard-02-chunk-0">
-                <CardHeader className="p-2 pt-0 md:p-4">
-                  <CardTitle>Upgrade to Pro</CardTitle>
-                  <CardDescription>
-                    Unlock all features and get unlimited access to our support
-                    team.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
-                  <Button size="sm" className="w-full">
-                    Upgrade
-                  </Button>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>
@@ -178,22 +153,7 @@ export default async function Index() {
               </SheetContent>
             </Sheet>
             <SearchBar />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="secondary" size="icon" className="rounded-full">
-                  <CircleUser className="h-5 w-5" />
-                  <span className="sr-only">Toggle user menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem><Link href="/profile">My Profile</Link></DropdownMenuItem>
-                <DropdownMenuItem><Link href="/settings">Settings</Link></DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <AuthButton />
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <UserDropdownMenu />
           </header>
           <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
             <div className="flex items-center">
@@ -218,43 +178,7 @@ export default async function Index() {
     )
   } else {
     return (
-      <>
-        <section className="w-full pt-8 pb-12 bg-gradient-to-r from-[#6366F1] to-[#9333EA] text-white">
-          <div className="container mx-auto px-4 md:px-6 py-12 flex flex-col items-center text-center">
-            <div className="flex items-center">
-              <GuitarIcon className="h-24 w-24" />
-              <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">phis<span className="text-violet-200">h</span><span className="text-violet-300">ub</span></h1>
-            </div>
-            <p className="mt-4 text-xl md:text-2xl text-gray-300">The #1 Site for Musicians Who Love Phish</p>
-            <div className="text-center pt-10">
-              <Button variant="secondary" className="group">
-                <Link href="/signup">Sign Up for the <span className="text-fuchsia-500">Beta</span></Link> <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </div>
-          </div>
-        </section>
-        <section className="w-full py-24 bg-white dark:bg-slate-900">
-          <div className="container mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="flex flex-col items-center text-center gap-4">
-              <FileMusicIcon className="h-12 w-12 text-fuchsia-500" />
-              <h3 className="text-2xl font-bold dark:text-gray-100">Tabs</h3>
-              <p className="text-gray-500 dark:text-gray-400">Study, organize, and contribute guitar, bass, and piano chord charts, tablature, and lyrics</p>
-            </div>
-            <div className="flex flex-col items-center text-center gap-4">
-              <AudioWaveformIcon className="h-12 w-12 text-cyan-500" />
-              <h3 className="text-2xl font-bold dark:text-gray-100">Songs</h3>
-              <p className="text-gray-500 dark:text-gray-400">Explore Phish's entire catalog of originals and covers with helpful resources</p>
-            </div>
-            <div className="flex flex-col items-center text-center gap-4">
-              <VideoIcon className="h-12 w-12 text-green-500" />
-              <h3 className="text-2xl font-bold dark:text-gray-100">Videos</h3>
-              <p className="text-gray-500 dark:text-gray-400">
-                Watch lessons and performances to get some tips for your playing
-              </p>
-            </div>
-          </div>
-        </section>
-      </>
+      <Splash />
     )
   }
 
