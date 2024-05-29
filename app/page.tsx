@@ -3,13 +3,6 @@ import Splash from "@/components/Splash";
 import SearchBar from "@/components/SearchBar";
 import UserDropdownMenu from "@/components/UserDropdownMenu";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { GuitarIcon, FileMusicIcon, AudioWaveformIcon, MicVocalIcon, VideoIcon, BookOpenCheckIcon, HeartIcon } from "lucide-react";
 import Link from "next/link";
