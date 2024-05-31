@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { Button } from "@/components/ui/button";
 import { HeartIcon } from "lucide-react";
+import Splash from "@/components/Splash";
 
 
 export default async function Index() {
@@ -29,6 +30,10 @@ export default async function Index() {
           </div>
         </div>
       </>
+    )
+  } else {
+    return (
+      <Splash />
     )
   }
 

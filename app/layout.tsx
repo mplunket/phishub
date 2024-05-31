@@ -41,7 +41,7 @@ export default async function RootLayout({
       <html lang="en" className={GeistSans.className}>
         <body className="bg-background text-foreground">
           <main className="min-h-screen flex flex-col items-center bg-slate-900 dark:bg-white">
-            <Splash />
+            {children}
             <Footer />
           </main>
         </body>
