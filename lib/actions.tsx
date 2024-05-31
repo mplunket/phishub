@@ -1,8 +1,12 @@
 "use server"
 
 import { createClient } from '@/utils/supabase/server'
+import { redirect } from 'next/navigation';
+import { Database, Tables, Enums } from '@/database.types'
 
-export const fetchSongs = async (query: string) => {
+type Song = Tables<'song'>;
+
+export const searchSongs = async (query: string) => {
 
     const supabase = createClient();
 
@@ -20,3 +24,24 @@ export const fetchSongs = async (query: string) => {
 
     return data;
 };
+
+export const getSongFromSlug = async (slug: string): Promise<Song | null> => {
+
+    const supabase = createClient();
+
+    const { data: song, error } = await supabase
+        .from('song')
+        .select('*')
+        .eq('slug', slug)
+        .single()
+    if (error) {
+        console.error('Error fetching songs:', error);
+        return null;
+    }
+
+    return song;
+};
+
+export async function navigate(url: String) {
+    redirect(`${url}`);
+}
