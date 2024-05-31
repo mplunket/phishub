@@ -55,7 +55,7 @@ export default async function RootLayout({
             <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] bg-white dark:bg-slate-900 dark:text-gray-100">
               <div className="hidden bg-muted/40 md:block">
                 <div className="flex h-full max-h-screen flex-col gap-2">
-                  <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6 bg-gradient-to-r from-[#6366F1] to-[#9333EA] text-white">
+                  <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6 bg-gradient-to-r from-[#6366F1] to-[#9333EA] dark:from-[#393a79] dark:to-[#51356b] text-white">
                     <Link href="/" className="flex items-center gap-2 font-semibold hover:animate-pulse">
                       <GuitarIcon className="h-6 w-6" />
                       <h6 className="text-xl md:2xl font-extrabold tracking-tight">phis<span className="text-violet-200">h</span><span className="text-violet-300">ub</span></h6>
@@ -110,7 +110,7 @@ export default async function RootLayout({
                 </div>
               </div>
               <div className="flex flex-col">
-                <header className="flex h-14 justify-between items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6 bg-[#9333EA]">
+                <header className="flex h-14 justify-between items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6 bg-[#9333EA] dark:bg-[#51356b]">
                   <Sheet>
                     <SheetTrigger asChild>
                       <Button
