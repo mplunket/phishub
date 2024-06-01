@@ -34,7 +34,7 @@ export default async function Song({ params }: { params: { slug: string } }) {
                 if (!res.ok) {
                     throw new Error('Failed to fetch tab content');
                 }
-                tabContent = res.text();
+                tabContent = (await res.text()).replace('\n', '');
             }
         }
 
@@ -50,7 +50,7 @@ export default async function Song({ params }: { params: { slug: string } }) {
                         </div>
                     </div>
                 </div>
-                {tabContent ? <div><pre className=" max-w-fit">{tabContent}</pre></div> : <h3 className=" py-20 text-center">This song has no content yet.</h3>}
+                {tabContent ? <div className="font-mono whitespace-pre text-[0.51rem] md:text-base">{tabContent}</div> : <h3 className=" py-20 text-center">This song has no content yet.</h3>}
             </>
         )
 
