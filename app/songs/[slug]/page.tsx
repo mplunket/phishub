@@ -1,4 +1,4 @@
-import { getSongFromSlug } from "@/lib/actions";
+import { getSongFromSlug, getTabsFromSong } from "@/lib/actions";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -16,9 +16,27 @@ export default async function Song({ params }: { params: { slug: string } }) {
         return redirect("/login");
     }
 
+    // Retrieve Song data
     const song = await getSongFromSlug(slug);
 
     if (song) {
+
+        // Retrieve Tab data
+        const tabs = await getTabsFromSong(song.id);
+        console.log(tabs);
+        let tabContent = null;
+
+        if (tabs && tabs.length > 0) {
+            tabContent = JSON.stringify(tabs);
+            if (tabs[0].content) {
+                // Fetch content of Tab
+                const res = await fetch(tabs[0]?.content);
+                if (!res.ok) {
+                    throw new Error('Failed to fetch tab content');
+                }
+                tabContent = res.text();
+            }
+        }
 
         return (
             <>
@@ -32,15 +50,7 @@ export default async function Song({ params }: { params: { slug: string } }) {
                         </div>
                     </div>
                 </div>
-                <div
-                    className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm" x-chunk="dashboard-02-chunk-1"
-                >
-                    <div className="flex flex-col items-center gap-1 text-center">
-                        <h3 className="text-2xl font-bold tracking-tight">
-                            This song does not have any content yet.
-                        </h3>
-                    </div>
-                </div>
+                {tabContent ? <div><pre className=" max-w-fit">{tabContent}</pre></div> : <h3 className=" py-20 text-center">This song has no content yet.</h3>}
             </>
         )
 
