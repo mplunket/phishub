@@ -50,7 +50,7 @@ export default async function Song({ params }: { params: { slug: string } }) {
                         </div>
                     </div>
                 </div>
-                {tabContent ? <div className="font-mono whitespace-pre overflow-x-scroll text-[0.50rem] md:text-base">{tabContent}</div> : <h3 className=" py-20 text-center">This song has no content yet.</h3>}
+                {tabContent ? <div className="mb-10 font-mono whitespace-pre text-[0.50rem] md:text-sm lg:text-base">{tabContent}</div> : <h3 className=" py-20 text-center">This song has no content yet.</h3>}
             </>
         )
 
