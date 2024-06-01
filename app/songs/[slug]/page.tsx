@@ -1,5 +1,6 @@
 import { getSongFromSlug } from "@/lib/actions";
 import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 export default async function Song({ params }: { params: { slug: string } }) {
 
@@ -11,37 +12,37 @@ export default async function Song({ params }: { params: { slug: string } }) {
         data: { user },
     } = await supabase.auth.getUser();
 
-    if (user) {
+    if (!user) {
+        return redirect("/login");
+    }
 
-        const song = await getSongFromSlug(slug);
+    const song = await getSongFromSlug(slug);
 
-        if (song) {
+    if (song) {
 
-            return (
-                <>
-                    <div className="flex items-center">
-                        <div className="block">
-                            <div>
-                                <h1 className="text-lg font-semibold md:text-2xl">{song.song_name}</h1>
-                            </div>
-                            <div>
-                                <h2 className="text-sm uppercase text-slate-400">{song.artist_name}</h2>
-                            </div>
+        return (
+            <>
+                <div className="flex items-center">
+                    <div className="block">
+                        <div>
+                            <h1 className="text-lg font-semibold md:text-2xl">{song.song_name}</h1>
+                        </div>
+                        <div>
+                            <h2 className="text-sm uppercase text-slate-400">{song.artist_name}</h2>
                         </div>
                     </div>
-                    <div
-                        className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm" x-chunk="dashboard-02-chunk-1"
-                    >
-                        <div className="flex flex-col items-center gap-1 text-center">
-                            <h3 className="text-2xl font-bold tracking-tight">
-                                This song does not have any content yet.
-                            </h3>
-                        </div>
+                </div>
+                <div
+                    className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm" x-chunk="dashboard-02-chunk-1"
+                >
+                    <div className="flex flex-col items-center gap-1 text-center">
+                        <h3 className="text-2xl font-bold tracking-tight">
+                            This song does not have any content yet.
+                        </h3>
                     </div>
-                </>
-            )
-
-        }
+                </div>
+            </>
+        )
 
     }
 
