@@ -78,7 +78,7 @@ const SearchBar = () => {
     };
 
     return (
-        <div className="w-3/4">
+        <div className=" min-w-48 w-1/2">
             <div className="relative" ref={ref}>
                 <input
                     type="text"
