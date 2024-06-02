@@ -78,7 +78,7 @@ const SearchBar = () => {
     };
 
     return (
-        <div className=" min-w-48 w-1/2">
+        <div className="w-full md:w-1/2">
             <div className="relative" ref={ref}>
                 <input
                     type="text"
@@ -95,11 +95,11 @@ const SearchBar = () => {
                             suggestions.map((suggestion, index) => {
                                 let className;
                                 if (index === activeSuggestionIndex) {
-                                    className = 'bg-blue-500 hover:bg-blue-400 text-white hover:text-slate-200';
+                                    className = 'bg-blue-500 hover:bg-blue-400 text-white hover:text-slate-800';
                                 }
                                 return (
                                     <li
-                                        className={`px-4 py-2 cursor-pointer hover:bg-slate-200 ${className}`}
+                                        className={`px-4 py-2 cursor-pointer ${className} hover:bg-slate-200`}
                                         key={suggestion.id}
                                         onClick={handleClick}
                                     >

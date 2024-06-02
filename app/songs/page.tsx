@@ -8,13 +8,9 @@ export default async function Songs() {
         data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) {
-        return redirect("/login");
-    }
-
     return (
         <>
-            <div className="flex items-center">
+            <div className="flex items-center p-4 lg:p-6">
                 <h1 className="text-lg font-semibold md:text-2xl">Songs</h1>
             </div>
             <div

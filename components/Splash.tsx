@@ -5,7 +5,7 @@ import Link from "next/link";
 export default async function Splash() {
     return (
         <>
-            <section className="w-full pt-8 pb-12 bg-gradient-to-r from-[#6366F1] to-[#9333EA] text-white">
+            <section className="w-full pt-8 pb-12 bg-gradient-to-r from-[#9333EA] to-[#6366F1] text-white">
                 <div className="container mx-auto px-4 md:px-6 py-12 flex flex-col items-center text-center">
                     <div className="flex items-center">
                         <GuitarIcon className="h-24 w-24" />

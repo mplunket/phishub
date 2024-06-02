@@ -45,20 +45,8 @@ export default function Signup({
     };
 
     return (
-        <section className="w-full h-screen pt-8 pb-12 md:pb-24 bg-gradient-to-r from-[#6366F1] to-[#9333EA] text-white">
+        <section className="w-full h-screen pt-8 pb-12 md:pb-24 bg-gradient-to-r from-[#9333EA] to-[#6366F1] text-white">
             <div className="container mx-auto flex-1 flex flex-col w-full py-6 px-8 sm:max-w-md justify-center gap-2">
-                <Link
-                    href="/"
-                    className="absolute left-8 top-8 py-2 px-4 rounded-md no-underline text-foreground bg-btn-background hover:bg-btn-background-hover flex items-center group text-sm"
-                >
-                    <ChevronLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
-                    Back
-                </Link>
-
-                <div className="flex items-center">
-                    <GuitarIcon className="h-24 w-24" />
-                    <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">phis<span className="text-violet-200">h</span><span className="text-violet-300">ub</span></h1>
-                </div>
                 <Card className="mx-auto max-w-sm mt-6">
                     <CardHeader>
                         <CardTitle className="text-xl">Sign Up</CardTitle>

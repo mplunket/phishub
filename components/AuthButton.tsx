@@ -26,7 +26,7 @@ export default async function AuthButton() {
       </form>
     </div>
   ) : (
-    <Button variant="secondary" className="group">
+    <Button className="group">
       <Link href="/login">
         Login
       </Link>

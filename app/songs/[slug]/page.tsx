@@ -12,10 +12,6 @@ export default async function Song({ params }: { params: { slug: string } }) {
         data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) {
-        return redirect("/login");
-    }
-
     // Retrieve Song data
     const song = await getSongFromSlug(slug);
 
@@ -40,7 +36,7 @@ export default async function Song({ params }: { params: { slug: string } }) {
 
         return (
             <>
-                <div className="flex items-center">
+                <div className="flex items-center p-4 lg:p-6">
                     <div className="block">
                         <div>
                             <h1 className="text-lg font-semibold md:text-2xl">{song.song_name}</h1>
