@@ -7,10 +7,10 @@ const Footer: React.FC = () => {
             <div className="container mx-auto px-4 py-8">
                 <div className="flex flex-wrap justify-between">
                     <div className="w-full md:w-1/2 mb-6 md:mb-0">
-                        <h3 className=" text-2xl text-primary font-semibold mb-2">phishub</h3>
+                        <h3 className="text-2xl text-primary font-black mb-2">phishub</h3>
                         <p>Phish tabs, chords, video lessons and performances.</p>
                     </div>
-                    <div className="w-full flex justify-end space-x-8 md:w-1/2">
+                    <div className="w-full flex justify-center md:justify-end space-x-8 md:w-1/2">
                         <Button className="w-8 h-8" variant="ghost" size="icon" asChild>
                             <a href="https://x.com/phishub" target="_blank" rel="noopener noreferrer">
                                 <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>X</title><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" /></svg>
