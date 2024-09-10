@@ -1,6 +1,4 @@
 import React from 'react';
-import { Twitter, Facebook, Youtube } from 'lucide-react'
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 const Footer: React.FC = () => {
