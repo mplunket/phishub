@@ -12,7 +12,7 @@ export default function LandingPage() {
       </div>
       <div className="relative z-10">
         <h1 className="text-7xl md:text-8xl font-black m-2 text-primary text-center">phishub</h1>
-        <h2 className="text-lg my-4">#1 Site for Phish Guitar Tabs and Video Lessons</h2>
+        <h2 className="my-4 text-center">#1 Site for Phish Guitar Tabs and Video Lessons</h2>
         <div className="my-8"></div>
         <Suspense fallback={<div>Loading...</div>}>
           <Waitlist />
