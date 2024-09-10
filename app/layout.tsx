@@ -8,8 +8,16 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Phishub - Phish Tabs, Chords, and Lessons',
-  description: 'Find and learn Phish songs with guitar tabs, chords, and video lessons. The ultimate resource for Phish fans and musicians.',
+  description: 'Discover and learn Phish guitar tabs, chords, and video lessons. The ultimate resource for Phish fans and musicians.',
   keywords: 'Phish, tabs, chords, guitar, lessons, jam band, rock',
+  openGraph: {
+    title: 'Phishub - Phish Tabs, Chords, and Lessons',
+    description: 'Discover and learn Phish guitar tabs, chords, and video lessons. The ultimate resource for Phish fans and musicians.',
+    url: 'https://www.phishub.com',
+    siteName: 'Phishub',
+    locale: 'en_US',
+    type: 'website'
+  }
 }
 
 export default function RootLayout({
