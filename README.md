@@ -14,7 +14,7 @@ This site is open source on [Github](https://github.com/mplunket/phishub) and vo
   - For each song, view all associated Tabs, Lyrics, Performances, Lessons, and Chat
 - Tabs
   - Guitar, Bass, and Keys/Piano tabs
-  - Format???
+  - Format??? Check out VexTab -- kind of a tricky notation but very customizable
   - Chat
 - Performances
   - Links to Phish (official / unofficial) on YouTube
