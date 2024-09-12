@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 
 const Footer: React.FC = () => {
     return (
-        <footer className="bg-gray-200">
+        <footer className="bg-gray-300">
             <div className="container mx-auto px-4 py-8">
                 <div className="flex flex-wrap justify-between">
                     <div className="w-full md:w-1/2 mb-6 md:mb-0">

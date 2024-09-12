@@ -1,5 +1,3 @@
-'use client'
-
 import Waitlist from '@/components/Waitlist'
 import { Suspense } from 'react'
 
