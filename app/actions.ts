@@ -1,155 +1,85 @@
-"use server";
+'use server'
 
-import { encodedRedirect } from "@/utils/utils";
-import { createClient } from "@/utils/supabase/server";
-import { createResendClient } from "@/utils/resend/client";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { createClient } from "@/utils/supabase/server"
+import { Tables } from '@/lib/database.types'
 
-// This would typically be in a separate file, e.g., app/actions.ts
-export const subscribeToWaitlist = async (formData: FormData) => {
-  const email = formData.get('email')?.toString();
-  const utmSource = formData.get('utm_source')?.toString();
-  const utmMedium = formData.get('utm_medium')?.toString();
-  const utmCampaign = formData.get('utm_campaign')?.toString();
-  const supabase = createClient();
-  const resend = createResendClient();
+type Song = Tables<'songs'>
 
-  try {
-    // Add to waitlist table in Supabase as well as Resend audience
-    if(!email) {
-      return { error: "Email is required" };
-    }
-    await supabase.from('waitlist').insert({ email, utm_source: utmSource, utm_medium: utmMedium, utm_campaign: utmCampaign });
-    await resend.contacts.create({ email, audienceId: process.env.NEXT_PUBLIC_RESEND_AUDIENCE_WAITLIST! });
+export async function createSetlist(userId: string, name: string) {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('setlists')
+    .insert({ created_by: userId, name })
+    .select()
 
-    return { success: true, message: 'Thanks for joining the waitlist!' };
-  } catch (error) {
-    console.error('Error:', error);
-    return { success: false, message: 'An error occurred. Please try again.' };
+  if (error) {
+    console.error('Error creating setlist:', error)
+    throw new Error('Failed to create setlist')
   }
+
+  return data[0]
 }
 
-export const signUpAction = async (formData: FormData) => {
-  const email = formData.get("email")?.toString();
-  const password = formData.get("password")?.toString();
-  const supabase = createClient();
-  const origin = headers().get("origin");
-
-  if (!email || !password) {
-    return { error: "Email and password are required" };
-  }
-
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      emailRedirectTo: `${origin}/auth/callback`,
-    },
-  });
+export async function addContentToSetlist(setlistId: number, userId: string, contentId: number, order: number) {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('setlist_contents')
+    .insert({ setlist_id: setlistId, content_id: contentId, created_by: userId, order })
 
   if (error) {
-    console.error(error.code + " " + error.message);
-    return encodedRedirect("error", "/sign-up", error.message);
-  } else {
-    return encodedRedirect(
-      "success",
-      "/sign-up",
-      "Thanks for signing up! Please check your email for a verification link.",
-    );
+    console.error('Error adding content to setlist:', error)
+    throw new Error('Failed to add content to setlist')
   }
-};
 
-export const signInAction = async (formData: FormData) => {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const supabase = createClient();
+  return data
+}
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+export async function getContentByType(songId: number, contentType: string) {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('content')
+    .select('*')
+    .eq('song_id', songId)
+    .eq('content_type', contentType)
 
   if (error) {
-    return encodedRedirect("error", "/sign-in", error.message);
+    console.error('Error fetching content:', error)
+    throw new Error('Failed to fetch content')
   }
 
-  return redirect("/protected");
-};
+  return data
+}
 
-export const forgotPasswordAction = async (formData: FormData) => {
-  const email = formData.get("email")?.toString();
-  const supabase = createClient();
-  const origin = headers().get("origin");
-  const callbackUrl = formData.get("callbackUrl")?.toString();
-
-  if (!email) {
-    return encodedRedirect("error", "/forgot-password", "Email is required");
-  }
-
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/auth/callback?redirect_to=/protected/reset-password`,
-  });
+export async function getSongBySlug(slug: string) {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('songs')
+    .select('*')
+    .eq('slug', slug)
+    .limit(1)
+    .single()
 
   if (error) {
-    console.error(error.message);
-    return encodedRedirect(
-      "error",
-      "/forgot-password",
-      "Could not reset password",
-    );
+    console.error('Error fetching content:', error)
+    throw new Error('Failed to fetch content')
   }
 
-  if (callbackUrl) {
-    return redirect(callbackUrl);
-  }
+  return data
+}
 
-  return encodedRedirect(
-    "success",
-    "/forgot-password",
-    "Check your email for a link to reset your password.",
-  );
-};
-
-export const resetPasswordAction = async (formData: FormData) => {
-  const supabase = createClient();
-
-  const password = formData.get("password") as string;
-  const confirmPassword = formData.get("confirmPassword") as string;
-
-  if (!password || !confirmPassword) {
-    encodedRedirect(
-      "error",
-      "/protected/reset-password",
-      "Password and confirm password are required",
-    );
-  }
-
-  if (password !== confirmPassword) {
-    encodedRedirect(
-      "error",
-      "/protected/reset-password",
-      "Passwords do not match",
-    );
-  }
-
-  const { error } = await supabase.auth.updateUser({
-    password: password,
-  });
+export async function searchSongs(query: string): Promise<Song[]> {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('songs')
+    .select('*')
+    .ilike('name', `%${query}%`)
+    .order('name')
+    .limit(10)
 
   if (error) {
-    encodedRedirect(
-      "error",
-      "/protected/reset-password",
-      "Password update failed",
-    );
+    console.error('Error searching songs:', error)
+    throw new Error('Failed to search songs')
   }
 
-  encodedRedirect("success", "/protected/reset-password", "Password updated");
-};
-
-export const signOutAction = async () => {
-  const supabase = createClient();
-  await supabase.auth.signOut();
-  return redirect("/sign-in");
-};
+  return data
+}
