@@ -36,16 +36,9 @@ export default function Navigation() {
 
             {/* Mobile Navigation */}
             <div className="md:hidden">
-                <div className="flex flex-row space-x-2 items-baseline">
-                    <SearchCommand>
-                        <button aria-label="Toggle search">
-                            <Search size={24} className="hover:text-blue-200" />
-                        </button>
-                    </SearchCommand>
-                    <button onClick={toggleMenu} aria-label="Toggle menu">
-                        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                    </button>
-                </div>
+                <button onClick={toggleMenu} aria-label="Toggle menu">
+                    {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
                 {isMenuOpen && (
                     <div className="absolute left-0 right-0 pt-2 mt-2 bg-primary z-10  drop-shadow-lg">
                         <Separator className="bg-white/25" />
