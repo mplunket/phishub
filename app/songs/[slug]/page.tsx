@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import { getSongBySlug } from '@/app/actions'
 import BreadcrumbsLinks from '@/components/Breadcrumbs'
+import { Separator } from '@/components/ui/separator'
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
     const song = await getSongBySlug(params.slug)
@@ -42,6 +43,7 @@ export default async function SongPage({ params }: { params: { slug: string } })
         <div className="container mx-auto px-4 py-4 min-h-screen">
             <div className="hidden md:block pb-4">
                 <BreadcrumbsLinks data={breadcrumbs} />
+                <Separator className="mt-3" />
             </div>
             <h1 className="text-3xl font-bold">{song.name}</h1>
             <h2 className="text-xl text-gray-500">{song.artist}</h2>

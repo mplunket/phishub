@@ -54,7 +54,7 @@ export function DataTable<TData, TValue>({
                     placeholder="Search..."
                     value={globalFilter}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setGlobalFilter(e.target.value)}
-                    className="max-w-sm"
+                    className="max-w md:max-w-sm"
                 />
             </div>
             <div className="rounded-md border">

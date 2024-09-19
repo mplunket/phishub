@@ -3,6 +3,7 @@ import { Song, columns } from './columns'
 import BreadcrumbsLinks from '@/components/Breadcrumbs';
 import { Metadata } from 'next';
 import { DataTable } from './data-table';
+import { Separator } from '@/components/ui/separator';
 
 export const metadata: Metadata = {
     title: 'Phishub - Phish Tabs, Chords, and Lessons',
@@ -31,9 +32,10 @@ export default async function Songs() {
         <div className="container mx-auto px-4 py-4 min-h-screen">
             <div className="hidden md:block pb-4">
                 <BreadcrumbsLinks data={breadcrumbs} />
+                <Separator className="mt-3" />
             </div>
             <h1 className="text-3xl font-bold">Songs Phish has played</h1>
-            <div className="py-10">
+            <div className="py-5">
                 <DataTable columns={columns} data={songs} />
             </div>
         </div>
