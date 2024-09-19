@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Menu, Search } from 'lucide-react'
 import SearchCommand from '@/components/SearchCommand'
-import { Button } from '@/components/ui/button'
+import LogoutButton from '@/components/LogoutButton'
 import { createClient } from '@/utils/supabase/server'
 
 export default async function Header() {
@@ -13,7 +13,7 @@ export default async function Header() {
         <header className="bg-primary text-white">
             <div className="container mx-auto px-4 py-3">
                 <div className="flex items-center justify-between">
-                    <Link href="/" className="text-xl font-bold">
+                    <Link href="/" className="text-3xl font-bold">
                         phishhub
                     </Link>
                     <div className="flex items-center space-x-4 md:hidden">
@@ -35,7 +35,7 @@ export default async function Header() {
                         <Link href="/songs" className="hover:text-blue-200">Songs</Link>
                         <Link href="/setlists" className="hover:text-blue-200">Setlists</Link>
                         <Link href="/create" className="hover:text-blue-200">Create</Link>
-                        {user && <Button variant="secondary">Logout</Button>}
+                        {user && <LogoutButton />}
                     </nav>
                 </div>
             </div>

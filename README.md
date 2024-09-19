@@ -26,6 +26,7 @@ This site is open source on [Github](https://github.com/mplunket/phishub) and vo
 - Setlists
   - Create multiple song lists
   - Share song lists with other users
+  - Nice mobile experience where you can swipe between setlist items (@react-swipeable)
 - Chat
   - Embed Chat in various areas of the platform -- Tabs, Songs, Performances, Lessons, etc.
   - Ability to @tag other users

@@ -50,6 +50,36 @@ export async function getContentByType(songId: number, contentType: string) {
   return data
 }
 
+export async function getContent(songId: number) {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('content')
+    .select('*')
+    .eq('song_id', songId)
+
+  if (error) {
+    console.error('Error fetching content:', error)
+    throw new Error('Failed to fetch content')
+  }
+
+  return data
+}
+
+export async function getSongs() {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('songs')
+    .select('*')
+    .order('name')
+
+  if (error) {
+    console.error('Error fetching songs:', error)
+    throw new Error('Failed to fetch songs')
+  }
+
+  return data
+}
+
 export async function getSongBySlug(slug: string) {
   const supabase = createClient()
   const { data, error } = await supabase
@@ -60,8 +90,8 @@ export async function getSongBySlug(slug: string) {
     .single()
 
   if (error) {
-    console.error('Error fetching content:', error)
-    throw new Error('Failed to fetch content')
+    console.error('Error fetching song:', error)
+    throw new Error('Failed to fetch song')
   }
 
   return data
@@ -82,4 +112,9 @@ export async function searchSongs(query: string): Promise<Song[]> {
   }
 
   return data
+}
+
+export async function logout() {
+  const supabase = createClient()
+  await supabase.auth.signOut()
 }

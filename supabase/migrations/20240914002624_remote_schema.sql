@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS "public"."content" (
     "type" "public"."content_type" NOT NULL,
     "instrument" "public"."instrument",
     "platform" "text",
-    "video_id" "text",
+    "url" "text",
     "content" "text"
 );
 
