@@ -75,10 +75,7 @@ export default function SearchCommand({ children }: { children: React.ReactNode 
                                     key={song.id}
                                     onSelect={() => handleSongSelect(song.slug)}
                                 >
-                                    <div className="flex flex-col">
-                                        <div>{song.name}</div>
-                                        <div>{song.artist}</div>
-                                    </div>
+                                    {song.name}
                                 </CommandItem>
                             ))}
                         </CommandGroup>
