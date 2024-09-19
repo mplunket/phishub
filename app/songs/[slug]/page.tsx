@@ -4,6 +4,7 @@ import { getSongBySlug, getSongBySlugWithContent } from '@/app/actions'
 import BreadcrumbsLinks from '@/components/Breadcrumbs'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
     const song = await getSongBySlug(params.slug)
@@ -52,7 +53,9 @@ export default async function SongPage({ params }: { params: { slug: string } })
             <h2 className="text-xl text-gray-500">{song.artist}</h2>
             <div className="container text-center h-80 content-center">
                 <div className="text-gray-500 py-10">Whoops! Looks like we don't have any content for this song yet.</div>
-                <Button>Create Content</Button>
+                <Button>
+                    <Link href="/create">Create Content</Link>
+                </Button>
             </div>
         </div>
     )
