@@ -1,7 +1,9 @@
 'use server'
 
 import { createClient } from "@/utils/supabase/server"
+import { QueryResult, QueryData, QueryError } from '@supabase/supabase-js'
 import { Tables } from '@/lib/database.types'
+import { revalidatePath } from "next/cache"
 
 type Song = Tables<'songs'>
 
@@ -18,6 +20,21 @@ export async function createSetlist(userId: string, name: string) {
   }
 
   return data[0]
+}
+
+export async function createContent(data: any) {
+  // Implement your database insertion logic here
+  // For example, using an ORM like Prisma:
+  // await prisma.content.create({ data })
+
+  // Need to provide schema for data type
+
+  console.log('Creating content:', data)
+
+  // Revalidate the path where this content will be displayed
+  revalidatePath('/content')
+
+  return { success: true }
 }
 
 export async function addContentToSetlist(setlistId: number, userId: string, contentId: number, order: number) {
@@ -95,6 +112,51 @@ export async function getSongBySlug(slug: string) {
   }
 
   return data
+}
+
+export async function getSongBySlugWithContent(slug: string) {
+  const supabase = createClient()
+  const songWithContentQuery = supabase
+    .from('songs')
+    .select(`
+      id,
+      slug,
+      name,
+      abbr,
+      artist,
+      cover,
+      created_at,
+      debut,
+      last_played,
+      times_played,
+      content (
+        approved,
+        content,
+        created_at,
+        created_by,
+        id,
+        instrument,
+        platform,
+        published,
+        song_id,
+        type,
+        url
+      )
+      `)
+    .eq('slug', slug)
+  
+  type SongWithContent = QueryData<typeof songWithContentQuery>
+
+  const { data, error } = await songWithContentQuery
+
+  if (error) {
+    console.error('Error fetching song:', error)
+    throw new Error('Failed to fetch song')
+  }
+
+  const songWithContent: SongWithContent = data;
+
+  return songWithContent
 }
 
 export async function searchSongs(query: string): Promise<Song[]> {

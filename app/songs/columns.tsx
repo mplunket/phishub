@@ -18,8 +18,4 @@ export const columns: ColumnDef<Song>[] = [
         accessorKey: "artist",
         header: "Original Artist",
     },
-    {
-        accessorKey: "debut",
-        header: "Debut",
-    },
 ]

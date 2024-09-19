@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
-import { getSongBySlug } from '@/app/actions'
+import { getSongBySlug, getSongBySlugWithContent } from '@/app/actions'
 import BreadcrumbsLinks from '@/components/Breadcrumbs'
 import { Separator } from '@/components/ui/separator'
+import { Button } from '@/components/ui/button'
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
     const song = await getSongBySlug(params.slug)
@@ -26,11 +27,13 @@ export default async function SongPage({ params }: { params: { slug: string } })
 
     console.log('Getting song ' + params.slug);
 
-    const song = await getSongBySlug(params.slug)
+    const songWithContent = await getSongBySlugWithContent(params.slug)
 
-    if (!song) {
+    if (!songWithContent) {
         notFound()
     }
+
+    const song = songWithContent[0]
 
     const breadcrumbs = [
         { name: 'Home', url: '/' },
@@ -47,6 +50,10 @@ export default async function SongPage({ params }: { params: { slug: string } })
             </div>
             <h1 className="text-3xl font-bold">{song.name}</h1>
             <h2 className="text-xl text-gray-500">{song.artist}</h2>
+            <div className="container text-center h-80 content-center">
+                <div className="text-gray-500 py-10">Whoops! Looks like we don't have any content for this song yet.</div>
+                <Button>Create Content</Button>
+            </div>
         </div>
     )
 

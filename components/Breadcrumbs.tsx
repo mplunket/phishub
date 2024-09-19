@@ -18,7 +18,7 @@ export default function BreadcrumbsLinks({ data }: { data: Breadcrumb[] }) {
         return (
             <>
                 <BreadcrumbItem key={'breadcrumb-' + index}>
-                    <BreadcrumbLink>
+                    <BreadcrumbLink asChild>
                         <Link href={crumb.url}>{crumb.name}</Link>
                     </BreadcrumbLink>
                 </BreadcrumbItem>

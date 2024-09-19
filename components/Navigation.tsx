@@ -21,7 +21,7 @@ export default function Navigation() {
     return (
         <nav>
             {/* Desktop Navigation */}
-            <div className="hidden md:flex space-x-6">
+            <div className="hidden md:flex space-x-6 items-center">
                 {navItems.map((item) => (
                     <Link key={item.href} href={item.href} className="hover:text-blue-200">
                         {item.label}
