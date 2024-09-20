@@ -1,6 +1,7 @@
 import ContentCreationForm from '@/components/ContentCreationForm'
 import { getSongs } from '@/app/actions'
 import { Metadata } from 'next'
+import { Suspense } from 'react'
 
 export const metadata: Metadata = {
     title: 'Create Content | Phishub',
@@ -17,12 +18,15 @@ export const metadata: Metadata = {
 }
 
 export default async function CreateContentPage() {
+
     const songs = await getSongs()
 
     return (
         <div className="container mx-auto px-4 py-4 min-h-screen">
-            <h1 className="text-2xl font-bold mb-4">Create Content</h1>
-            <ContentCreationForm initialSongs={songs} />
+            <h1 className="text-3xl font-bold mb-4">Create Content</h1>
+            <Suspense fallback={<div>Loading...</div>}>
+                <ContentCreationForm data={songs} />
+            </Suspense>
         </div>
     )
 }
