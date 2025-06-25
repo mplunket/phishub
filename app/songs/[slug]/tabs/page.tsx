@@ -1,15 +1,16 @@
-import { getTabsBySongId, getSongById } from "@/lib/api";
+import { getTabsBySongSlug, getSongBySlug } from "@/lib/api";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 export default async function SongTabsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params;
   const [song, tabs] = await Promise.all([
-    getSongById(params.id).catch(() => null),
-    getTabsBySongId(params.id),
+    getSongBySlug(slug).catch(() => null),
+    getTabsBySongSlug(slug),
   ]);
 
   if (!song) {

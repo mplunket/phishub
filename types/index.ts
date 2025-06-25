@@ -1,5 +1,6 @@
 export interface Song {
   id: string;
+  slug: string;
   title: string;
   composer: string[];
   debut_date: string | null;

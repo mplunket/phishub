@@ -9,14 +9,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getSongById } from "@/lib/api";
+import { getSongBySlug } from "@/lib/api";
 
 export default async function NewTabPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const song = await getSongById(params.id);
+  const { slug } = await params;
+  const song = await getSongBySlug(slug);
 
   return (
     <div className="container py-10">
@@ -61,13 +62,6 @@ export default async function NewTabPage({
 
           <div className="flex gap-4">
             <Button type="submit">Submit Tab</Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => window.history.back()}
-            >
-              Cancel
-            </Button>
           </div>
         </form>
       </div>

@@ -11,23 +11,23 @@ export async function getSongs() {
   return songs as Song[];
 }
 
-export async function getSongById(id: string) {
+export async function getSongBySlug(slug: string) {
   const supabase = await createClient();
   const { data: song, error } = await supabase
     .from("songs")
     .select("*")
-    .eq("id", id)
+    .eq("slug", slug)
     .single();
   if (error) throw error;
   return song as Song;
 }
 
-export async function getTabsBySongId(songId: string) {
+export async function getTabsBySongSlug(songSlug: string) {
   const supabase = await createClient();
   const { data: tabs, error } = await supabase
     .from("tabs")
     .select("*")
-    .eq("song_id", songId)
+    .eq("song_slug", songSlug)
     .order("created_at", { ascending: false });
   if (error) throw error;
   return tabs as Tab[];

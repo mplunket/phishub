@@ -1,12 +1,17 @@
-import { getSongById, getTabsBySongId, getComments } from "@/lib/api";
+import { getSongBySlug, getTabsBySongSlug, getComments } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export default async function SongPage({ params }: { params: { id: string } }) {
+export default async function SongPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
   const [song, tabs, comments] = await Promise.all([
-    getSongById(params.id),
-    getTabsBySongId(params.id),
-    getComments("song", params.id),
+    getSongBySlug(slug),
+    getTabsBySongSlug(slug),
+    getComments("song", slug),
   ]);
 
   return (
@@ -52,7 +57,7 @@ export default async function SongPage({ params }: { params: { id: string } }) {
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-2xl font-semibold">Tabs</h2>
               <Button asChild>
-                <Link href={`/songs/${song.id}/tabs/new`}>Add Tab</Link>
+                <Link href={`/songs/${song.slug}/tabs/new`}>Add Tab</Link>
               </Button>
             </div>
             {tabs.length > 0 ? (

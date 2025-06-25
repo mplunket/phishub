@@ -57,13 +57,6 @@ export default function NewSongPage() {
 
           <div className="flex gap-4">
             <Button type="submit">Create Song</Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => window.history.back()}
-            >
-              Cancel
-            </Button>
           </div>
         </form>
       </div>

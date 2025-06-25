@@ -7,7 +7,7 @@ export function SongList({ songs }: { songs: Song[] }) {
       {songs.map((song) => (
         <Link
           key={song.id}
-          href={`/songs/${song.id}`}
+          href={`/songs/${song.slug}`}
           className="p-4 rounded-lg border hover:border-primary transition-colors"
         >
           <div className="flex items-center justify-between">
