@@ -49,7 +49,7 @@ export function SearchBar() {
         </div>
 
         {showSuggestions && filteredSongs.length > 0 && (
-          <div className="absolute top-full left-4 right-4 mt-2 bg-white/95 backdrop-blur-sm border border-purple-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+          <div className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-sm border border-purple-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
             {filteredSongs.map((song, index) => (
               <button
                 key={index}

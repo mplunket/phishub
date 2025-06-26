@@ -35,28 +35,6 @@ export default function LandingPage() {
           </span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex gap-4 lg:gap-6">
-          <Link
-            className="text-sm font-medium hover:text-purple-600 transition-colors"
-            href="#features"
-          >
-            Features
-          </Link>
-          <Link
-            className="text-sm font-medium hover:text-purple-600 transition-colors"
-            href="#community"
-          >
-            Community
-          </Link>
-          <Link
-            className="text-sm font-medium hover:text-purple-600 transition-colors"
-            href="#about"
-          >
-            About
-          </Link>
-        </nav>
-
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex gap-2">
           <Button variant="ghost" size="sm">
@@ -221,22 +199,27 @@ export default function LandingPage() {
       {/* Stats Section */}
       <section className="w-full py-12 md:py-24 lg:py-32 bg-white">
         <div className="container px-4 md:px-6 mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+              Loads of Content
+            </h2>
+          </div>
           <div className="grid gap-6 lg:grid-cols-4 md:grid-cols-2 text-center">
             <div className="space-y-2">
-              <div className="text-3xl font-bold text-purple-600">500+</div>
-              <div className="text-gray-600">Guitar Tabs</div>
+              <div className="text-5xl font-bold text-blue-600">50+</div>
+              <div className="text-gray-600 text-xl">Songs</div>
             </div>
             <div className="space-y-2">
-              <div className="text-3xl font-bold text-orange-500">1,200+</div>
-              <div className="text-gray-600">Community Members</div>
+              <div className="text-5xl font-bold text-purple-600">500+</div>
+              <div className="text-gray-600 text-xl">Tabs</div>
             </div>
             <div className="space-y-2">
-              <div className="text-3xl font-bold text-green-600">150+</div>
-              <div className="text-gray-600">Video Lessons</div>
+              <div className="text-5xl font-bold text-green-600">150+</div>
+              <div className="text-gray-600 text-xl">Videos</div>
             </div>
             <div className="space-y-2">
-              <div className="text-3xl font-bold text-blue-600">50+</div>
-              <div className="text-gray-600">Songs</div>
+              <div className="text-5xl font-bold text-orange-500">1,200+</div>
+              <div className="text-gray-600 text-xl">Members</div>
             </div>
           </div>
         </div>
