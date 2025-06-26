@@ -1,4 +1,4 @@
-import { getSongBySlug, getTabsBySongSlug, getComments } from "@/lib/api";
+import { getSongBySlug, getTabsBySongId, getCommentsBySongId } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -8,10 +8,10 @@ export default async function SongPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [song, tabs, comments] = await Promise.all([
-    getSongBySlug(slug),
-    getTabsBySongSlug(slug),
-    getComments("song", slug),
+  const song = await getSongBySlug(slug);
+  const [tabs, comments] = await Promise.all([
+    getTabsBySongId(song.id),
+    getCommentsBySongId(song.id),
   ]);
 
   return (
@@ -19,29 +19,54 @@ export default async function SongPage({
       <div className="max-w-4xl mx-auto">
         {/* Song header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-4">{song.title}</h1>
-          {song.composer && (
-            <p className="text-lg text-muted-foreground">
-              By {song.composer.join(", ")}
+          <h1 className="text-4xl font-bold mb-4">{song.song}</h1>
+          {song.artist && (
+            <p className="text-lg text-muted-foreground">By {song.artist}</p>
+          )}
+          {song.debut && (
+            <p className="text-sm text-muted-foreground mt-2">
+              First played on {new Date(song.debut).toLocaleDateString()}
             </p>
           )}
-          {song.debut_date && (
+          {song.times_played && (
             <p className="text-sm text-muted-foreground mt-2">
-              First played on {new Date(song.debut_date).toLocaleDateString()}
+              Played {song.times_played} time
+              {song.times_played !== 1 ? "s" : ""}
+            </p>
+          )}
+          {song.last_played && (
+            <p className="text-sm text-muted-foreground mt-2">
+              Last played on {new Date(song.last_played).toLocaleDateString()}
+            </p>
+          )}
+          {song.debut_permalink && (
+            <p className="text-sm mt-2">
+              <a
+                href={song.debut_permalink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-purple-600 hover:underline"
+              >
+                View debut setlist
+              </a>
+            </p>
+          )}
+          {song.last_permalink && (
+            <p className="text-sm mt-2">
+              <a
+                href={song.last_permalink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-purple-600 hover:underline"
+              >
+                View last played setlist
+              </a>
             </p>
           )}
         </div>
 
         {/* Song sections */}
         <div className="grid gap-8">
-          {/* History section */}
-          {song.history && (
-            <section>
-              <h2 className="text-2xl font-semibold mb-4">History</h2>
-              <div className="prose max-w-none">{song.history}</div>
-            </section>
-          )}
-
           {/* Lyrics section */}
           {song.lyrics && (
             <section>
@@ -71,7 +96,7 @@ export default async function SongPage({
                     <div className="flex items-center justify-between">
                       <div>
                         <h3 className="font-semibold">
-                          {song.title} - {tab.type}
+                          {song.song} - {tab.type}
                         </h3>
                         <p className="text-sm text-muted-foreground">
                           Added {new Date(tab.created_at).toLocaleDateString()}

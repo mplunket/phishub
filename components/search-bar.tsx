@@ -1,17 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Music } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
 
 export function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const songs = ["Ghost", "Tweezer", "Divided Sky", "Wilson", "Harry Hood"];
+  const [songs, setSongs] = useState<{ song: string; slug: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch all song names and slugs once and cache in state
+    async function fetchSongs() {
+      setLoading(true);
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("songs")
+        .select("song,slug")
+        .order("song", { ascending: true });
+      if (!error && data) {
+        setSongs(
+          data.map((row: { song: string; slug: string }) => ({
+            song: row.song,
+            slug: row.slug,
+          }))
+        );
+      }
+      setLoading(false);
+    }
+    fetchSongs();
+  }, []);
+
   const filteredSongs = songs.filter(
     (song) =>
-      song.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      song.song.toLowerCase().includes(searchTerm.toLowerCase()) &&
       searchTerm.length > 0
   );
 
@@ -24,7 +49,9 @@ export function SearchBar() {
         <div className="relative">
           <Input
             type="text"
-            placeholder="Search for a Phish song..."
+            placeholder={
+              loading ? "Loading songs..." : "Search for a Phish song..."
+            }
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -33,6 +60,7 @@ export function SearchBar() {
             onFocus={() => setShowSuggestions(true)}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             className="w-full h-12 pl-4 pr-12 text-base border-2 border-purple-200 focus:border-purple-500 focus:ring-purple-500 rounded-lg bg-white/95"
+            disabled={loading}
           />
           <Button
             size="sm"
@@ -43,6 +71,7 @@ export function SearchBar() {
                 // Will implement actual search later
               }
             }}
+            disabled={loading}
           >
             <Music className="h-4 w-4" />
           </Button>
@@ -55,15 +84,14 @@ export function SearchBar() {
                 key={index}
                 className="w-full px-4 py-3 text-left hover:bg-purple-50 focus:bg-purple-50 focus:outline-none border-b border-gray-100 last:border-b-0 transition-colors"
                 onClick={() => {
-                  setSearchTerm(song);
+                  setSearchTerm(song.song);
                   setShowSuggestions(false);
-                  console.log("Selected song:", song);
-                  // Will implement navigation to song page later
+                  window.location.href = `/songs/${song.slug}`;
                 }}
               >
                 <div className="flex items-center">
                   <Music className="h-4 w-4 text-purple-600 mr-3" />
-                  <span className="text-gray-900">{song}</span>
+                  <span className="text-gray-900">{song.song}</span>
                 </div>
               </button>
             ))}

@@ -22,17 +22,6 @@ export async function getSongBySlug(slug: string) {
   return song as Song;
 }
 
-export async function getTabsBySongSlug(songSlug: string) {
-  const supabase = await createClient();
-  const { data: tabs, error } = await supabase
-    .from("tabs")
-    .select("*")
-    .eq("song_slug", songSlug)
-    .order("created_at", { ascending: false });
-  if (error) throw error;
-  return tabs as Tab[];
-}
-
 export async function getSetlists(limit = 10) {
   const supabase = await createClient();
   const { data: setlists, error } = await supabase
@@ -80,6 +69,28 @@ export async function getComments(type: "song" | "tab", id: string) {
     .from("comments")
     .select("*")
     .eq(type === "song" ? "song_id" : "tab_id", id)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return comments as Comment[];
+}
+
+export async function getTabsBySongId(songId: string) {
+  const supabase = await createClient();
+  const { data: tabs, error } = await supabase
+    .from("tabs")
+    .select("*")
+    .eq("song_id", songId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return tabs as Tab[];
+}
+
+export async function getCommentsBySongId(songId: string) {
+  const supabase = await createClient();
+  const { data: comments, error } = await supabase
+    .from("comments")
+    .select("*")
+    .eq("song_id", songId)
     .order("created_at", { ascending: false });
   if (error) throw error;
   return comments as Comment[];

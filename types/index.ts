@@ -1,10 +1,16 @@
 export interface Song {
   id: string;
+  songid?: number;
+  song: string;
   slug: string;
-  title: string;
-  composer: string[];
-  debut_date: string | null;
-  history: string | null;
+  abbr?: string;
+  artist?: string;
+  debut?: string | null;
+  last_played?: string | null;
+  times_played?: number;
+  last_permalink?: string;
+  debut_permalink?: string;
+  gap?: number;
   lyrics: string | null;
   created_at: string;
   updated_at: string;
