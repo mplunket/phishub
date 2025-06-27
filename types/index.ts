@@ -16,11 +16,13 @@ export interface Song {
   updated_at: string;
 }
 
+export type TabType = "tab" | "chords" | "vextab";
+
 export interface Tab {
   id: string;
   song_id: string;
   content: string;
-  type: "tab" | "chord_chart" | "sheet_music";
+  type: TabType;
   author_id: string;
   created_at: string;
   updated_at: string;

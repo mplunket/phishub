@@ -46,7 +46,7 @@ export default async function SongTabsPage({
           <section>
             <h2 className="text-xl font-semibold mb-4">Chord Charts</h2>
             {tabs
-              .filter((t) => t.type === "chord_chart")
+              .filter((t) => t.type === "chords")
               .map((tab) => (
                 <div key={tab.id} className="p-4 border rounded-lg mb-4">
                   <pre className="overflow-x-auto p-4 bg-muted rounded">
@@ -62,7 +62,7 @@ export default async function SongTabsPage({
           <section>
             <h2 className="text-xl font-semibold mb-4">Sheet Music</h2>
             {tabs
-              .filter((t) => t.type === "sheet_music")
+              .filter((t) => t.type === "vextab")
               .map((tab) => (
                 <div key={tab.id} className="p-4 border rounded-lg mb-4">
                   <pre className="overflow-x-auto p-4 bg-muted rounded">
