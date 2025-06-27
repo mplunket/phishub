@@ -9,24 +9,29 @@ import { createClient } from "@/utils/supabase/client";
 export function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [songs, setSongs] = useState<{ song: string; slug: string }[]>([]);
+  const [songs, setSongs] = useState<
+    { song: string; slug: string; times_played?: number }[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch all song names and slugs once and cache in state
+    // Fetch all song names, slugs, and times_played once and cache in state
     async function fetchSongs() {
       setLoading(true);
       const supabase = createClient();
       const { data, error } = await supabase
         .from("songs")
-        .select("song,slug")
-        .order("song", { ascending: true });
+        .select("song,slug,times_played")
+        .order("times_played", { ascending: false });
       if (!error && data) {
         setSongs(
-          data.map((row: { song: string; slug: string }) => ({
-            song: row.song,
-            slug: row.slug,
-          }))
+          data.map(
+            (row: { song: string; slug: string; times_played?: number }) => ({
+              song: row.song,
+              slug: row.slug,
+              times_played: row.times_played,
+            })
+          )
         );
       }
       setLoading(false);
@@ -89,9 +94,16 @@ export function SearchBar() {
                   window.location.href = `/songs/${song.slug}`;
                 }}
               >
-                <div className="flex items-center">
-                  <Music className="h-4 w-4 text-purple-600 mr-3" />
-                  <span className="text-gray-900">{song.song}</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Music className="h-4 w-4 text-purple-600 mr-3" />
+                    <span className="text-gray-900">{song.song}</span>
+                  </div>
+                  {typeof song.times_played === "number" && (
+                    <span className="ml-2 px-2 py-0.5 rounded bg-purple-100 text-purple-700 text-xs font-medium">
+                      {song.times_played}×
+                    </span>
+                  )}
                 </div>
               </button>
             ))}

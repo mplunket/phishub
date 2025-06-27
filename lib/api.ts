@@ -58,7 +58,7 @@ export async function searchSongs(query: string) {
     .from("songs")
     .select("*")
     .or(`title.ilike.%${query}%, lyrics.ilike.%${query}%`)
-    .order("title", { ascending: true });
+    .order("times_played", { ascending: true });
   if (error) throw error;
   return songs as Song[];
 }
