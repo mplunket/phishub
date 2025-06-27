@@ -51,7 +51,7 @@ export default async function NewSetlistPage() {
                       className="h-4 w-4 rounded border-gray-300"
                     />
                     <label htmlFor={`song-${song.id}`} className="text-sm">
-                      {song.title}
+                      {song.song}
                     </label>
                   </div>
                 ))}

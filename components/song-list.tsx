@@ -12,16 +12,16 @@ export function SongList({ songs }: { songs: Song[] }) {
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold">{song.title}</h3>
-              {song.composer && (
+              <h3 className="text-lg font-semibold">{song.song}</h3>
+              {song.artist && (
                 <p className="text-sm text-muted-foreground">
-                  By {song.composer.join(", ")}
+                  By {song.artist}
                 </p>
               )}
             </div>
-            {song.debut_date && (
+            {song.debut && (
               <div className="text-sm text-muted-foreground">
-                Debuted: {new Date(song.debut_date).toLocaleDateString()}
+                Debuted: {new Date(song.debut).toLocaleDateString()}
               </div>
             )}
           </div>

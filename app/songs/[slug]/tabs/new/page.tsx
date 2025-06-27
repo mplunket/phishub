@@ -22,7 +22,7 @@ export default async function NewTabPage({
   return (
     <div className="container py-10">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">Add Tab for {song.title}</h1>
+        <h1 className="text-3xl font-bold mb-2">Add Tab for {song.song}</h1>
         <p className="text-muted-foreground mb-8">
           Share your knowledge by adding a tab, chord chart, or sheet music.
         </p>

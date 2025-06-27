@@ -1,4 +1,4 @@
-import { getTabsBySongSlug, getSongBySlug } from "@/lib/api";
+import { getTabsBySongId, getSongBySlug } from "@/lib/api";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
@@ -8,10 +8,8 @@ export default async function SongTabsPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [song, tabs] = await Promise.all([
-    getSongBySlug(slug).catch(() => null),
-    getTabsBySongSlug(slug),
-  ]);
+  const song = await getSongBySlug(slug);
+  const tabs = await getTabsBySongId(song.id);
 
   if (!song) {
     notFound();
@@ -21,7 +19,7 @@ export default async function SongTabsPage({
     <div className="container py-10">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">{song.title} - Tabs</h1>
+          <h1 className="text-3xl font-bold mb-2">{song.song} - Tabs</h1>
           <p className="text-muted-foreground">
             Add or view tabs for this song
           </p>
