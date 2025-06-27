@@ -1,4 +1,4 @@
-import { Song, Tab, Setlist, Comment } from "@/types";
+import { Song, Tab, Setlist, Comment, Video } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 export async function getSongs() {
@@ -94,4 +94,15 @@ export async function getCommentsBySongId(songId: string) {
     .order("created_at", { ascending: false });
   if (error) throw error;
   return comments as Comment[];
+}
+
+export async function getVideosBySongId(songId: string) {
+  const supabase = await createClient();
+  const { data: videos, error } = await supabase
+    .from("videos")
+    .select("*")
+    .eq("song_id", songId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return videos as Video[];
 }

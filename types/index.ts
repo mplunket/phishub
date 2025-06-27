@@ -56,3 +56,18 @@ export interface SetlistSong {
   position: number;
   created_at: string;
 }
+
+export type VideoType = "lesson" | "performance";
+export type VideoPlatform = "youtube" | "vimeo";
+
+export interface Video {
+  id: string;
+  song_id: string;
+  type: VideoType;
+  platform: VideoPlatform;
+  video_id: string;
+  name: string;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+}
