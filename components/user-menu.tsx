@@ -31,7 +31,7 @@ export function UserMenu() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    router.refresh();
+    window.location.reload();
   };
 
   if (!user) {

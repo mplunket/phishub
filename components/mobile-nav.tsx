@@ -1,13 +1,14 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Button } from "@/components/ui/button"
-import { Menu } from "lucide-react"
-import Link from "next/link"
+import { useState } from "react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Menu } from "lucide-react";
+import Link from "next/link";
+import { UserMenu } from "@/components/user-menu";
 
 export function MobileNav() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -41,13 +42,10 @@ export function MobileNav() {
             About
           </Link>
           <div className="flex flex-col gap-3 mt-6 pt-6 border-t">
-            <Button variant="ghost" className="justify-start">
-              Sign In
-            </Button>
-            <Button className="bg-purple-600 hover:bg-purple-700 justify-start">Get Started</Button>
+            <UserMenu />
           </div>
         </nav>
       </SheetContent>
     </Sheet>
-  )
+  );
 }
