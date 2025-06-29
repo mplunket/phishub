@@ -43,21 +43,11 @@ export default async function SongPage({
           <TabsTrigger value="discussion">Discussion</TabsTrigger>
         </TabsList>
         <TabsContent value="tabs">
-          <TabSection
-            tabs={tabs.map((t) => ({
-              id: t.id,
-              type: t.type,
-              favorites: t.favorites || 0,
-              user: {
-                username: t.user?.username || "Unknown",
-                avatar_url: t.user?.avatar_url,
-              },
-              content: t.content,
-            }))}
-            userFavoriteTabIds={userFavoriteTabIds}
-          />
+          <TabSection tabs={tabs} userFavoriteTabIds={userFavoriteTabIds} />
         </TabsContent>
-        <TabsContent value="videos">Change your password here.</TabsContent>
+        <TabsContent value="videos">
+          <h2 className="text-2xl font-semibold mb-4">Videos</h2>
+        </TabsContent>
         <TabsContent value="lyrics">
           <div className="prose max-w-none whitespace-pre-line">
             {song.lyrics || "No lyrics available for this song."}

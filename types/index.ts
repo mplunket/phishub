@@ -26,6 +26,11 @@ export interface Tab {
   author_id: string;
   created_at: string;
   updated_at: string;
+  favorites: number; // new
+  user: {
+    username: string;
+    avatar_url?: string;
+  };
 }
 
 export interface Comment {

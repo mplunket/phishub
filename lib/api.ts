@@ -78,11 +78,27 @@ export async function getTabsBySongId(songId: string) {
   const supabase = await createClient();
   const { data: tabs, error } = await supabase
     .from("tabs")
-    .select("*")
+    .select(
+      `
+      *,
+      user:profiles!author_id (
+        username,
+        avatar_url
+      ),
+      favorites:favorites!tab_id (
+        id
+      )
+    `
+    )
     .eq("song_id", songId)
     .order("created_at", { ascending: false });
-  if (error) throw error;
-  return tabs as Tab[];
+  if (error) throw new Error(error.message || "Failed to fetch tabs");
+  // Aggregate favorite counts
+  const tabsWithFavorites = (tabs as any[]).map((tab) => ({
+    ...tab,
+    favorites: tab.favorites ? tab.favorites.length : 0,
+  }));
+  return tabsWithFavorites as Tab[];
 }
 
 export async function getCommentsBySongId(songId: string) {
