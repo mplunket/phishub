@@ -2,19 +2,30 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { CurrentUserAvatar } from "@/components/current-user-avatar";
 import { LogOut, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 
 export function UserMenu() {
   const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const router = useRouter();
   const supabase = createClient();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }: any) => {
       setUser(data?.user);
+      if (data?.user) {
+        supabase
+          .from("profiles")
+          .select("avatar_url")
+          .eq("user_id", data.user.id)
+          .single()
+          .then(({ data: profileData }) => {
+            setProfile(profileData);
+          });
+      }
     });
   }, [supabase]);
 
@@ -40,12 +51,7 @@ export function UserMenu() {
 
   return (
     <div className="flex items-center gap-3">
-      <Avatar>
-        <AvatarImage src={user?.avatar_url || undefined} alt="User avatar" />
-        <AvatarFallback>
-          <User className="h-5 w-5" />
-        </AvatarFallback>
-      </Avatar>
+      <CurrentUserAvatar />
       <Button variant="ghost" size="sm" onClick={handleSignOut}>
         <LogOut className="h-4 w-4 mr-1" /> Sign Out
       </Button>

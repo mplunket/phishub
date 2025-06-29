@@ -46,7 +46,7 @@ export function SearchBar({ shadow = true }: { shadow?: boolean }) {
   );
 
   return (
-    <div className="w-full max-w-md mx-auto relative pt-8 px-2">
+    <div className="w-full max-w-md mx-auto relative p-2">
       {/* Orange Gaussian Blur Background */}
       <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-600 opacity-20 blur-xl scale-110 -z-10 rounded-xl" />
 

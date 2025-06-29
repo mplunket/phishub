@@ -22,24 +22,50 @@ export const updateSession = async (request: NextRequest) => {
           },
           setAll(cookiesToSet) {
             cookiesToSet.forEach(({ name, value }) =>
-              request.cookies.set(name, value),
+              request.cookies.set(name, value)
             );
             response = NextResponse.next({
               request,
             });
             cookiesToSet.forEach(({ name, value, options }) =>
-              response.cookies.set(name, value, options),
+              response.cookies.set(name, value, options)
             );
           },
         },
-      },
+      }
     );
 
     // This will refresh session if expired - required for Server Components
     // https://supabase.com/docs/guides/auth/server-side/nextjs
     const user = await supabase.auth.getUser();
 
+    // Guard: If user is authenticated, check for profile
+    if (user.data?.user) {
+      // Only check for profile on protected/dashboard routes (not /create-profile, /sign-in, /sign-up, /api, etc.)
+      const path = request.nextUrl.pathname;
+      const isProtected =
+        !path.startsWith("/api") &&
+        !path.startsWith("/auth") &&
+        !path.startsWith("/sign-in") &&
+        !path.startsWith("/sign-up") &&
+        !path.startsWith("/create-profile") &&
+        !path.startsWith("/public") &&
+        !path.startsWith("/_next");
+      if (isProtected) {
+        // Query for profile
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("user_id")
+          .eq("user_id", user.data.user.id)
+          .single();
+        if (!profile) {
+          return NextResponse.redirect(new URL("/create-profile", request.url));
+        }
+      }
+    }
+
     // protected routes
+    /*
     if (request.nextUrl.pathname.startsWith("/protected") && user.error) {
       return NextResponse.redirect(new URL("/sign-in", request.url));
     }
@@ -47,6 +73,7 @@ export const updateSession = async (request: NextRequest) => {
     if (request.nextUrl.pathname === "/" && !user.error) {
       return NextResponse.redirect(new URL("/protected", request.url));
     }
+    */
 
     return response;
   } catch (e) {
