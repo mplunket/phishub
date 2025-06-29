@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Music } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
-export function SearchBar() {
+export function SearchBar({ shadow = true }: { shadow?: boolean }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [songs, setSongs] = useState<
@@ -46,11 +46,16 @@ export function SearchBar() {
   );
 
   return (
-    <div className="w-full max-w-md mx-auto relative pt-8">
+    <div className="w-full max-w-md mx-auto relative pt-8 px-2">
       {/* Orange Gaussian Blur Background */}
       <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-600 opacity-20 blur-xl scale-110 -z-10 rounded-xl" />
 
-      <div className="relative bg-white/90 rounded-xl shadow-2xl shadow-purple-500/75 border border-white/50">
+      <div
+        className={
+          `relative bg-white/90 rounded-xl border border-white/50` +
+          (shadow ? " shadow-2xl shadow-purple-500/75" : "")
+        }
+      >
         <div className="relative">
           <Input
             type="text"

@@ -1,7 +1,18 @@
 import { ReactNode } from "react";
 
-import { Calendar, Guitar, Home, Inbox, Search, Settings } from "lucide-react";
-
+import {
+  Music,
+  Users,
+  Heart,
+  List,
+  Upload,
+  MessageCircle,
+  Share2,
+  Guitar,
+  Star,
+  BookOpen,
+  Video,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarProvider,
@@ -16,33 +27,31 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { SearchBar } from "@/components/search-bar";
+import { AppHeader } from "@/components/nav";
+import { UserMenu } from "@/components/user-menu";
 
 // Menu items.
 const items = [
   {
-    title: "Home",
-    url: "#",
-    icon: Home,
+    title: "Tabs",
+    url: "/tabs",
+    icon: BookOpen,
   },
   {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
+    title: "Videos",
+    url: "/videos",
+    icon: Video,
   },
   {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
+    title: "Favorites",
+    url: "/favorites",
+    icon: Heart,
   },
   {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
+    title: "Setlists",
+    url: "/setlists",
+    icon: List,
   },
 ];
 
@@ -57,8 +66,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               Phishub
             </span>
           </Link>
+          <SearchBar shadow={false} />
           <SidebarGroup>
-            <SidebarGroupLabel>Application</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {items.map((item) => (
@@ -78,7 +87,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       </Sidebar>
       <SidebarInset>
         <main>
-          <SidebarTrigger />
+          <div className="w-full flex items-center justify-between pl-4 pt-2 pb-2 pr-4">
+            <SidebarTrigger />
+            <UserMenu />
+          </div>
           {children}
         </main>
       </SidebarInset>

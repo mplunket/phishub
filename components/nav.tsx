@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { MobileNav } from "@/components/mobile-nav";
 import Link from "next/link";
 import { Guitar } from "lucide-react";
+import { UserMenu } from "@/components/user-menu";
 
 export function AppHeader() {
   return (
@@ -13,12 +14,7 @@ export function AppHeader() {
         </span>
       </Link>
       <div className="hidden md:flex gap-2">
-        <Button variant="ghost" size="sm">
-          Sign In
-        </Button>
-        <Button size="sm" className="bg-purple-600 hover:bg-purple-700">
-          Get Started
-        </Button>
+        <UserMenu />
       </div>
       <MobileNav />
     </header>

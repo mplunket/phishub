@@ -21,7 +21,7 @@ export default async function SongPage({
   ]);
 
   return (
-    <div className="container py-10">
+    <div className="container pt-3 pb-7">
       {/* Song header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-4">{song.song}</h1>
