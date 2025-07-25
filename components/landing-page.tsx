@@ -22,8 +22,13 @@ import {
 import Link from "next/link";
 import { SearchBar } from "@/components/search-bar";
 import { AppHeader } from "@/components/nav";
+import { WaitlistForm } from "@/components/waitlist-form";
+import { waitlistDisabled } from "@/flags";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  // Check Waitlist feature flag
+  const hideWaitlist = await waitlistDisabled();
+
   return (
     <>
       <AppHeader />
@@ -44,12 +49,12 @@ export default function LandingPage() {
                   <br />
                   Music Education Hub
                 </h1>
-                <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="mx-auto mt-4 max-w-[700px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   A dynamic, collaborative platform for guitar tabs, video
                   lessons, and community-driven Phish music education.
                 </p>
               </div>
-              <SearchBar />
+              {hideWaitlist ? <SearchBar /> : <WaitlistForm source="hero" />}
             </div>
           </div>
         </section>
@@ -215,11 +220,21 @@ export default function LandingPage() {
                   their musical journey
                 </p>
               </div>
-              <div className="space-x-4">
-                <Button size="lg" className="bg-purple-600 hover:bg-purple-700">
-                  <Music className="mr-2 h-4 w-4" />
-                  Start Learning Today
-                </Button>
+              <div className="space-x-4 w-full flex justify-center">
+                {hideWaitlist ? (
+                  <Button
+                    size="lg"
+                    className="bg-purple-600 hover:bg-purple-700"
+                    asChild
+                  >
+                    <Link href="/sign-up" className="flex items-center">
+                      <Music className="mr-2 h-4 w-4" />
+                      Start Learning Today
+                    </Link>
+                  </Button>
+                ) : (
+                  <WaitlistForm source="cta" />
+                )}
               </div>
             </div>
           </div>

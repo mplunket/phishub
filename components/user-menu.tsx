@@ -7,7 +7,7 @@ import { LogOut, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 
-export function UserMenu() {
+export function UserMenu({ hideWaitlist }: { hideWaitlist: boolean }) {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const router = useRouter();
@@ -35,6 +35,7 @@ export function UserMenu() {
   };
 
   if (!user) {
+    if (!hideWaitlist) return null;
     return (
       <div className="flex gap-2">
         <Link href="/sign-in">

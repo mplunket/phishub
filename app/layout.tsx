@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+import { VercelToolbar } from "@vercel/toolbar/next";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -34,6 +35,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const shouldInjectToolbar = process.env.NODE_ENV === "development";
+
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <body className="bg-background text-foreground">
@@ -44,6 +47,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <main className="min-h-screen flex flex-col">{children}</main>
+          {shouldInjectToolbar && <VercelToolbar />}
         </ThemeProvider>
       </body>
     </html>

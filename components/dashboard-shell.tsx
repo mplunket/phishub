@@ -27,6 +27,7 @@ import {
 import Link from "next/link";
 import { SearchBar } from "@/components/search-bar";
 import { UserMenu } from "@/components/user-menu";
+import { waitlistDisabled } from "@/flags";
 
 const items = [
   { title: "Tabs", url: "/tabs", icon: BookOpen },
@@ -35,7 +36,9 @@ const items = [
   { title: "Setlists", url: "/setlists", icon: List },
 ];
 
-export function DashboardShell({ children }: { children: ReactNode }) {
+export async function DashboardShell({ children }: { children: ReactNode }) {
+  const waitlist = await waitlistDisabled();
+
   return (
     <SidebarProvider>
       <Sidebar variant="inset">
@@ -69,7 +72,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         <main>
           <div className="w-full flex items-center justify-between pl-4 pt-2 pb-2 pr-4">
             <SidebarTrigger />
-            <UserMenu />
+            <UserMenu hideWaitlist={waitlist} />
           </div>
           {children}
         </main>
