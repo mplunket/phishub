@@ -18,7 +18,7 @@ export async function AppHeader() {
       <div className="hidden md:flex gap-2">
         <UserMenu hideWaitlist={waitlist} />
       </div>
-      <MobileNav />
+      <MobileNav hideWaitlist={waitlist} />
     </header>
   );
 }

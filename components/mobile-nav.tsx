@@ -7,7 +7,7 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 import { UserMenu } from "@/components/user-menu";
 
-export function MobileNav() {
+export function MobileNav({ hideWaitlist }: { hideWaitlist: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -42,7 +42,7 @@ export function MobileNav() {
             About
           </Link>
           <div className="flex flex-col gap-3 mt-6 pt-6 border-t">
-            <UserMenu />
+            <UserMenu hideWaitlist={hideWaitlist} />
           </div>
         </nav>
       </SheetContent>
