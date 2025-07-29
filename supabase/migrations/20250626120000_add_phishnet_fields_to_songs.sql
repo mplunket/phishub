@@ -1,0 +1,13 @@
+-- Add phish.net fields to songs table
+ALTER TABLE songs ADD COLUMN IF NOT EXISTS songid INTEGER UNIQUE;
+ALTER TABLE songs ADD COLUMN IF NOT EXISTS abbr TEXT;
+ALTER TABLE songs ADD COLUMN IF NOT EXISTS artist TEXT;
+ALTER TABLE songs ADD COLUMN IF NOT EXISTS debut DATE;
+ALTER TABLE songs ADD COLUMN IF NOT EXISTS last_played DATE;
+ALTER TABLE songs ADD COLUMN IF NOT EXISTS times_played INTEGER;
+ALTER TABLE songs ADD COLUMN IF NOT EXISTS last_permalink TEXT;
+ALTER TABLE songs ADD COLUMN IF NOT EXISTS debut_permalink TEXT;
+ALTER TABLE songs ADD COLUMN IF NOT EXISTS gap INTEGER;
+
+-- Index for fast lookup by songid
+CREATE UNIQUE INDEX IF NOT EXISTS songs_songid_idx ON songs(songid);
