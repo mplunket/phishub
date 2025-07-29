@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { VercelToolbar } from "@vercel/toolbar/next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -49,6 +50,7 @@ export default function RootLayout({
           <main className="min-h-screen flex flex-col">{children}</main>
           {shouldInjectToolbar && <VercelToolbar />}
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

@@ -19,6 +19,7 @@
     "@radix-ui/react-tooltip": "^1.2.7",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.50.2",
+    "@vercel/analytics": "^1.5.0",
     "@vercel/toolbar": "^0.1.38",
     "autoprefixer": "10.4.20",
     "class-variance-authority": "^0.7.1",
