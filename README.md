@@ -1,104 +1,127 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# Phishub
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+A collaborative, web-based platform for Phish music education and community engagement. Phishub is the go-to resource hub for guitar tabs, video lessons, setlist management, and community discussion around the music of Phish.
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+## Overview
 
-## Features
+Phishub provides a rich set of tools for Phish fans and musicians:
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Middleware
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+- **Song & Tab Library** — Browse and interact with guitar tabs, chord charts, and notation for 950+ Phish songs sourced from [phish.net](https://phish.net)
+- **Video Integration** — Watch embedded lessons and live performances alongside tabs
+- **Setlist Management** — Create, organize, and share custom setlists for practice or shows
+- **Community Content** — Submit tabs, post comments, and collaborate with fellow fans
+- **Song Database** — Detailed song profiles including debut dates, composer credits, performance history, and play counts
+- **Authentication** — Secure user accounts with profile creation, password management, and session persistence
 
-## Demo
+## Tech Stack
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+| Layer | Technology |
+|---|---|
+| Framework | [Next.js 15](https://nextjs.org) (App Router) |
+| Language | [TypeScript 5](https://www.typescriptlang.org) |
+| UI Library | [React 19](https://react.dev) |
+| Styling | [Tailwind CSS 3](https://tailwindcss.com) |
+| Components | [shadcn/ui](https://ui.shadcn.com) + [Radix UI](https://www.radix-ui.com) |
+| Icons | [lucide-react](https://lucide.dev) |
+| Database & Auth | [Supabase](https://supabase.com) (PostgreSQL) |
+| Deployment | [Vercel](https://vercel.com) |
+| External API | [phish.net API v5](https://phish.net/api) |
 
-## Deploy to Vercel
+## Architecture
 
-Vercel deployment will guide you through creating a Supabase account and project.
+```
+phishub/
+├── app/                        # Next.js App Router pages & layouts
+│   ├── (auth-pages)/           # Sign-in, sign-up, forgot/reset password
+│   ├── (dashboard)/            # Protected routes: songs, setlists, profile
+│   │   ├── songs/[slug]/       # Individual song detail page
+│   │   └── setlists/           # Setlist listing and creation
+│   ├── auth/callback/          # OAuth callback handler
+│   ├── create-profile/         # New user profile setup
+│   └── page.tsx                # Landing/home page
+├── components/                 # Reusable React components
+│   ├── ui/                     # shadcn/ui primitives (25+ components)
+│   ├── dashboard-shell.tsx     # App shell with sidebar navigation
+│   ├── search-bar.tsx          # Real-time song search with autocomplete
+│   ├── song-list.tsx           # Song browsing component
+│   ├── tab-viewer.tsx          # Tab display and interaction
+│   └── landing-page.tsx        # Marketing landing page
+├── lib/
+│   └── api.ts                  # Supabase data-fetching functions
+├── utils/supabase/             # Supabase client configuration (server, client, middleware)
+├── types/index.ts              # Shared TypeScript interfaces
+├── scripts/syncSongs.ts        # CLI script to sync songs from phish.net API
+├── middleware.ts               # Auth session refresh middleware
+└── flags.ts                    # Feature flags (e.g. waitlist toggle)
+```
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+### Key Patterns
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+- **React Server Components** — Data fetching happens server-side via `lib/api.ts` using the Supabase server client, keeping secrets off the client
+- **Server Actions** — Auth operations (`signIn`, `signUp`, `signOut`, `resetPassword`) and content creation (`createTab`, `createSetlist`, `createComment`) are handled via Next.js Server Actions in `app/actions.ts`
+- **Middleware Auth** — `middleware.ts` runs on every request to refresh the Supabase session cookie, ensuring protected routes are always up to date
+- **Route Groups** — `(auth-pages)` and `(dashboard)` route groups apply separate layouts without affecting URL structure
+- **Feature Flags** — `flags.ts` controls the `waitlistDisabled` flag to toggle between waitlist mode and full app access
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+### Data Models
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+| Model | Description |
+|---|---|
+| `Song` | Phish song with slug, composer, debut date, lyrics, play count |
+| `Tab` | Guitar tab or chord chart linked to a song, with author and favorites |
+| `Comment` | Threaded comment on a song or tab |
+| `Setlist` | User-curated collection of songs |
+| `Video` | Embedded YouTube/Vimeo lesson or performance linked to a song |
 
-## Clone and run locally
+## Local Development
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+### Prerequisites
 
-2. Create a Next.js app using the Supabase Starter template npx command
+- Node.js 18+
+- A [Supabase](https://supabase.com) project
+
+### Setup
+
+1. Clone the repository:
 
    ```bash
-   npx create-next-app --example with-supabase with-supabase-app
+   git clone https://github.com/mplunket/phishub.git
+   cd phishub
    ```
+
+2. Install dependencies:
 
    ```bash
-   yarn create next-app --example with-supabase with-supabase-app
+   npm install
    ```
+
+3. Create a `.env.local` file in the project root and add your Supabase credentials:
+
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=<your-supabase-project-url>
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+   ```
+
+   Both values are available in your [Supabase project API settings](https://app.supabase.com/project/_/settings/api).
+
+4. (Optional) Sync songs from the phish.net API:
 
    ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
+   NEXT_PUBLIC_PHISHNET_API_KEY=<your-api-key> npx ts-node scripts/syncSongs.ts
    ```
 
-3. Use `cd` to change into the app's directory
-
-   ```bash
-   cd with-supabase-app
-   ```
-
-4. Rename `.env.example` to `.env.local` and update the following:
-
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
-   ```
-
-   Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://app.supabase.com/project/_/settings/api)
-
-5. You can now run the Next.js local development server:
+5. Start the development server:
 
    ```bash
    npm run dev
    ```
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+   The app will be available at [http://localhost:3000](http://localhost:3000).
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
+## Environment Variables
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
-
-## Feedback and issues
-
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
-
-## More Supabase examples
-
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+| Variable | Required | Description |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anonymous API key |
+| `NEXT_PUBLIC_PHISHNET_API_KEY` | No | phish.net API key for song sync script |
