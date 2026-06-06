@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getSongs } from "@/lib/api";
+import Link from "next/link";
 
 export default async function NewSetlistPage() {
   const songs = await getSongs();
@@ -64,12 +65,8 @@ export default async function NewSetlistPage() {
 
           <div className="flex gap-4">
             <Button type="submit">Create Setlist</Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => window.history.back()}
-            >
-              Cancel
+            <Button asChild type="button" variant="outline">
+              <Link href="/setlists">Cancel</Link>
             </Button>
           </div>
         </form>
