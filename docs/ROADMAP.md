@@ -54,8 +54,8 @@ Real defects in scaffolded code, not new features.
 ## Phase 2 — Tabs (contribute + view) ✅ (done)
 
 7. **Reconcile tab-type drift** ✅ — migration
-   `20260606120000_reconcile_tab_type_check.sql` updates the CHECK to
-   `('tab','chords','vextab')` to match `TabType`. **Must be applied to the DB.**
+   `20260606214333_reconcile_tab_type_check.sql` updates the CHECK to
+   `('tab','chords','vextab')` to match `TabType`. **Applied to the DB.**
 8. **Tab creation UI** ✅ — `AddTabDialog` on the song page (auth-gated), wired
    to `createTab` (now revalidates by slug, the actual route key).
 9. **`/tabs` index page** ✅ — recent tabs with song + author via
