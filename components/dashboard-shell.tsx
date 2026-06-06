@@ -30,6 +30,7 @@ import { UserMenu } from "@/components/user-menu";
 import { waitlistDisabled } from "@/flags";
 
 const items = [
+  { title: "Songs", url: "/songs", icon: Music },
   { title: "Tabs", url: "/tabs", icon: BookOpen },
   { title: "Videos", url: "/videos", icon: Video },
   { title: "Favorites", url: "/favorites", icon: Heart },

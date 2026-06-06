@@ -11,6 +11,23 @@ export async function getSongs() {
   return songs as Song[];
 }
 
+export async function getSongsPage(page = 1, pageSize = 50) {
+  const supabase = await createClient();
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+  const {
+    data: songs,
+    count,
+    error,
+  } = await supabase
+    .from("songs")
+    .select("*", { count: "exact" })
+    .order("song", { ascending: true })
+    .range(from, to);
+  if (error) throw error;
+  return { songs: (songs ?? []) as Song[], total: count ?? 0 };
+}
+
 export async function getSongBySlug(slug: string) {
   const supabase = await createClient();
   const { data: song, error } = await supabase

@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Music } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 export function SearchBar({ shadow = true }: { shadow?: boolean }) {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [songs, setSongs] = useState<
@@ -45,6 +47,14 @@ export function SearchBar({ shadow = true }: { shadow?: boolean }) {
       searchTerm.length > 0
   );
 
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const term = searchTerm.trim();
+    if (!term) return;
+    setShowSuggestions(false);
+    router.push(`/songs?q=${encodeURIComponent(term)}`);
+  }
+
   return (
     <div className="w-full max-w-md mx-auto relative p-2">
       {/* Orange Gaussian Blur Background */}
@@ -56,7 +66,7 @@ export function SearchBar({ shadow = true }: { shadow?: boolean }) {
           (shadow ? " shadow-2xl shadow-purple-500/75" : "")
         }
       >
-        <div className="relative">
+        <form onSubmit={handleSubmit} className="relative">
           <Input
             type="text"
             placeholder={
@@ -73,19 +83,14 @@ export function SearchBar({ shadow = true }: { shadow?: boolean }) {
             disabled={loading}
           />
           <Button
+            type="submit"
             size="sm"
             className="absolute right-1 top-1 h-10 bg-purple-600 hover:bg-purple-700"
-            onClick={() => {
-              if (searchTerm) {
-                console.log("Searching for:", searchTerm);
-                // Will implement actual search later
-              }
-            }}
             disabled={loading}
           >
             <Music className="h-4 w-4" />
           </Button>
-        </div>
+        </form>
 
         {showSuggestions && filteredSongs.length > 0 && (
           <div className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-sm border border-purple-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
