@@ -50,23 +50,33 @@ export async function getSetlists(limit = 10) {
   return setlists as Setlist[];
 }
 
-export async function getSetlistById(id: string) {
+export type SetlistWithSongs = Setlist & {
+  setlist_songs: Array<{ position: number; songs: Song }>;
+};
+
+export async function getSetlistById(id: string): Promise<SetlistWithSongs> {
   const supabase = await createClient();
+  // Left joins so setlists with no songs still resolve.
   const { data: setlist, error } = await supabase
     .from("setlists")
     .select(
       `
       *,
-      setlist_songs!inner (
-        *,
-        songs!inner (*)
+      setlist_songs (
+        position,
+        songs (*)
       )
     `
     )
     .eq("id", id)
     .single();
   if (error) throw error;
-  return setlist as Setlist & { setlist_songs: Array<{ songs: Song }> };
+
+  const result = setlist as SetlistWithSongs;
+  result.setlist_songs = (result.setlist_songs ?? []).sort(
+    (a, b) => a.position - b.position
+  );
+  return result;
 }
 
 export async function searchSongs(query: string) {
@@ -204,4 +214,53 @@ export async function getVideosBySongId(songId: string) {
     .order("created_at", { ascending: false });
   if (error) throw error;
   return videos as Video[];
+}
+
+export type RecentVideo = Video & { song: { song: string; slug: string } };
+
+export async function getRecentVideos(limit = 50): Promise<RecentVideo[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("videos")
+    .select(
+      `
+      *,
+      song:songs!song_id (song, slug)
+    `
+    )
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data ?? []) as unknown as RecentVideo[];
+}
+
+export type FavoriteTab = Tab & { song: { song: string; slug: string } };
+
+export async function getFavoriteTabsForUser(): Promise<FavoriteTab[]> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("favorites")
+    .select(
+      `
+      created_at,
+      tab:tabs!tab_id (
+        *,
+        song:songs!song_id (song, slug),
+        user:profiles!author_id (username, avatar_url)
+      )
+    `
+    )
+    .eq("user_id", user.id)
+    .not("tab_id", "is", null)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+
+  return (data ?? [])
+    .map((row: any) => row.tab)
+    .filter(Boolean) as FavoriteTab[];
 }

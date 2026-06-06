@@ -69,8 +69,8 @@ Real defects in scaffolded code, not new features.
     (insert/delete on `favorites`). DELETE RLS policy already existed.
 12. **Real `userFavoriteTabIds`** ✅ — `getUserFavoriteTabIds()` feeds the song
     page; `FavoriteButton` does an optimistic toggle on the selected tab.
-13. **`/favorites` page** — list the signed-in user's favorited tabs; not done
-    yet.
+13. **`/favorites` page** ✅ — lists the signed-in user's favorited tabs via
+    `getFavoriteTabsForUser()`.
 
 ## Phase 4 — Discussion / comments ✅ (done)
 
@@ -80,20 +80,22 @@ Real defects in scaffolded code, not new features.
     profiles in code (no FK to embed); `Discussion` renders authors, one level
     of nested replies, and per-comment reply forms.
 
-## Phase 5 — Videos
+## Phase 5 — Videos ✅ (done)
 
-16. **Render videos** — `getVideosBySongId` is fetched but the Videos tab is an
-    empty `<h2>`. Build a YouTube/Vimeo embed component; split lessons vs.
-    performances.
-17. **Video submission** — add a creator/owner column via migration (the table
-    comment flags this), an action, and UI. `/videos` index page.
+16. **Render videos** ✅ — `VideoEmbed` (YouTube/Vimeo iframe) on the song
+    page Videos tab, with type badges and descriptions.
+17. **Video submission** ✅ — migration `20260606215653_add_created_by_to_videos`
+    adds an owner column + owner-delete RLS policy; `createVideo`/`deleteVideo`
+    actions (URL is parsed to platform + id); `AddVideoDialog`,
+    `DeleteVideoButton`, and a `/videos` index page.
 
-## Phase 6 — Setlists completion
+## Phase 6 — Setlists completion (partial)
 
-18. **`/setlists/[id]` detail page** — `getSetlistById` exists; the list links
-    here but the route doesn't. Build it (ordered songs).
-19. **Edit / delete / reorder** — owner mutations + DELETE RLS; drag-to-reorder
-    against the `position` column.
+18. **`/setlists/[id]` detail page** ✅ — ordered songs via `getSetlistById`
+    (now left-joined so empty setlists resolve), with an owner-only delete
+    (`deleteSetlist`).
+19. **Edit / reorder** — drag-to-reorder against the `position` column and
+    editing setlist metadata are still **not done**.
 
 ## Phase 7 — Profiles & auth polish
 

@@ -8,7 +8,11 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TabSection } from "@/components/tab-section";
 import { AddTabDialog } from "@/components/add-tab-dialog";
+import { AddVideoDialog } from "@/components/add-video-dialog";
+import { DeleteVideoButton } from "@/components/delete-video-button";
+import { VideoEmbed } from "@/components/video-embed";
 import { Discussion } from "@/components/discussion";
+import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function SongPage({
@@ -67,9 +71,44 @@ export default async function SongPage({
           />
         </TabsContent>
         <TabsContent value="videos">
-          <h2 className="text-2xl font-semibold mb-4">Videos</h2>
-          {videos.length === 0 && (
+          {isAuthed && (
+            <div className="flex justify-end mb-4">
+              <AddVideoDialog songId={song.id} slug={slug} />
+            </div>
+          )}
+          {videos.length === 0 ? (
             <p className="text-muted-foreground">No videos yet.</p>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2">
+              {videos.map((video) => (
+                <div key={video.id} className="space-y-2">
+                  <VideoEmbed
+                    platform={video.platform}
+                    videoId={video.video_id}
+                    title={video.name}
+                  />
+                  <div className="flex items-center justify-between gap-2">
+                    <div>
+                      <p className="font-medium">{video.name}</p>
+                      <Badge variant="secondary" className="mt-1">
+                        {video.type}
+                      </Badge>
+                    </div>
+                    {user && video.created_by === user.id && (
+                      <DeleteVideoButton
+                        videoId={video.id}
+                        revalidate={revalidatePath}
+                      />
+                    )}
+                  </div>
+                  {video.description && (
+                    <p className="text-sm text-muted-foreground">
+                      {video.description}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
           )}
         </TabsContent>
         <TabsContent value="lyrics">
