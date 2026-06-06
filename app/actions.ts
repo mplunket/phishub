@@ -169,6 +169,7 @@ export async function createTab(formData: FormData) {
   if (!user) throw new Error("Not authenticated");
 
   const songId = formData.get("songId") as string;
+  const slug = formData.get("slug") as string;
   const content = formData.get("content") as string;
   const type = formData.get("type") as string;
 
@@ -181,8 +182,8 @@ export async function createTab(formData: FormData) {
 
   if (error) throw error;
 
-  revalidatePath(`/songs/${songId}`);
-  revalidatePath(`/songs/${songId}/tabs`);
+  if (slug) revalidatePath(`/songs/${slug}`);
+  revalidatePath("/tabs");
 }
 
 export async function createComment(formData: FormData) {
@@ -195,6 +196,7 @@ export async function createComment(formData: FormData) {
 
   const content = formData.get("content") as string;
   const songId = formData.get("songId") as string;
+  const slug = formData.get("slug") as string;
   const tabId = formData.get("tabId") as string;
   const parentId = formData.get("parentId") as string;
 
@@ -208,11 +210,42 @@ export async function createComment(formData: FormData) {
 
   if (error) throw error;
 
-  if (songId) {
-    revalidatePath(`/songs/${songId}`);
+  if (slug) {
+    revalidatePath(`/songs/${slug}`);
   } else if (tabId) {
     revalidatePath(`/tabs/${tabId}`);
   }
+}
+
+export async function toggleFavorite(tabId: string, revalidate?: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  const { data: existing } = await supabase
+    .from("favorites")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("tab_id", tabId)
+    .maybeSingle();
+
+  if (existing) {
+    const { error } = await supabase
+      .from("favorites")
+      .delete()
+      .eq("id", existing.id);
+    if (error) throw error;
+  } else {
+    const { error } = await supabase
+      .from("favorites")
+      .insert({ user_id: user.id, tab_id: tabId });
+    if (error) throw error;
+  }
+
+  if (revalidate) revalidatePath(revalidate);
 }
 
 export async function createSetlist(formData: FormData) {

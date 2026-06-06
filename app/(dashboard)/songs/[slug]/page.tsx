@@ -3,11 +3,13 @@ import {
   getTabsBySongId,
   getCommentsBySongId,
   getVideosBySongId,
+  getUserFavoriteTabIds,
 } from "@/lib/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TabSection } from "@/components/tab-section";
-import * as React from "react";
-import Link from "next/link";
+import { AddTabDialog } from "@/components/add-tab-dialog";
+import { Discussion } from "@/components/discussion";
+import { createClient } from "@/utils/supabase/server";
 
 export default async function SongPage({
   params,
@@ -22,8 +24,17 @@ export default async function SongPage({
     getVideosBySongId(song.id),
   ]);
 
-  // Simulate user favorite tab IDs (replace with real user data)
-  const userFavoriteTabIds: string[] = [];
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const isAuthed = !!user;
+
+  const userFavoriteTabIds = isAuthed
+    ? await getUserFavoriteTabIds(tabs.map((t) => t.id))
+    : [];
+
+  const revalidatePath = `/songs/${slug}`;
 
   return (
     <div className="container pt-3 pb-7">
@@ -43,10 +54,23 @@ export default async function SongPage({
           <TabsTrigger value="discussion">Discussion</TabsTrigger>
         </TabsList>
         <TabsContent value="tabs">
-          <TabSection tabs={tabs} userFavoriteTabIds={userFavoriteTabIds} />
+          {isAuthed && (
+            <div className="flex justify-end mb-4">
+              <AddTabDialog songId={song.id} slug={slug} />
+            </div>
+          )}
+          <TabSection
+            tabs={tabs}
+            userFavoriteTabIds={userFavoriteTabIds}
+            canFavorite={isAuthed}
+            revalidate={revalidatePath}
+          />
         </TabsContent>
         <TabsContent value="videos">
           <h2 className="text-2xl font-semibold mb-4">Videos</h2>
+          {videos.length === 0 && (
+            <p className="text-muted-foreground">No videos yet.</p>
+          )}
         </TabsContent>
         <TabsContent value="lyrics">
           <div className="prose max-w-none whitespace-pre-line">
@@ -54,26 +78,12 @@ export default async function SongPage({
           </div>
         </TabsContent>
         <TabsContent value="discussion">
-          {/* Comments section */}
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Discussion</h2>
-            {comments.length > 0 ? (
-              <div className="space-y-4">
-                {comments.map((comment) => (
-                  <div key={comment.id} className="p-4 rounded-lg border">
-                    <p className="mb-2">{comment.content}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Posted on {new Date(comment.created_at).toLocaleString()}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-muted-foreground">
-                No comments yet. Start the discussion!
-              </p>
-            )}
-          </section>
+          <Discussion
+            comments={comments}
+            songId={song.id}
+            slug={slug}
+            canComment={isAuthed}
+          />
         </TabsContent>
       </Tabs>
     </div>
