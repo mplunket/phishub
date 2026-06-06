@@ -68,7 +68,7 @@ export const forgotPasswordAction = async (formData: FormData) => {
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/auth/callback?redirect_to=/protected/reset-password`,
+    redirectTo: `${origin}/auth/callback?redirect_to=/reset-password`,
   });
 
   if (error) {
@@ -98,7 +98,7 @@ export const resetPasswordAction = async (formData: FormData) => {
   const confirmPassword = formData.get("confirmPassword") as string;
 
   if (!password || !confirmPassword) {
-    encodedRedirect(
+    return encodedRedirect(
       "error",
       "/reset-password",
       "Password and confirm password are required"
@@ -106,7 +106,7 @@ export const resetPasswordAction = async (formData: FormData) => {
   }
 
   if (password !== confirmPassword) {
-    encodedRedirect("error", "/reset-password", "Passwords do not match");
+    return encodedRedirect("error", "/reset-password", "Passwords do not match");
   }
 
   const { error } = await supabase.auth.updateUser({
@@ -114,10 +114,10 @@ export const resetPasswordAction = async (formData: FormData) => {
   });
 
   if (error) {
-    encodedRedirect("error", "/reset-password", "Password update failed");
+    return encodedRedirect("error", "/reset-password", "Password update failed");
   }
 
-  encodedRedirect("success", "/reset-password", "Password updated");
+  return encodedRedirect("success", "/reset-password", "Password updated");
 };
 
 export const signOutAction = async () => {
@@ -134,19 +134,24 @@ export async function createSong(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
-  const title = formData.get("title") as string;
-  const composers = (formData.get("composers") as string)
-    .split(",")
-    .map((c) => c.trim());
-  const debutDate = formData.get("debutDate") as string;
-  const history = formData.get("history") as string;
+  const song = (formData.get("song") as string)?.trim();
+  const artist = (formData.get("artist") as string)?.trim();
+  const debut = formData.get("debut") as string;
   const lyrics = formData.get("lyrics") as string;
 
+  if (!song) throw new Error("Song title is required");
+
+  // Derive a URL-safe slug from the title.
+  const slug = song
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
   const { error } = await supabase.from("songs").insert({
-    title,
-    composer: composers,
-    debut_date: debutDate || null,
-    history: history || null,
+    song,
+    slug,
+    artist: artist || null,
+    debut: debut || null,
     lyrics: lyrics || null,
   });
 

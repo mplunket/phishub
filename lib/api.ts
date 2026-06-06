@@ -6,7 +6,7 @@ export async function getSongs() {
   const { data: songs, error } = await supabase
     .from("songs")
     .select("*")
-    .order("title", { ascending: true });
+    .order("song", { ascending: true });
   if (error) throw error;
   return songs as Song[];
 }
@@ -57,8 +57,8 @@ export async function searchSongs(query: string) {
   const { data: songs, error } = await supabase
     .from("songs")
     .select("*")
-    .or(`title.ilike.%${query}%, lyrics.ilike.%${query}%`)
-    .order("times_played", { ascending: true });
+    .or(`song.ilike.%${query}%, lyrics.ilike.%${query}%`)
+    .order("times_played", { ascending: false });
   if (error) throw error;
   return songs as Song[];
 }
