@@ -161,15 +161,13 @@ Core tables (RLS enabled on all; public `SELECT`, authenticated/owner writes):
 
 `updated_at` columns are maintained by the `update_updated_at_column()` trigger.
 
-> ⚠️ **Schema drift to be aware of:** the `songs` table was migrated from an
+> ⚠️ **Schema history to be aware of:** the `songs` table was migrated from an
 > original shape (`title`, `composer`, `debut_date`, `history`) to the phish.net
 > shape (`song`, `slug`, `songid`, …) in
-> `20250626121000_update_songs_table_for_phishnet.sql`. Some legacy code still
-> references the old columns — notably `createSong` in `app/actions.ts` and a
-> few optional fields in `types/index.ts` (`Song.song` vs. the now-dropped
-> `title`). When touching song code, prefer the current phish.net columns and
-> the `syncSongs.ts` mapping as the canonical shape, and fix stale references
-> rather than copying them.
+> `20250626121000_update_songs_table_for_phishnet.sql`. The canonical shape is
+> the one in `types/index.ts` and the `syncSongs.ts` mapping — `song` (title),
+> `slug`, `artist`, `debut`, `lyrics`, etc. When touching song code, use these
+> current columns; don't reintroduce the dropped legacy ones.
 
 ### Working with Supabase
 - Local stack config lives in `supabase/config.toml` (`project_id = "phishub"`,
