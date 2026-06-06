@@ -43,43 +43,42 @@ Real defects in scaffolded code, not new features.
 4. **`resetPasswordAction` guards** — added `return` to the validation
    redirects for clarity/safety.
 
-## Phase 1 — Song browsing & real search
+## Phase 1 — Song browsing & real search ✅ (done)
 
-5. **`/songs` index page** — `SongList` + `getSongs()` exist but no page uses
-   them. Build a browse page (alphabetical, paginated/virtualized — 950+ rows).
-6. **Search (both approaches)** — keep the client typeahead dropdown in
-   `SearchBar` for quick jumps, AND build a server-rendered `/songs?q=` results
-   page using `searchSongs()` (title + lyrics) on Enter. Remove the current
-   dead `console.log` search button behavior.
+5. **`/songs` index page** ✅ — paginated alphabetical browse via
+   `getSongsPage()`, plus a server-rendered `?q=` search results view.
+6. **Search (both approaches)** ✅ — `SearchBar` keeps the client typeahead and
+   now submits (Enter + button) to `/songs?q=`, which renders `searchSongs()`
+   results. Dead `console.log` button removed. Added a Songs sidebar link.
 
-## Phase 2 — Tabs (contribute + view)
+## Phase 2 — Tabs (contribute + view) ✅ (done)
 
-7. **Reconcile tab-type drift** — `types/index.ts` says
-   `TabType = "tab" | "chords" | "vextab"`, but the DB CHECK is
-   `('tab','chord_chart','sheet_music')`. Pick a canonical set, add a migration
-   to update the constraint, and align the type + `createTab`.
-8. **Tab creation UI** — "Add Tab" form on the song page (and/or `/tabs/new`)
-   wired to the existing `createTab` action.
-9. **`/tabs` index page** — list recent/all tabs with song + author.
-10. **(Optional) richer `TabViewer`** — `vextab`/chord rendering instead of
-    `<pre>`.
+7. **Reconcile tab-type drift** ✅ — migration
+   `20260606214333_reconcile_tab_type_check.sql` updates the CHECK to
+   `('tab','chords','vextab')` to match `TabType`. **Applied to the DB.**
+8. **Tab creation UI** ✅ — `AddTabDialog` on the song page (auth-gated), wired
+   to `createTab` (now revalidates by slug, the actual route key).
+9. **`/tabs` index page** ✅ — recent tabs with song + author via
+   `getRecentTabs()`.
+10. **(Deferred) richer `TabViewer`** — `vextab`/chord rendering instead of
+    `<pre>`; not done yet.
 
-## Phase 3 — Favorites
+## Phase 3 — Favorites ✅ (done)
 
-11. **Favorite toggle action** — new server action (insert/delete on
-    `favorites`) + a DELETE RLS policy if missing.
-12. **Real `userFavoriteTabIds`** — query the current user's favorites in
-    `app/(dashboard)/songs/[slug]/page.tsx` and pass them down (replacing the
-    hardcoded `[]`).
-13. **`/favorites` page** — list the signed-in user's favorited tabs.
+11. **Favorite toggle action** ✅ — `toggleFavorite()` server action
+    (insert/delete on `favorites`). DELETE RLS policy already existed.
+12. **Real `userFavoriteTabIds`** ✅ — `getUserFavoriteTabIds()` feeds the song
+    page; `FavoriteButton` does an optimistic toggle on the selected tab.
+13. **`/favorites` page** — list the signed-in user's favorited tabs; not done
+    yet.
 
-## Phase 4 — Discussion / comments
+## Phase 4 — Discussion / comments ✅ (done)
 
-14. **Comment submit form** — discussion tab is read-only; wire a form to
-    `createComment`.
-15. **Author display + threading** — comments render no author and ignore
-    `parent_id`. Add a `profiles` join (like `getTabsBySongId`) and render
-    nested replies.
+14. **Comment submit form** ✅ — `Discussion` component posts via
+    `createComment` (now revalidates by slug).
+15. **Author display + threading** ✅ — `getCommentsBySongId` joins author
+    profiles in code (no FK to embed); `Discussion` renders authors, one level
+    of nested replies, and per-comment reply forms.
 
 ## Phase 5 — Videos
 
