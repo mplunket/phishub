@@ -289,3 +289,108 @@ export async function createSetlist(formData: FormData) {
 
   revalidatePath("/setlists");
 }
+
+export async function deleteSetlist(id: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  const { error } = await supabase
+    .from("setlists")
+    .delete()
+    .eq("id", id)
+    .eq("creator_id", user.id);
+
+  if (error) throw error;
+
+  revalidatePath("/setlists");
+  redirect("/setlists");
+}
+
+// Extract the platform + video id from a YouTube or Vimeo URL.
+function parseVideoUrl(
+  url: string
+): { platform: "youtube" | "vimeo"; videoId: string } | null {
+  try {
+    const u = new URL(url.trim());
+    const host = u.hostname.replace(/^www\./, "");
+    if (host === "youtu.be") {
+      const id = u.pathname.slice(1);
+      return id ? { platform: "youtube", videoId: id } : null;
+    }
+    if (host.endsWith("youtube.com")) {
+      const v = u.searchParams.get("v");
+      if (v) return { platform: "youtube", videoId: v };
+      const parts = u.pathname.split("/").filter(Boolean);
+      const idx = parts.findIndex((p) => p === "embed" || p === "shorts");
+      if (idx >= 0 && parts[idx + 1]) {
+        return { platform: "youtube", videoId: parts[idx + 1] };
+      }
+    }
+    if (host.endsWith("vimeo.com")) {
+      const id = u.pathname.split("/").filter(Boolean).pop();
+      if (id && /^\d+$/.test(id)) return { platform: "vimeo", videoId: id };
+    }
+  } catch {
+    // fall through
+  }
+  return null;
+}
+
+export async function createVideo(formData: FormData) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  const songId = formData.get("songId") as string;
+  const slug = formData.get("slug") as string;
+  const url = formData.get("url") as string;
+  const type = formData.get("type") as string;
+  const name = (formData.get("name") as string)?.trim();
+  const description = (formData.get("description") as string)?.trim();
+
+  if (!name) throw new Error("Name is required");
+  const parsed = parseVideoUrl(url ?? "");
+  if (!parsed) throw new Error("Unsupported video URL (YouTube or Vimeo only)");
+
+  const { error } = await supabase.from("videos").insert({
+    song_id: songId,
+    type,
+    platform: parsed.platform,
+    video_id: parsed.videoId,
+    name,
+    description: description || null,
+    created_by: user.id,
+  });
+
+  if (error) throw error;
+
+  if (slug) revalidatePath(`/songs/${slug}`);
+  revalidatePath("/videos");
+}
+
+export async function deleteVideo(videoId: string, revalidate?: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  const { error } = await supabase
+    .from("videos")
+    .delete()
+    .eq("id", videoId)
+    .eq("created_by", user.id);
+
+  if (error) throw error;
+
+  if (revalidate) revalidatePath(revalidate);
+  revalidatePath("/videos");
+}
