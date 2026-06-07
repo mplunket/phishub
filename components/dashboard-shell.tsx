@@ -71,7 +71,7 @@ export async function DashboardShell({ children }: { children: ReactNode }) {
       </Sidebar>
       <SidebarInset>
         <main>
-          <div className="w-full flex items-center justify-between pl-4 pt-2 pb-2 pr-4">
+          <div className="sticky top-0 z-30 w-full flex items-center justify-between bg-background pl-4 pt-2 pb-2 pr-4">
             <SidebarTrigger />
             <UserMenu hideWaitlist={waitlist} />
           </div>
