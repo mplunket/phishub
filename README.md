@@ -112,8 +112,8 @@ phishub/
    ```
 
    (Optional) Populate song lyrics by scraping phish.net song pages. The
-   phish.net API does not expose lyrics, so this reads the public song pages
-   (`https://phish.net/song/<slug>`). Defaults to a dry run — set
+   phish.net API does not expose lyrics, so this reads the public lyrics pages
+   (`https://phish.net/songs/<slug>/lyrics`). Defaults to a dry run — set
    `DRY_RUN=false` to write:
 
    ```bash
