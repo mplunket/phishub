@@ -106,7 +106,7 @@ export function TabEditor({
           <>
             {/* Keep the content in the form while previewing. */}
             <input type="hidden" name="content" value={content} />
-            <div className="min-h-[16rem] overflow-x-auto rounded-md border bg-card px-3 py-3 text-card-foreground">
+            <div className="max-h-[45vh] min-h-[12rem] overflow-auto rounded-md border bg-card px-3 py-3 text-card-foreground">
               {content.trim() ? (
                 <pre className="whitespace-pre font-mono text-sm leading-snug">
                   {content}

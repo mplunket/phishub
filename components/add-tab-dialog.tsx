@@ -28,7 +28,7 @@ export function AddTabDialog({
           <Plus className="h-4 w-4 mr-1" /> Add tab
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Add a tab</DialogTitle>
         </DialogHeader>
