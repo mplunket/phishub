@@ -6,9 +6,15 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
+// Canonical production URL. Prefer an explicit site URL, then the Vercel
+// deployment URL (preview builds), falling back to localhost in dev.
+const defaultUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_ENV === "production"
+    ? "https://phishub.com"
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000");
 
 export const viewport = {
   width: "device-width",
@@ -29,7 +35,7 @@ export const metadata = {
     title: "Phishub - Your Source for Phish Music Resources",
     description:
       "The ultimate resource for learning and sharing Phish songs, tabs, lyrics, and setlists.",
-    url: "https://phishub.vercel.app",
+    url: "https://phishub.com",
     siteName: "Phishub",
     type: "website",
   },
