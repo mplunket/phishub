@@ -5,7 +5,7 @@
 //
 // phish.net's v5 API does NOT expose lyrics (see scripts/syncSongs.ts — the
 // songs.json payload has no lyrics field), so we read them from the public
-// song HTML pages at https://phish.net/song/<slug>.
+// song lyrics pages at https://phish.net/songs/<slug>/lyrics.
 //
 // ⚠️ Copyright: song lyrics are owned by their respective rights holders.
 // phish.net displays them under its own licensing. Only run this against
@@ -49,7 +49,7 @@ const SELECTORS = (
   .map((s) => s.trim())
   .filter(Boolean);
 
-const BASE_URL = "https://phish.net/song";
+const BASE_URL = "https://phish.net/songs";
 const USER_AGENT =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
 
@@ -113,28 +113,30 @@ function extractLyrics(html: string): string | null {
     }
   }
 
-  // 2) Heuristic fallback: pick the block with the most <br>-separated lines.
-  // phish.net renders lyrics as a single block with many <br> tags. We score
-  // candidate containers by their line count and prefer the densest one that
-  // isn't dominated by links (i.e. not navigation).
+  // 2) Heuristic fallback: scan candidate containers and pick the one whose
+  // text reads most like lyrics — many lines, few links. Scoring by
+  // (non-empty lines − 2×links) favours the clean lyrics block over page
+  // chrome (nav/footer/related links) and over the whole-page wrapper, and
+  // works whether lines are separated by <br>, <p>, or <pre> whitespace.
   let best: { text: string; score: number } | null = null;
-  $("div,section,article,pre").each((_, node) => {
+  $("div,section,article,pre,td,main").each((_, node) => {
     const $node = $(node);
-    const brCount = $node.find("br").length;
-    if (brCount < MIN_LINES) return;
     const linkCount = $node.find("a").length;
-    if (linkCount > brCount) return;
     const text = blockToText($, $node);
     if (!looksLikeLyrics(text)) return;
-    const score = text.split("\n").length;
+    const lines = text.split("\n").filter((l) => l.trim()).length;
+    if (lines < MIN_LINES) return;
+    const score = lines - 2 * linkCount;
     if (!best || score > best.score) best = { text, score };
   });
 
-  return best ? (best as { text: string }).text : null;
+  return best && (best as { score: number }).score > 0
+    ? (best as { text: string }).text
+    : null;
 }
 
 async function fetchSongPage(slug: string): Promise<string | null> {
-  const url = `${BASE_URL}/${slug}`;
+  const url = `${BASE_URL}/${slug}/lyrics`;
   const maxAttempts = 3;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
