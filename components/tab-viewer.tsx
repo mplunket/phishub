@@ -296,7 +296,18 @@ export function TabViewer({ tab, title, fill = false }: TabViewerProps) {
 
   return (
     <div className={cn("flex flex-col gap-3", fill && "h-full")}>
-      <div className="flex items-center justify-end">{controls}</div>
+      <div
+        className={cn(
+          "flex items-center justify-end",
+          // Inline view scrolls with the page, so pin the controls to the top
+          // while reading down a long tab. (The auto-hiding dashboard header
+          // sits above this and slides away as you scroll down.)
+          !fill &&
+            "sticky top-0 z-20 -mx-3 border-b bg-background/90 px-3 py-2 backdrop-blur sm:-mx-4 sm:px-4"
+        )}
+      >
+        {controls}
+      </div>
       <div
         ref={scrollRef}
         className={cn(
