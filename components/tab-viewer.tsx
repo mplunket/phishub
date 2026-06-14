@@ -78,18 +78,26 @@ export function TabViewer({ tab, title, fill = false }: TabViewerProps) {
   const fontSize = Math.round(fitFont * zoom * 10) / 10;
   const lineHeight = Math.round(fontSize * 1.45 * 10) / 10;
 
-  // Hands-free auto-scroll for performing.
+  // Hands-free auto-scroll for performing. When the viewer has its own scroll
+  // container (fullscreen / setlist fill mode) we scroll that; otherwise we
+  // drive the page itself so the inline view never becomes a nested scroller.
   React.useEffect(() => {
     if (!scrolling) return;
     const el = scrollRef.current;
-    if (!el) return;
+    const useEl = !!el && el.scrollHeight > el.clientHeight + 1;
+    const pageEl = (document.scrollingElement ||
+      document.documentElement) as HTMLElement;
+    // Accumulate fractionally so slow speeds aren't lost to integer rounding.
+    let pos = useEl ? el!.scrollTop : pageEl.scrollTop;
     let raf = 0;
     let last = performance.now();
     const step = (now: number) => {
       const dt = (now - last) / 1000;
       last = now;
-      el.scrollTop += SCROLL_SPEEDS[speed] * dt;
-      if (el.scrollTop + el.clientHeight >= el.scrollHeight - 1) {
+      pos += SCROLL_SPEEDS[speed] * dt;
+      const target = useEl ? el! : pageEl;
+      target.scrollTop = pos;
+      if (pos + target.clientHeight >= target.scrollHeight - 1) {
         setScrolling(false);
         return;
       }
@@ -292,8 +300,11 @@ export function TabViewer({ tab, title, fill = false }: TabViewerProps) {
       <div
         ref={scrollRef}
         className={cn(
-          "overflow-auto rounded-lg border bg-card text-card-foreground px-3 py-3",
-          fill ? "flex-1" : "max-h-[70vh]"
+          "rounded-lg border bg-card text-card-foreground px-3 py-3",
+          // Fill mode (setlist performer) keeps its own scroll area; the inline
+          // song-page view flows with the page and only scrolls horizontally
+          // as a last resort for ultra-wide tabs.
+          fill ? "flex-1 overflow-auto" : "overflow-x-auto"
         )}
       >
         <div ref={measureRef} className="w-full">
