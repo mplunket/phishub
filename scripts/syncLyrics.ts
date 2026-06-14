@@ -38,12 +38,13 @@ const FORCE = (process.env.FORCE ?? "false").toLowerCase() === "true";
 const LIMIT = process.env.LIMIT ? parseInt(process.env.LIMIT, 10) : Infinity;
 const DELAY_MS = process.env.DELAY_MS ? parseInt(process.env.DELAY_MS, 10) : 1500;
 
-// Candidate selectors for the lyrics block, tried in order. phish.net markup
-// can change; override via the LYRICS_SELECTOR env var (comma-separated)
-// without touching code. If none match we fall back to a heuristic scan.
+// Candidate selectors for the lyrics block, tried in order. On phish.net the
+// lyrics live in <blockquote class="bq"> on the /songs/<slug>/lyrics page.
+// Override via the LYRICS_SELECTOR env var (comma-separated) if the markup
+// changes; if none match we fall back to a heuristic scan.
 const SELECTORS = (
   process.env.LYRICS_SELECTOR ||
-  "#song-lyrics,.song-lyrics,[itemprop='lyrics'],.lyrics,#lyrics"
+  "blockquote.bq,blockquote,#song-lyrics,.song-lyrics,[itemprop='lyrics'],.lyrics,#lyrics"
 )
   .split(",")
   .map((s) => s.trim())
