@@ -31,22 +31,24 @@ export default async function FavoritesPage() {
           You haven&apos;t favorited any tabs yet.
         </p>
       ) : (
-        <div className="grid gap-4">
+        <div className="divide-y overflow-hidden rounded-lg border">
           {tabs.map((tab) => (
             <Link
               key={tab.id}
               href={`/songs/${tab.song.slug}`}
-              className="p-4 rounded-lg border hover:border-primary transition-colors"
+              className="flex items-center justify-between gap-3 px-3 py-2.5 transition-colors hover:bg-accent"
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold">{tab.song.song}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    by {tab.user?.username ?? "Unknown"}
-                  </p>
-                </div>
-                <Badge variant="secondary">{tab.type}</Badge>
+              <div className="min-w-0">
+                <h3 className="truncate font-medium leading-tight">
+                  {tab.song.song}
+                </h3>
+                <p className="truncate text-xs text-muted-foreground">
+                  by {tab.user?.username ?? "Unknown"}
+                </p>
               </div>
+              <Badge variant="secondary" className="shrink-0 capitalize">
+                {tab.type}
+              </Badge>
             </Link>
           ))}
         </div>
