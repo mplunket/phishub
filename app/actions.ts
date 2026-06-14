@@ -168,11 +168,8 @@ export async function createTab(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
-  // Contributor license acknowledgement (see /content-policy). Enforced here as
-  // well as in the UI so the grant can't be bypassed by a crafted request.
-  if (formData.get("agree") !== "yes") {
-    throw new Error("You must accept the content policy to submit a tab");
-  }
+  // The contributor license is part of the site-wide Terms of Use (accepted on
+  // sign-up), so there's no per-upload acknowledgement to enforce here.
 
   const songId = formData.get("songId") as string;
   const slug = formData.get("slug") as string;
@@ -199,10 +196,6 @@ export async function updateTab(formData: FormData) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
-
-  if (formData.get("agree") !== "yes") {
-    throw new Error("You must accept the content policy to save a tab");
-  }
 
   const tabId = formData.get("tabId") as string;
   const content = formData.get("content") as string;

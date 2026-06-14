@@ -2,7 +2,6 @@
 import * as React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
@@ -11,9 +10,9 @@ import { cn } from "@/lib/utils";
 // it can wrap a server action; callers supply the action plus any hidden
 // fields (songId/slug for create, tabId/revalidate for edit). A monospace,
 // no-wrap textarea preserves ASCII-tab alignment, and a Write/Preview toggle
-// shows readers' exact rendering before saving. Submission is gated on the
-// contributor-license checkbox (also enforced server-side via the `agree`
-// field).
+// shows readers' exact rendering before saving. The contributor license is now
+// part of the site-wide Terms of Use (accepted on sign-up), so there's no
+// per-upload checkbox — just a passive notice linking to the Terms.
 export function TabEditor({
   action,
   hiddenFields = {},
@@ -30,7 +29,6 @@ export function TabEditor({
   onDone?: () => void;
 }) {
   const [content, setContent] = React.useState(defaultContent);
-  const [agree, setAgree] = React.useState(false);
   const [mode, setMode] = React.useState<"write" | "preview">("write");
   const [pending, setPending] = React.useState(false);
 
@@ -44,14 +42,13 @@ export function TabEditor({
     }
   }
 
-  const canSave = agree && content.trim().length > 0;
+  const canSave = content.trim().length > 0;
 
   return (
     <form action={handle} className="space-y-4">
       {Object.entries(hiddenFields).map(([name, value]) => (
         <input key={name} type="hidden" name={name} value={value} />
       ))}
-      <input type="hidden" name="agree" value={agree ? "yes" : ""} />
 
       <div className="space-y-2">
         <Label htmlFor="type">Type</Label>
@@ -125,25 +122,26 @@ export function TabEditor({
         </p>
       </div>
 
-      <label className="flex items-start gap-2 text-sm">
-        <Checkbox
-          checked={agree}
-          onCheckedChange={(v) => setAgree(v === true)}
-          className="mt-0.5"
-        />
-        <span className="text-muted-foreground">
-          This is my own original transcription, and I grant Phishub a
-          non-exclusive license to display it. See our{" "}
-          <Link
-            href="/content-policy"
-            target="_blank"
-            className="underline hover:text-foreground"
-          >
-            content &amp; copyright policy
-          </Link>
-          .
-        </span>
-      </label>
+      <p className="text-xs text-muted-foreground">
+        By submitting, you confirm this is your own original transcription and
+        agree to Phishub&apos;s{" "}
+        <Link
+          href="/terms"
+          target="_blank"
+          className="underline hover:text-foreground"
+        >
+          Terms of Use
+        </Link>{" "}
+        and{" "}
+        <Link
+          href="/content-policy"
+          target="_blank"
+          className="underline hover:text-foreground"
+        >
+          Content &amp; Copyright Policy
+        </Link>
+        .
+      </p>
 
       <div className="flex justify-end">
         <Button type="submit" disabled={!canSave || pending}>

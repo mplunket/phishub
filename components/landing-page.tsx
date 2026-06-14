@@ -254,15 +254,15 @@ export default async function LandingPage() {
           <nav className="sm:ml-auto flex gap-4 sm:gap-6">
             <Link
               className="text-xs hover:underline underline-offset-4 text-gray-500"
-              href="#"
+              href="/terms"
             >
-              Terms of Service
+              Terms of Use
             </Link>
             <Link
               className="text-xs hover:underline underline-offset-4 text-gray-500"
-              href="#"
+              href="/content-policy"
             >
-              Privacy
+              Content Policy
             </Link>
           </nav>
         </footer>

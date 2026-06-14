@@ -31,12 +31,17 @@ export function UserMenu({ hideWaitlist }: { hideWaitlist: boolean }) {
   if (!user) {
     if (!hideWaitlist) return null;
     return (
-      <div className="flex gap-2">
+      <div className="flex shrink-0 gap-2">
         <Link href="/sign-in">
-          <Button variant="outline">Sign In</Button>
+          <Button variant="outline" size="sm" className="sm:h-9 sm:px-4">
+            Sign In
+          </Button>
         </Link>
         <Link href="/sign-up">
-          <Button className="bg-purple-600 text-white hover:bg-purple-700">
+          <Button
+            size="sm"
+            className="bg-purple-600 text-white hover:bg-purple-700 sm:h-9 sm:px-4"
+          >
             Get Started
           </Button>
         </Link>
