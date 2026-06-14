@@ -168,6 +168,12 @@ export async function createTab(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
+  // Contributor license acknowledgement (see /content-policy). Enforced here as
+  // well as in the UI so the grant can't be bypassed by a crafted request.
+  if (formData.get("agree") !== "yes") {
+    throw new Error("You must accept the content policy to submit a tab");
+  }
+
   const songId = formData.get("songId") as string;
   const slug = formData.get("slug") as string;
   const content = formData.get("content") as string;
@@ -183,6 +189,39 @@ export async function createTab(formData: FormData) {
   if (error) throw error;
 
   if (slug) revalidatePath(`/songs/${slug}`);
+  revalidatePath("/tabs");
+}
+
+export async function updateTab(formData: FormData) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  if (formData.get("agree") !== "yes") {
+    throw new Error("You must accept the content policy to save a tab");
+  }
+
+  const tabId = formData.get("tabId") as string;
+  const content = formData.get("content") as string;
+  const type = formData.get("type") as string;
+  const revalidate = formData.get("revalidate") as string;
+
+  if (!tabId) throw new Error("Missing tab id");
+
+  // The author_id filter mirrors the RLS update policy — only the author can
+  // edit their own tab.
+  const { error } = await supabase
+    .from("tabs")
+    .update({ content, type })
+    .eq("id", tabId)
+    .eq("author_id", user.id);
+
+  if (error) throw error;
+
+  if (revalidate) revalidatePath(revalidate);
   revalidatePath("/tabs");
 }
 

@@ -75,6 +75,7 @@ export default async function SongPage({
             tabs={tabs}
             userFavoriteTabIds={userFavoriteTabIds}
             canFavorite={isAuthed}
+            currentUserId={user?.id}
             revalidate={revalidatePath}
           />
         </TabsContent>

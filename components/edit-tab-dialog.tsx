@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { createTab } from "@/app/actions";
+import { updateTab } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,32 +10,39 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { TabEditor } from "@/components/tab-editor";
-import { Plus } from "lucide-react";
+import { Pencil } from "lucide-react";
 
-export function AddTabDialog({
-  songId,
-  slug,
+export function EditTabDialog({
+  tab,
+  revalidate,
 }: {
-  songId: string;
-  slug: string;
+  tab: { id: string; type: string; content: string };
+  revalidate?: string;
 }) {
   const [open, setOpen] = React.useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm">
-          <Plus className="h-4 w-4 mr-1" /> Add tab
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-8 w-8"
+          aria-label="Edit tab"
+        >
+          <Pencil className="h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Add a tab</DialogTitle>
+          <DialogTitle>Edit tab</DialogTitle>
         </DialogHeader>
         <TabEditor
-          action={createTab}
-          hiddenFields={{ songId, slug }}
-          submitLabel="Save tab"
+          action={updateTab}
+          hiddenFields={{ tabId: tab.id, revalidate: revalidate ?? "" }}
+          defaultType={tab.type}
+          defaultContent={tab.content}
+          submitLabel="Save changes"
           onDone={() => setOpen(false)}
         />
       </DialogContent>
