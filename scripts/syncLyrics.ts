@@ -5,7 +5,7 @@
 //
 // phish.net's v5 API does NOT expose lyrics (see scripts/syncSongs.ts — the
 // songs.json payload has no lyrics field), so we read them from the public
-// song lyrics pages at https://phish.net/songs/<slug>/lyrics.
+// song lyrics pages at https://phish.net/song/<slug>/lyrics.
 //
 // ⚠️ Copyright: song lyrics are owned by their respective rights holders.
 // phish.net displays them under its own licensing. Only run this against
@@ -13,9 +13,9 @@
 // (app/content-policy/page.tsx).
 //
 // Usage (locally):
-//   DRY_RUN=true npx tsx scripts/syncLyrics.ts          # parse + log, no writes
-//   LIMIT=5 DRY_RUN=true npx tsx scripts/syncLyrics.ts  # try the first 5 songs
-//   npx tsx scripts/syncLyrics.ts                        # full run, writes lyrics
+//   DRY_RUN=true npx tsx scripts/syncLyrics.ts          // parse + log, no writes
+//   LIMIT=5 DRY_RUN=true npx tsx scripts/syncLyrics.ts  // try the first 5 songs
+//   npx tsx scripts/syncLyrics.ts                        // full run, writes lyrics
 //
 // In CI it is driven by .github/workflows/sync-lyrics.yml via env vars.
 //
@@ -39,7 +39,7 @@ const LIMIT = process.env.LIMIT ? parseInt(process.env.LIMIT, 10) : Infinity;
 const DELAY_MS = process.env.DELAY_MS ? parseInt(process.env.DELAY_MS, 10) : 1500;
 
 // Candidate selectors for the lyrics block, tried in order. On phish.net the
-// lyrics live in <blockquote class="bq"> on the /songs/<slug>/lyrics page.
+// lyrics live in <blockquote class="bq"> on the /song/<slug>/lyrics page.
 // Override via the LYRICS_SELECTOR env var (comma-separated) if the markup
 // changes; if none match we fall back to a heuristic scan.
 const SELECTORS = (
@@ -50,7 +50,7 @@ const SELECTORS = (
   .map((s) => s.trim())
   .filter(Boolean);
 
-const BASE_URL = "https://phish.net/songs";
+const BASE_URL = "https://phish.net/song";
 const USER_AGENT =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
 
@@ -58,6 +58,12 @@ const USER_AGENT =
 const MIN_LENGTH = 40;
 const MIN_LINES = 3;
 const MAX_LENGTH = 20000;
+
+// Sentinel marking a real line break (<br> or block boundary). We insert it
+// before collapsing whitespace, so genuine breaks survive while the source's
+// insignificant newlines/indentation (present only for HTML readability) are
+// flattened away. phish.net renders one <br> per line and <br><br> per stanza.
+const BR = "@@LYRIC_BR@@";
 
 interface SongRow {
   id: string;
@@ -68,7 +74,7 @@ interface SongRow {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-/** Convert a cheerio selection's HTML into plain text, preserving line breaks. */
+/** Convert a cheerio selection into plain text, preserving real line breaks. */
 function blockToText(
   $: cheerio.CheerioAPI,
   $el: cheerio.Cheerio<any>
@@ -76,22 +82,21 @@ function blockToText(
   const clone = $el.clone();
   // Drop anything that clearly isn't lyrics.
   clone.find("script,style,nav,header,footer,form,button,iframe,noscript").remove();
-  // Turn <br> and block boundaries into newlines so structure survives.
-  clone.find("br").replaceWith("\n");
-  clone.find("p,div").each((_, node) => {
-    $(node).append("\n");
+  clone.find("br").replaceWith(BR);
+  // Block-level elements also imply a line break at their boundary.
+  clone.find("p,div,h1,h2,h3,h4,h5,h6,li,tr,blockquote").each((_, node) => {
+    $(node).append(BR);
   });
   return normalize(clone.text());
 }
 
 function normalize(text: string): string {
   return text
-    .replace(/\r\n/g, "\n")
-    .replace(/ /g, " ") // non-breaking spaces -> regular spaces
-    .split("\n")
-    .map((line) => line.replace(/[ \t]+/g, " ").trimEnd())
+    .replace(/\s+/g, " ") // collapse all insignificant HTML whitespace
+    .split(BR) // split on real line breaks only
+    .map((line) => line.trim())
     .join("\n")
-    .replace(/\n{3,}/g, "\n\n")
+    .replace(/\n{3,}/g, "\n\n") // cap stanza gaps at a single blank line
     .trim();
 }
 
@@ -101,7 +106,7 @@ function looksLikeLyrics(text: string): boolean {
   return true;
 }
 
-/** Extract lyrics text from a phish.net song page's HTML. */
+/** Extract lyrics text from a phish.net song lyrics page's HTML. */
 function extractLyrics(html: string): string | null {
   const $ = cheerio.load(html);
 
@@ -117,8 +122,7 @@ function extractLyrics(html: string): string | null {
   // 2) Heuristic fallback: scan candidate containers and pick the one whose
   // text reads most like lyrics — many lines, few links. Scoring by
   // (non-empty lines − 2×links) favours the clean lyrics block over page
-  // chrome (nav/footer/related links) and over the whole-page wrapper, and
-  // works whether lines are separated by <br>, <p>, or <pre> whitespace.
+  // chrome (nav/footer/related links) and over the whole-page wrapper.
   let best: { text: string; score: number } | null = null;
   $("div,section,article,pre,td,main").each((_, node) => {
     const $node = $(node);
