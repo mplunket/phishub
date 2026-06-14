@@ -27,13 +27,14 @@ import Link from "next/link";
 import { SearchBar } from "@/components/search-bar";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { waitlistDisabled } from "@/flags";
+import { cn } from "@/lib/utils";
 
 const items = [
-  { title: "Songs", url: "/songs", icon: Music },
-  { title: "Tabs", url: "/tabs", icon: BookOpen },
-  { title: "Videos", url: "/videos", icon: Video },
-  { title: "Favorites", url: "/favorites", icon: Heart },
-  { title: "Setlists", url: "/setlists", icon: List },
+  { title: "Songs", url: "/songs", icon: Music, color: "text-purple-600" },
+  { title: "Tabs", url: "/tabs", icon: BookOpen, color: "text-blue-500" },
+  { title: "Videos", url: "/videos", icon: Video, color: "text-orange-500" },
+  { title: "Favorites", url: "/favorites", icon: Heart, color: "text-rose-500" },
+  { title: "Setlists", url: "/setlists", icon: List, color: "text-emerald-500" },
 ];
 
 export async function DashboardShell({ children }: { children: ReactNode }) {
@@ -52,13 +53,15 @@ export async function DashboardShell({ children }: { children: ReactNode }) {
           <SearchBar shadow={false} />
           <SidebarGroup>
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className="gap-1.5">
                 {items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild size="lg">
                       <a href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
+                        <item.icon className={cn("!size-6", item.color)} />
+                        <span className="text-base font-medium">
+                          {item.title}
+                        </span>
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

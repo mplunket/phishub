@@ -261,6 +261,32 @@ export async function getRecentVideos(limit = 50): Promise<RecentVideo[]> {
   return (data ?? []) as unknown as RecentVideo[];
 }
 
+export async function getVideosPage(page = 1, pageSize = 24) {
+  const supabase = await createClient();
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+  const {
+    data,
+    count,
+    error,
+  } = await supabase
+    .from("videos")
+    .select(
+      `
+      *,
+      song:songs!song_id (song, slug)
+    `,
+      { count: "exact" }
+    )
+    .order("created_at", { ascending: false })
+    .range(from, to);
+  if (error) throw error;
+  return {
+    videos: (data ?? []) as unknown as RecentVideo[],
+    total: count ?? 0,
+  };
+}
+
 export type PerformTab = {
   id: string;
   type: string;
