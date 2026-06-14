@@ -193,7 +193,8 @@ async function syncLyrics() {
   let notFound = 0;
   let consecutiveBlocked = 0;
 
-  for (const [i, song] of target.entries()) {
+  for (let i = 0; i < target.length; i++) {
+    const song = target[i];
     process.stdout.write(`(${i + 1}/${target.length}) ${song.song} … `);
     const html = await fetchSongPage(song.slug);
 
