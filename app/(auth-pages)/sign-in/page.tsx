@@ -9,8 +9,8 @@ import { Guitar } from "lucide-react";
 export default async function Login(props: { searchParams: Promise<Message> }) {
   const searchParams = await props.searchParams;
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-white to-orange-50">
-      <div className="w-full max-w-md mx-auto p-8 bg-white/90 rounded-2xl shadow-xl flex flex-col items-center">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-purple-700 to-purple-900">
+      <div className="w-full max-w-md mx-auto p-8 bg-white/95 rounded-2xl shadow-xl flex flex-col items-center">
         <div className="flex items-center mb-6">
           <Guitar className="h-8 w-8 text-purple-600" />
           <span className="ml-2 text-2xl font-bold bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">

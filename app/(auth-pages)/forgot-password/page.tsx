@@ -4,34 +4,58 @@ import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { SmtpMessage } from "../smtp-message";
+import { Guitar } from "lucide-react";
 
 export default async function ForgotPassword(props: {
   searchParams: Promise<Message>;
 }) {
   const searchParams = await props.searchParams;
   return (
-    <>
-      <form className="flex-1 flex flex-col w-full gap-2 text-foreground [&>input]:mb-6 min-w-64 max-w-64 mx-auto">
-        <div>
-          <h1 className="text-2xl font-medium">Reset Password</h1>
-          <p className="text-sm text-secondary-foreground">
-            Already have an account?{" "}
-            <Link className="text-primary underline" href="/sign-in">
-              Sign in
-            </Link>
-          </p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-purple-700 to-purple-900">
+      <div className="w-full max-w-md mx-auto p-8 bg-white/95 rounded-2xl shadow-xl flex flex-col items-center">
+        <div className="flex items-center mb-6">
+          <Guitar className="h-8 w-8 text-purple-600" />
+          <span className="ml-2 text-2xl font-bold bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">
+            Phishub
+          </span>
         </div>
-        <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-          <Label htmlFor="email">Email</Label>
-          <Input name="email" placeholder="you@example.com" required />
-          <SubmitButton formAction={forgotPasswordAction}>
-            Reset Password
+        <form className="w-full flex flex-col gap-6">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">
+              Reset password
+            </h1>
+            <p className="text-sm text-gray-600">
+              Remembered it?{" "}
+              <Link
+                className="text-purple-700 font-medium underline"
+                href="/sign-in"
+              >
+                Sign in
+              </Link>
+            </p>
+          </div>
+          <div className="flex flex-col gap-4">
+            <div>
+              <Label htmlFor="email" className="mb-1">
+                Email
+              </Label>
+              <Input
+                name="email"
+                placeholder="you@example.com"
+                required
+                className="mt-1"
+              />
+            </div>
+          </div>
+          <SubmitButton
+            formAction={forgotPasswordAction}
+            pendingText="Sending..."
+          >
+            Reset password
           </SubmitButton>
           <FormMessage message={searchParams} />
-        </div>
-      </form>
-      <SmtpMessage />
-    </>
+        </form>
+      </div>
+    </div>
   );
 }

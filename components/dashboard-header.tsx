@@ -54,11 +54,12 @@ export function DashboardHeader({ hideWaitlist }: { hideWaitlist: boolean }) {
       <div className="flex min-w-0 items-center gap-1">
         <SidebarTrigger />
         {/* Wordmark truncates (min-w-0) so it yields space to the auth buttons
-            on narrow screens instead of pushing them off-screen. */}
+            on narrow screens. Hidden at md+ where the sidebar (which has its own
+            Phishub wordmark) is always visible, to avoid showing it twice. */}
         <Link
           href="/"
           aria-label="Phishub home"
-          className="flex min-w-0 items-center"
+          className="flex min-w-0 items-center md:hidden"
         >
           <Guitar className="h-6 w-6 shrink-0 text-purple-600" />
           <span className="ml-1.5 truncate bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-xl font-bold text-transparent">
