@@ -20,7 +20,7 @@ export default async function Signup(props: {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-purple-700 to-purple-900">
-      <div className="w-full max-w-md mx-auto p-8 bg-white/95 rounded-2xl shadow-xl flex flex-col items-center">
+      <div className="w-full max-w-md mx-auto p-8 bg-white/95 rounded-2xl shadow-2xl ring-1 ring-black/5 flex flex-col items-center">
         <div className="flex items-center mb-6">
           <Guitar className="h-8 w-8 text-purple-600" />
           <span className="ml-2 text-2xl font-bold bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">
@@ -29,9 +29,7 @@ export default async function Signup(props: {
         </div>
         <form className="w-full flex flex-col gap-6" action={signUpAction}>
           <div className="text-center">
-            <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">
-              Sign up
-            </h1>
+            <h1 className="text-3xl font-bold mb-2 text-gray-900">Sign up</h1>
             <p className="text-sm text-gray-600">
               Already have an account?{" "}
               <Link
