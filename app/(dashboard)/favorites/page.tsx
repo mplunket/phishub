@@ -23,8 +23,8 @@ export default async function FavoritesPage() {
   const tabs = await getFavoriteTabsForUser();
 
   return (
-    <div className="container py-10">
-      <h1 className="text-3xl font-bold mb-6">Favorites</h1>
+    <div className="container py-6">
+      <h1 className="text-2xl font-bold mb-4 sm:text-3xl">Favorites</h1>
 
       {tabs.length === 0 ? (
         <p className="text-muted-foreground">
