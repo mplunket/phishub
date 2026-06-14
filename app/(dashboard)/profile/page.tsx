@@ -1,7 +1,9 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MapPin, Mail, Pencil } from "lucide-react";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -25,7 +27,14 @@ export default async function ProfilePage() {
 
   return (
     <div className="container max-w-2xl py-6">
-      <h1 className="mb-6 text-2xl font-bold sm:text-3xl">Profile</h1>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-bold sm:text-3xl">Profile</h1>
+        <Button asChild variant="outline" size="sm">
+          <Link href="/profile/edit">
+            <Pencil className="mr-1 h-4 w-4" /> Edit profile
+          </Link>
+        </Button>
+      </div>
       <div className="flex items-center gap-4 rounded-lg border p-4 sm:p-6">
         <Avatar className="h-16 w-16 sm:h-20 sm:w-20">
           {profile?.avatar_url && (

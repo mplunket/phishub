@@ -6,6 +6,33 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
+type ServerSupabase = Awaited<ReturnType<typeof createClient>>;
+
+// Lightweight per-user rate limiting. Counts the caller's rows in `table`
+// created within the last `windowMinutes` (HEAD count — no row data is
+// transferred) and throws once they hit `max`. A cheap guard against runaway
+// scripts or spam; not a substitute for real abuse tooling.
+async function assertWithinRateLimit(
+  supabase: ServerSupabase,
+  table: string,
+  userColumn: string,
+  userId: string,
+  max: number,
+  windowMinutes: number,
+  action: string
+) {
+  const since = new Date(Date.now() - windowMinutes * 60_000).toISOString();
+  const { count, error } = await supabase
+    .from(table)
+    .select("id", { count: "exact", head: true })
+    .eq(userColumn, userId)
+    .gte("created_at", since);
+  if (error) throw error;
+  if ((count ?? 0) >= max) {
+    throw new Error(`You're doing that too often. Please wait before ${action}.`);
+  }
+}
+
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
@@ -168,11 +195,17 @@ export async function createTab(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
-  // Contributor license acknowledgement (see /content-policy). Enforced here as
-  // well as in the UI so the grant can't be bypassed by a crafted request.
-  if (formData.get("agree") !== "yes") {
-    throw new Error("You must accept the content policy to submit a tab");
-  }
+  // The contributor license is part of the site-wide Terms of Use (accepted on
+  // sign-up), so there's no per-upload acknowledgement to enforce here.
+  await assertWithinRateLimit(
+    supabase,
+    "tabs",
+    "author_id",
+    user.id,
+    15,
+    60,
+    "adding more tabs"
+  );
 
   const songId = formData.get("songId") as string;
   const slug = formData.get("slug") as string;
@@ -199,10 +232,6 @@ export async function updateTab(formData: FormData) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
-
-  if (formData.get("agree") !== "yes") {
-    throw new Error("You must accept the content policy to save a tab");
-  }
 
   const tabId = formData.get("tabId") as string;
   const content = formData.get("content") as string;
@@ -232,6 +261,16 @@ export async function createComment(formData: FormData) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
+
+  await assertWithinRateLimit(
+    supabase,
+    "comments",
+    "author_id",
+    user.id,
+    20,
+    10,
+    "posting more comments"
+  );
 
   const content = formData.get("content") as string;
   const songId = formData.get("songId") as string;
@@ -398,6 +437,16 @@ export async function createVideo(formData: FormData) {
   const parsed = parseVideoUrl(url ?? "");
   if (!parsed) throw new Error("Unsupported video URL (YouTube or Vimeo only)");
 
+  await assertWithinRateLimit(
+    supabase,
+    "videos",
+    "created_by",
+    user.id,
+    15,
+    60,
+    "adding more videos"
+  );
+
   const { error } = await supabase.from("videos").insert({
     song_id: songId,
     type,
@@ -432,4 +481,119 @@ export async function deleteVideo(videoId: string, revalidate?: string) {
 
   if (revalidate) revalidatePath(revalidate);
   revalidatePath("/videos");
+}
+
+export async function createReport(formData: FormData) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  const tabId = (formData.get("tabId") as string) || null;
+  const commentId = (formData.get("commentId") as string) || null;
+  const reason = (formData.get("reason") as string)?.trim();
+  const details = (formData.get("details") as string)?.trim();
+
+  if (!reason) throw new Error("Please choose a reason");
+  // Exactly one target, matching the table's XOR check.
+  if ((tabId && commentId) || (!tabId && !commentId)) {
+    throw new Error("A report must reference a single tab or comment");
+  }
+
+  await assertWithinRateLimit(
+    supabase,
+    "reports",
+    "reporter_id",
+    user.id,
+    10,
+    60,
+    "sending more reports"
+  );
+
+  const { error } = await supabase.from("reports").insert({
+    reporter_id: user.id,
+    tab_id: tabId,
+    comment_id: commentId,
+    reason,
+    details: details || null,
+  });
+
+  if (error) throw error;
+}
+
+export async function updateSetlist(formData: FormData) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  const id = formData.get("id") as string;
+  const name = (formData.get("name") as string)?.trim();
+  const date = formData.get("date") as string;
+  const venue = (formData.get("venue") as string)?.trim();
+
+  if (!id) throw new Error("Missing setlist id");
+  if (!name) throw new Error("Name is required");
+
+  // The creator_id filter mirrors the RLS update policy.
+  const { error } = await supabase
+    .from("setlists")
+    .update({ name, date: date || null, venue: venue || null })
+    .eq("id", id)
+    .eq("creator_id", user.id);
+
+  if (error) throw error;
+
+  revalidatePath(`/setlists/${id}`);
+  revalidatePath(`/setlists/${id}/edit`);
+  revalidatePath("/setlists");
+}
+
+// Replace a setlist's ordered songs in one shot. Accepts the full ordered list
+// of song ids, so this handles reordering and removal together. Rewriting the
+// rows (rather than updating positions one-by-one) sidesteps the
+// UNIQUE(setlist_id, position) constraint that piecemeal updates would trip.
+export async function updateSetlistSongs(setlistId: string, songIds: string[]) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  // Verify ownership before mutating (RLS enforces this too).
+  const { data: owned, error: ownErr } = await supabase
+    .from("setlists")
+    .select("id")
+    .eq("id", setlistId)
+    .eq("creator_id", user.id)
+    .maybeSingle();
+  if (ownErr) throw ownErr;
+  if (!owned) throw new Error("Not authorized");
+
+  const { error: delErr } = await supabase
+    .from("setlist_songs")
+    .delete()
+    .eq("setlist_id", setlistId);
+  if (delErr) throw delErr;
+
+  if (songIds.length > 0) {
+    const rows = songIds.map((song_id, index) => ({
+      setlist_id: setlistId,
+      song_id,
+      position: index + 1,
+    }));
+    const { error: insErr } = await supabase
+      .from("setlist_songs")
+      .insert(rows);
+    if (insErr) throw insErr;
+  }
+
+  revalidatePath(`/setlists/${setlistId}`);
+  revalidatePath(`/setlists/${setlistId}/edit`);
+  revalidatePath("/setlists");
 }

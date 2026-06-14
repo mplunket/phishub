@@ -5,6 +5,7 @@ import { createComment } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ReportDialog } from "@/components/report-dialog";
 
 function AuthorLine({ comment }: { comment: CommentWithAuthor }) {
   const name = comment.author?.username ?? "Unknown";
@@ -76,14 +77,17 @@ function CommentItem({
   songId,
   slug,
   canComment,
+  currentUserId,
 }: {
   comment: CommentWithAuthor;
   replies: CommentWithAuthor[];
   songId: string;
   slug: string;
   canComment: boolean;
+  currentUserId?: string;
 }) {
   const [replying, setReplying] = React.useState(false);
+  const canReport = canComment && currentUserId !== comment.author_id;
 
   return (
     <div className="p-4 rounded-lg border">
@@ -91,13 +95,16 @@ function CommentItem({
       <p className="mb-2 whitespace-pre-line">{comment.content}</p>
 
       {canComment && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setReplying((v) => !v)}
-        >
-          Reply
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setReplying((v) => !v)}
+          >
+            Reply
+          </Button>
+          {canReport && <ReportDialog commentId={comment.id} />}
+        </div>
       )}
 
       {replying && (
@@ -118,6 +125,11 @@ function CommentItem({
             <div key={reply.id}>
               <AuthorLine comment={reply} />
               <p className="whitespace-pre-line">{reply.content}</p>
+              {canComment && currentUserId !== reply.author_id && (
+                <div className="mt-1">
+                  <ReportDialog commentId={reply.id} />
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -131,11 +143,13 @@ export function Discussion({
   songId,
   slug,
   canComment,
+  currentUserId,
 }: {
   comments: CommentWithAuthor[];
   songId: string;
   slug: string;
   canComment: boolean;
+  currentUserId?: string;
 }) {
   const topLevel = comments.filter((c) => !c.parent_id);
   const repliesByParent = React.useMemo(() => {
@@ -170,6 +184,7 @@ export function Discussion({
               songId={songId}
               slug={slug}
               canComment={canComment}
+              currentUserId={currentUserId}
             />
           ))}
         </div>

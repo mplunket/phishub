@@ -4,6 +4,7 @@ import { TabSelector } from "@/components/tab-selector";
 import { TabViewer } from "@/components/tab-viewer";
 import { FavoriteButton } from "@/components/favorite-button";
 import { EditTabDialog } from "@/components/edit-tab-dialog";
+import { ReportDialog } from "@/components/report-dialog";
 
 export function TabSection({
   tabs,
@@ -64,6 +65,12 @@ export function TabSection({
         {selectedTab && currentUserId === selectedTab.author_id && (
           <EditTabDialog tab={selectedTab} revalidate={revalidate} />
         )}
+        {/* Signed-in users (who aren't the author) can flag a tab. */}
+        {canFavorite &&
+          selectedTab &&
+          currentUserId !== selectedTab.author_id && (
+            <ReportDialog tabId={selectedTab.id} />
+          )}
       </div>
       <TabViewer tab={selectedTab} />
     </div>

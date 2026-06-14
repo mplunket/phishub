@@ -42,7 +42,7 @@ export default async function LandingPage() {
                   variant="secondary"
                   className="mb-4 bg-purple-100 text-purple-700 hover:bg-purple-200"
                 >
-                  🎸 #1 Phish Guitar Tab Site on the Internet
+                  🎸 A new home for Phish guitar tabs · now in private beta
                 </Badge>
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none bg-gradient-to-r from-purple-600 via-purple-700 to-orange-500 bg-clip-text text-transparent">
                   Your Ultimate Phish
@@ -184,25 +184,35 @@ export default async function LandingPage() {
           <div className="container px-4 md:px-6 mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Loads of Content
+                Built on a complete catalog
               </h2>
+              <p className="mt-4 text-gray-600 md:text-lg">
+                Every Phish song, ready for the community to fill with tabs,
+                lessons, and lyrics.
+              </p>
             </div>
-            <div className="grid gap-6 lg:grid-cols-4 md:grid-cols-2 text-center">
+            <div className="grid gap-6 md:grid-cols-3 text-center">
               <div className="space-y-2">
                 <div className="text-5xl font-bold text-blue-600">950+</div>
-                <div className="text-gray-600 text-xl">Songs</div>
+                <div className="text-gray-600 text-xl">
+                  Songs from phish.net
+                </div>
               </div>
               <div className="space-y-2">
-                <div className="text-5xl font-bold text-purple-600">500+</div>
-                <div className="text-gray-600 text-xl">Tabs</div>
+                <div className="text-5xl font-bold text-purple-600">
+                  Tabs &amp; chords
+                </div>
+                <div className="text-gray-600 text-xl">
+                  Contributed by fans
+                </div>
               </div>
               <div className="space-y-2">
-                <div className="text-5xl font-bold text-green-600">150+</div>
-                <div className="text-gray-600 text-xl">Videos</div>
-              </div>
-              <div className="space-y-2">
-                <div className="text-5xl font-bold text-orange-500">1,200+</div>
-                <div className="text-gray-600 text-xl">Members</div>
+                <div className="text-5xl font-bold text-orange-500">
+                  Video lessons
+                </div>
+                <div className="text-gray-600 text-xl">
+                  Learn the parts note for note
+                </div>
               </div>
             </div>
           </div>
@@ -254,15 +264,21 @@ export default async function LandingPage() {
           <nav className="sm:ml-auto flex gap-4 sm:gap-6">
             <Link
               className="text-xs hover:underline underline-offset-4 text-gray-500"
-              href="#"
+              href="/terms"
             >
-              Terms of Service
+              Terms of Use
             </Link>
             <Link
               className="text-xs hover:underline underline-offset-4 text-gray-500"
-              href="#"
+              href="/privacy"
             >
               Privacy
+            </Link>
+            <Link
+              className="text-xs hover:underline underline-offset-4 text-gray-500"
+              href="/content-policy"
+            >
+              Content Policy
             </Link>
           </nav>
         </footer>

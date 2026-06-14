@@ -131,6 +131,7 @@ export default async function SongPage({
             songId={song.id}
             slug={slug}
             canComment={isAuthed}
+            currentUserId={user?.id}
           />
         </TabsContent>
       </Tabs>

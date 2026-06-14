@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { Guitar } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { UserMenu } from "@/components/user-menu";
 import { cn } from "@/lib/utils";
@@ -49,7 +51,21 @@ export function DashboardHeader({ hideWaitlist }: { hideWaitlist: boolean }) {
         hidden && "-translate-y-full"
       )}
     >
-      <SidebarTrigger />
+      <div className="flex min-w-0 items-center gap-1">
+        <SidebarTrigger />
+        {/* Wordmark truncates (min-w-0) so it yields space to the auth buttons
+            on narrow screens instead of pushing them off-screen. */}
+        <Link
+          href="/"
+          aria-label="Phishub home"
+          className="flex min-w-0 items-center"
+        >
+          <Guitar className="h-6 w-6 shrink-0 text-purple-600" />
+          <span className="ml-1.5 truncate bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-xl font-bold text-transparent">
+            Phishub
+          </span>
+        </Link>
+      </div>
       <UserMenu hideWaitlist={hideWaitlist} />
     </header>
   );

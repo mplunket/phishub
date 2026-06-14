@@ -2,7 +2,7 @@ import { getSetlistById } from "@/lib/api";
 import { DeleteSetlistButton } from "@/components/delete-setlist-button";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/server";
-import { ArrowLeft, Music, Play } from "lucide-react";
+import { ArrowLeft, Music, Play, Pencil } from "lucide-react";
 import Link from "next/link";
 
 export default async function SetlistPage({
@@ -50,6 +50,13 @@ export default async function SetlistPage({
               <Button asChild>
                 <Link href={`/setlists/${id}/perform`}>
                   <Play className="mr-1 h-4 w-4" /> Perform
+                </Link>
+              </Button>
+            )}
+            {isOwner && (
+              <Button asChild variant="outline" size="sm">
+                <Link href={`/setlists/${id}/edit`}>
+                  <Pencil className="mr-1 h-4 w-4" /> Edit
                 </Link>
               </Button>
             )}

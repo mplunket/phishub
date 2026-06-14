@@ -62,6 +62,19 @@ export interface SetlistSong {
   created_at: string;
 }
 
+export type ReportStatus = "open" | "reviewed" | "dismissed";
+
+export interface Report {
+  id: string;
+  reporter_id: string;
+  tab_id: string | null;
+  comment_id: string | null;
+  reason: string;
+  details: string | null;
+  status: ReportStatus;
+  created_at: string;
+}
+
 export type VideoType = "lesson" | "performance";
 export type VideoPlatform = "youtube" | "vimeo";
 
