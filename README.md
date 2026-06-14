@@ -51,6 +51,7 @@ phishub/
 ├── utils/supabase/             # Supabase client configuration (server, client, middleware)
 ├── types/index.ts              # Shared TypeScript interfaces
 ├── scripts/syncSongs.ts        # CLI script to sync songs from phish.net API
+├── scripts/syncLyrics.ts       # CLI script to scrape lyrics from phish.net song pages
 ├── middleware.ts               # Auth session refresh middleware
 └── flags.ts                    # Feature flags (e.g. waitlist toggle)
 ```
@@ -109,6 +110,22 @@ phishub/
    ```bash
    NEXT_PUBLIC_PHISHNET_API_KEY=<your-api-key> npx ts-node scripts/syncSongs.ts
    ```
+
+   (Optional) Populate song lyrics by scraping phish.net song pages. The
+   phish.net API does not expose lyrics, so this reads the public song pages
+   (`https://phish.net/song/<slug>`). Defaults to a dry run — set
+   `DRY_RUN=false` to write:
+
+   ```bash
+   DRY_RUN=true LIMIT=5 npm run sync:lyrics   # validate parsing on 5 songs
+   npm run sync:lyrics                         # full run (set DRY_RUN=false)
+   ```
+
+   This is also available as the **Sync song lyrics** GitHub Actions workflow
+   (`.github/workflows/sync-lyrics.yml`), which needs the
+   `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` repository
+   secrets. ⚠️ Lyrics are copyrighted — only use content you have the right to
+   store (see the in-app content & copyright policy).
 
 5. Start the development server:
 

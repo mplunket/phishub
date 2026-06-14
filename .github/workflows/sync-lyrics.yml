@@ -1,0 +1,59 @@
+name: Sync song lyrics
+
+# Scrapes lyrics from phish.net song pages into the Supabase `songs` table.
+# Manual-only (workflow_dispatch). Defaults to a DRY RUN so the first invocation
+# validates parsing without writing anything — flip `dry_run` to "false" to save.
+#
+# Required repository secrets (Settings → Secrets and variables → Actions):
+#   NEXT_PUBLIC_SUPABASE_URL
+#   SUPABASE_SERVICE_ROLE_KEY   (service role — needed to bypass RLS on writes)
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Parse and log only, do not write to the DB"
+        type: boolean
+        default: true
+      force:
+        description: "Re-scrape songs that already have lyrics"
+        type: boolean
+        default: false
+      limit:
+        description: "Max number of songs to process (blank = all)"
+        type: string
+        default: ""
+      delay_ms:
+        description: "Delay between requests in ms (be polite to phish.net)"
+        type: string
+        default: "1500"
+
+# Avoid overlapping runs writing to the same table.
+concurrency:
+  group: sync-lyrics
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Sync lyrics
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          FORCE: ${{ inputs.force }}
+          LIMIT: ${{ inputs.limit }}
+          DELAY_MS: ${{ inputs.delay_ms }}
+        run: npm run sync:lyrics
