@@ -13,6 +13,9 @@ import { DeleteVideoButton } from "@/components/delete-video-button";
 import { VideoEmbed } from "@/components/video-embed";
 import { Discussion } from "@/components/discussion";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function SongPage({
@@ -43,11 +46,34 @@ export default async function SongPage({
   return (
     <div className="container pt-3 pb-7">
       {/* Song header */}
-      <div className="mb-2">
-        <h1 className="text-4xl font-bold">{song.song}</h1>
+      <Button asChild variant="ghost" size="sm" className="mb-2 -ml-2">
+        <Link href="/songs">
+          <ArrowLeft className="mr-1 h-4 w-4" /> Songs
+        </Link>
+      </Button>
+      <div className="mb-4">
+        <h1 className="text-3xl font-bold sm:text-4xl">{song.song}</h1>
         {song.artist && (
           <p className="text-lg text-muted-foreground">By {song.artist}</p>
         )}
+        <div className="mt-2 flex flex-wrap gap-2">
+          {typeof song.times_played === "number" && (
+            <Badge variant="secondary">{song.times_played}× played</Badge>
+          )}
+          {typeof song.gap === "number" && (
+            <Badge variant="secondary">Gap: {song.gap}</Badge>
+          )}
+          {song.last_played && (
+            <Badge variant="secondary">
+              Last: {new Date(song.last_played).toLocaleDateString()}
+            </Badge>
+          )}
+          {song.debut && (
+            <Badge variant="secondary">
+              Debut: {new Date(song.debut).toLocaleDateString()}
+            </Badge>
+          )}
+        </div>
       </div>
 
       <Tabs defaultValue="tabs" className="w-full">

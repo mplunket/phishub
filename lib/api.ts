@@ -234,6 +234,76 @@ export async function getRecentVideos(limit = 50): Promise<RecentVideo[]> {
   return (data ?? []) as unknown as RecentVideo[];
 }
 
+export type PerformTab = {
+  id: string;
+  type: string;
+  content: string;
+  favorites: number;
+  username: string;
+};
+
+export type PerformSong = {
+  id: string;
+  song: string;
+  slug: string;
+  lyrics: string | null;
+  position: number;
+  tabs: PerformTab[];
+};
+
+export async function getSetlistPerformanceData(id: string): Promise<{
+  setlist: Setlist;
+  songs: PerformSong[];
+}> {
+  const setlist = await getSetlistById(id);
+  const ordered = setlist.setlist_songs.map((e) => ({
+    song: e.songs,
+    position: e.position,
+  }));
+  const songIds = ordered.map((o) => o.song.id);
+
+  const tabsBySong: Record<string, PerformTab[]> = {};
+  if (songIds.length > 0) {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("tabs")
+      .select(
+        `
+        id,
+        song_id,
+        type,
+        content,
+        user:profiles!author_id (username),
+        favorites:favorites!tab_id (id)
+      `
+      )
+      .in("song_id", songIds);
+    if (error) throw error;
+    for (const t of (data ?? []) as any[]) {
+      (tabsBySong[t.song_id] ??= []).push({
+        id: t.id,
+        type: t.type,
+        content: t.content,
+        favorites: t.favorites ? t.favorites.length : 0,
+        username: t.user?.username ?? "Unknown",
+      });
+    }
+  }
+
+  const songs: PerformSong[] = ordered.map(({ song, position }) => ({
+    id: song.id,
+    song: song.song,
+    slug: song.slug,
+    lyrics: song.lyrics,
+    position,
+    tabs: (tabsBySong[song.id] ?? []).sort((a, b) => b.favorites - a.favorites),
+  }));
+
+  const { setlist_songs, ...meta } = setlist;
+  void setlist_songs;
+  return { setlist: meta as Setlist, songs };
+}
+
 export type FavoriteTab = Tab & { song: { song: string; slug: string } };
 
 export async function getFavoriteTabsForUser(): Promise<FavoriteTab[]> {
