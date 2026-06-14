@@ -17,10 +17,10 @@ export default async function SongsPage({
   const page = Math.max(1, Number(pageParam) || 1);
 
   return (
-    <div className="container py-10">
-      <h1 className="text-3xl font-bold mb-6">Songs</h1>
+    <div className="container py-6">
+      <h1 className="text-2xl font-bold mb-4 sm:text-3xl">Songs</h1>
 
-      <form action="/songs" className="flex gap-2 mb-8 max-w-md">
+      <form action="/songs" className="flex gap-2 mb-6 max-w-md">
         <Input
           type="search"
           name="q"

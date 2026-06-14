@@ -56,24 +56,6 @@ export default async function SongPage({
         {song.artist && (
           <p className="text-lg text-muted-foreground">By {song.artist}</p>
         )}
-        <div className="mt-2 flex flex-wrap gap-2">
-          {typeof song.times_played === "number" && (
-            <Badge variant="secondary">{song.times_played}× played</Badge>
-          )}
-          {typeof song.gap === "number" && (
-            <Badge variant="secondary">Gap: {song.gap}</Badge>
-          )}
-          {song.last_played && (
-            <Badge variant="secondary">
-              Last: {new Date(song.last_played).toLocaleDateString()}
-            </Badge>
-          )}
-          {song.debut && (
-            <Badge variant="secondary">
-              Debut: {new Date(song.debut).toLocaleDateString()}
-            </Badge>
-          )}
-        </div>
       </div>
 
       <Tabs defaultValue="tabs" className="w-full">

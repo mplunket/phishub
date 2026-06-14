@@ -11,6 +11,32 @@ export async function getSongs() {
   return songs as Song[];
 }
 
+export type SongCard = Song & {
+  hasTabs: boolean;
+  hasVideos: boolean;
+  hasLyrics: boolean;
+};
+
+// Annotate a list of songs with flags for whether each has tabs, videos, and
+// lyrics — used to show at-a-glance indicators on the songs index.
+async function attachContentIndicators(songs: Song[]): Promise<SongCard[]> {
+  if (songs.length === 0) return [];
+  const supabase = await createClient();
+  const ids = songs.map((s) => s.id);
+  const [{ data: tabRows }, { data: videoRows }] = await Promise.all([
+    supabase.from("tabs").select("song_id").in("song_id", ids),
+    supabase.from("videos").select("song_id").in("song_id", ids),
+  ]);
+  const tabSet = new Set((tabRows ?? []).map((r) => r.song_id as string));
+  const videoSet = new Set((videoRows ?? []).map((r) => r.song_id as string));
+  return songs.map((song) => ({
+    ...song,
+    hasTabs: tabSet.has(song.id),
+    hasVideos: videoSet.has(song.id),
+    hasLyrics: !!song.lyrics && song.lyrics.trim().length > 0,
+  }));
+}
+
 export async function getSongsPage(page = 1, pageSize = 50) {
   const supabase = await createClient();
   const from = (page - 1) * pageSize;
@@ -25,7 +51,8 @@ export async function getSongsPage(page = 1, pageSize = 50) {
     .order("song", { ascending: true })
     .range(from, to);
   if (error) throw error;
-  return { songs: (songs ?? []) as Song[], total: count ?? 0 };
+  const cards = await attachContentIndicators((songs ?? []) as Song[]);
+  return { songs: cards, total: count ?? 0 };
 }
 
 export async function getSongBySlug(slug: string) {
@@ -87,7 +114,7 @@ export async function searchSongs(query: string) {
     .or(`song.ilike.%${query}%, lyrics.ilike.%${query}%`)
     .order("times_played", { ascending: false });
   if (error) throw error;
-  return songs as Song[];
+  return attachContentIndicators((songs ?? []) as Song[]);
 }
 
 export async function getComments(type: "song" | "tab", id: string) {

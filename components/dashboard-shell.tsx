@@ -21,12 +21,11 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   SidebarInset,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { SearchBar } from "@/components/search-bar";
-import { UserMenu } from "@/components/user-menu";
+import { DashboardHeader } from "@/components/dashboard-header";
 import { waitlistDisabled } from "@/flags";
 
 const items = [
@@ -70,13 +69,8 @@ export async function DashboardShell({ children }: { children: ReactNode }) {
         </SidebarContent>
       </Sidebar>
       <SidebarInset>
-        <main>
-          <div className="w-full flex items-center justify-between pl-4 pt-2 pb-2 pr-4">
-            <SidebarTrigger />
-            <UserMenu hideWaitlist={waitlist} />
-          </div>
-          {children}
-        </main>
+        <DashboardHeader hideWaitlist={waitlist} />
+        {children}
       </SidebarInset>
     </SidebarProvider>
   );
