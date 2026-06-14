@@ -1,5 +1,6 @@
 import { getSongsPage, searchSongs } from "@/lib/api";
 import { SongList } from "@/components/song-list";
+import { SongsInfinite } from "@/components/songs-infinite";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -10,11 +11,10 @@ const PAGE_SIZE = 50;
 export default async function SongsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; page?: string }>;
+  searchParams: Promise<{ q?: string }>;
 }) {
-  const { q, page: pageParam } = await searchParams;
+  const { q } = await searchParams;
   const query = q?.trim() ?? "";
-  const page = Math.max(1, Number(pageParam) || 1);
 
   return (
     <div className="container py-6">
@@ -32,11 +32,7 @@ export default async function SongsPage({
         </Button>
       </form>
 
-      {query ? (
-        <SearchResults query={query} />
-      ) : (
-        <BrowseSongs page={page} />
-      )}
+      {query ? <SearchResults query={query} /> : <BrowseSongs />}
     </div>
   );
 }
@@ -66,44 +62,10 @@ async function SearchResults({ query }: { query: string }) {
   );
 }
 
-async function BrowseSongs({ page }: { page: number }) {
-  const { songs, total } = await getSongsPage(page, PAGE_SIZE);
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+async function BrowseSongs() {
+  const { songs, total } = await getSongsPage(1, PAGE_SIZE);
 
   return (
-    <div>
-      <SongList songs={songs} />
-      {total > PAGE_SIZE && (
-        <div className="flex items-center justify-between mt-8">
-          <Button
-            asChild={page > 1}
-            variant="outline"
-            size="sm"
-            disabled={page <= 1}
-          >
-            {page > 1 ? (
-              <Link href={`/songs?page=${page - 1}`}>Previous</Link>
-            ) : (
-              <span>Previous</span>
-            )}
-          </Button>
-          <span className="text-sm text-muted-foreground">
-            Page {page} of {totalPages}
-          </span>
-          <Button
-            asChild={page < totalPages}
-            variant="outline"
-            size="sm"
-            disabled={page >= totalPages}
-          >
-            {page < totalPages ? (
-              <Link href={`/songs?page=${page + 1}`}>Next</Link>
-            ) : (
-              <span>Next</span>
-            )}
-          </Button>
-        </div>
-      )}
-    </div>
+    <SongsInfinite initialSongs={songs} total={total} pageSize={PAGE_SIZE} />
   );
 }
