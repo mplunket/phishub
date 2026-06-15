@@ -12,9 +12,10 @@ import { AddVideoDialog } from "@/components/add-video-dialog";
 import { DeleteVideoButton } from "@/components/delete-video-button";
 import { VideoEmbed } from "@/components/video-embed";
 import { Discussion } from "@/components/discussion";
+import { EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, BookOpen, Video, FileText } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 
@@ -66,64 +67,104 @@ export default async function SongPage({
           <TabsTrigger value="discussion">Discussion</TabsTrigger>
         </TabsList>
         <TabsContent value="tabs">
-          {isAuthed && (
-            <div className="flex justify-end mb-4">
-              <AddTabDialog songId={song.id} slug={slug} />
-            </div>
+          {tabs.length === 0 ? (
+            <EmptyState
+              icon={BookOpen}
+              title="No tabs yet"
+              description="Be the first to share a guitar tab or chords for this song."
+            >
+              {isAuthed ? (
+                <AddTabDialog songId={song.id} slug={slug} />
+              ) : (
+                <Button asChild>
+                  <Link href="/sign-in">Sign in to add a tab</Link>
+                </Button>
+              )}
+            </EmptyState>
+          ) : (
+            <>
+              {isAuthed && (
+                <div className="flex justify-end mb-4">
+                  <AddTabDialog songId={song.id} slug={slug} />
+                </div>
+              )}
+              <TabSection
+                tabs={tabs}
+                userFavoriteTabIds={userFavoriteTabIds}
+                canFavorite={isAuthed}
+                currentUserId={user?.id}
+                revalidate={revalidatePath}
+              />
+            </>
           )}
-          <TabSection
-            tabs={tabs}
-            userFavoriteTabIds={userFavoriteTabIds}
-            canFavorite={isAuthed}
-            currentUserId={user?.id}
-            revalidate={revalidatePath}
-          />
         </TabsContent>
         <TabsContent value="videos">
-          {isAuthed && (
-            <div className="flex justify-end mb-4">
-              <AddVideoDialog songId={song.id} slug={slug} />
-            </div>
-          )}
           {videos.length === 0 ? (
-            <p className="text-muted-foreground">No videos yet.</p>
+            <EmptyState
+              icon={Video}
+              title="No videos yet"
+              description="Lessons and live performances for this song will appear here."
+            >
+              {isAuthed ? (
+                <AddVideoDialog songId={song.id} slug={slug} />
+              ) : (
+                <Button asChild>
+                  <Link href="/sign-in">Sign in to add a video</Link>
+                </Button>
+              )}
+            </EmptyState>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2">
-              {videos.map((video) => (
-                <div key={video.id} className="space-y-2">
-                  <VideoEmbed
-                    platform={video.platform}
-                    videoId={video.video_id}
-                    title={video.name}
-                  />
-                  <div className="flex items-center justify-between gap-2">
-                    <div>
-                      <p className="font-medium">{video.name}</p>
-                      <Badge variant="secondary" className="mt-1">
-                        {video.type}
-                      </Badge>
+            <>
+              {isAuthed && (
+                <div className="flex justify-end mb-4">
+                  <AddVideoDialog songId={song.id} slug={slug} />
+                </div>
+              )}
+              <div className="grid gap-6 sm:grid-cols-2">
+                {videos.map((video) => (
+                  <div key={video.id} className="space-y-2">
+                    <VideoEmbed
+                      platform={video.platform}
+                      videoId={video.video_id}
+                      title={video.name}
+                    />
+                    <div className="flex items-center justify-between gap-2">
+                      <div>
+                        <p className="font-medium">{video.name}</p>
+                        <Badge variant="secondary" className="mt-1">
+                          {video.type}
+                        </Badge>
+                      </div>
+                      {user && video.created_by === user.id && (
+                        <DeleteVideoButton
+                          videoId={video.id}
+                          revalidate={revalidatePath}
+                        />
+                      )}
                     </div>
-                    {user && video.created_by === user.id && (
-                      <DeleteVideoButton
-                        videoId={video.id}
-                        revalidate={revalidatePath}
-                      />
+                    {video.description && (
+                      <p className="text-sm text-muted-foreground">
+                        {video.description}
+                      </p>
                     )}
                   </div>
-                  {video.description && (
-                    <p className="text-sm text-muted-foreground">
-                      {video.description}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </>
           )}
         </TabsContent>
         <TabsContent value="lyrics">
-          <div className="prose max-w-none whitespace-pre-line">
-            {song.lyrics || "No lyrics available for this song."}
-          </div>
+          {song.lyrics && song.lyrics.trim() ? (
+            <div className="prose max-w-none whitespace-pre-line">
+              {song.lyrics}
+            </div>
+          ) : (
+            <EmptyState
+              icon={FileText}
+              title="No lyrics yet"
+              description="We don't have the lyrics for this song yet. Check back soon."
+            />
+          )}
         </TabsContent>
         <TabsContent value="discussion">
           <Discussion

@@ -34,6 +34,11 @@ export interface TabViewerProps {
 
 export function TabViewer({ tab, title, fill = false }: TabViewerProps) {
   const [zoom, setZoom] = React.useState(1);
+  // The font auto-fits the widest line to the available width, which on wide
+  // desktop viewports makes 100% far too large for comfortable reading. Default
+  // desktop to ~40% (mobile stays at 100%, which reads well). Reset returns to
+  // this per-device default.
+  const [defaultZoom, setDefaultZoom] = React.useState(1);
   const [semitones, setSemitones] = React.useState(0);
   const [fullscreen, setFullscreen] = React.useState(false);
   const [scrolling, setScrolling] = React.useState(false);
@@ -45,6 +50,14 @@ export function TabViewer({ tab, title, fill = false }: TabViewerProps) {
 
   const isChords = tab?.type === "chords";
   const isVextab = tab?.type === "vextab";
+
+  // Pick the device-appropriate default zoom once on mount (window isn't
+  // available during SSR).
+  React.useEffect(() => {
+    const d = window.matchMedia("(min-width: 768px)").matches ? 0.4 : 1;
+    setDefaultZoom(d);
+    setZoom(d);
+  }, []);
 
   const content = React.useMemo(() => {
     if (!tab) return "";
@@ -161,13 +174,13 @@ export function TabViewer({ tab, title, fill = false }: TabViewerProps) {
           size="icon"
           className="h-8 w-8"
           aria-label="Zoom out"
-          onClick={() => setZoom((z) => Math.max(0.4, z - 0.1))}
+          onClick={() => setZoom((z) => Math.max(0.25, z - 0.1))}
         >
           <ZoomOut className="h-4 w-4" />
         </Button>
         <button
           type="button"
-          onClick={() => setZoom(1)}
+          onClick={() => setZoom(defaultZoom)}
           className="px-1 text-xs tabular-nums text-muted-foreground hover:text-foreground"
           aria-label="Reset zoom"
         >
