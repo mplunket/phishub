@@ -1,5 +1,5 @@
 import { getRecentTabs } from "@/lib/api";
-import { Badge } from "@/components/ui/badge";
+import { TabTypeBadge } from "@/components/tab-type-badge";
 import Link from "next/link";
 
 export default async function TabsPage() {
@@ -28,9 +28,7 @@ export default async function TabsPage() {
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-2.5">
-                <Badge variant="secondary" className="capitalize">
-                  {tab.type}
-                </Badge>
+                <TabTypeBadge type={tab.type} />
                 <span className="hidden text-xs text-muted-foreground sm:inline">
                   {new Date(tab.created_at).toLocaleDateString()}
                 </span>
