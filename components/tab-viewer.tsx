@@ -13,6 +13,7 @@ import {
   Gauge,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { VextabRenderer } from "@/components/vextab-renderer";
 import { cn } from "@/lib/utils";
 import { transposeChordSheet, formatSemitones } from "@/lib/chords";
 
@@ -43,6 +44,7 @@ export function TabViewer({ tab, title, fill = false }: TabViewerProps) {
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   const isChords = tab?.type === "chords";
+  const isVextab = tab?.type === "vextab";
 
   const content = React.useMemo(() => {
     if (!tab) return "";
@@ -261,7 +263,11 @@ export function TabViewer({ tab, title, fill = false }: TabViewerProps) {
     </div>
   );
 
-  const pre = (
+  // VexTab tabs render as engraved notation (zoom drives the notation scale);
+  // ASCII tabs and chord sheets render as auto-fit monospace text.
+  const body = isVextab ? (
+    <VextabRenderer source={content} scale={zoom} />
+  ) : (
     <pre
       className="whitespace-pre font-mono leading-snug"
       style={{ fontSize: `${fontSize}px`, lineHeight: `${lineHeight}px` }}
@@ -286,7 +292,7 @@ export function TabViewer({ tab, title, fill = false }: TabViewerProps) {
         </div>
         <div ref={scrollRef} className="flex-1 overflow-auto px-3 py-4">
           <div ref={measureRef} className="w-full">
-            {pre}
+            {body}
           </div>
           <div className="h-[40vh]" aria-hidden />
         </div>
@@ -321,7 +327,7 @@ export function TabViewer({ tab, title, fill = false }: TabViewerProps) {
         )}
       >
         <div ref={measureRef} className="w-full">
-          {pre}
+          {body}
         </div>
       </div>
     </div>

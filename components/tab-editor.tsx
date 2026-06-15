@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { VextabRenderer } from "@/components/vextab-renderer";
 import { cn } from "@/lib/utils";
 
 // Shared editor body for adding and editing tabs. Renders the whole <form> so
@@ -29,8 +30,11 @@ export function TabEditor({
   onDone?: () => void;
 }) {
   const [content, setContent] = React.useState(defaultContent);
+  const [type, setType] = React.useState(defaultType);
   const [mode, setMode] = React.useState<"write" | "preview">("write");
   const [pending, setPending] = React.useState(false);
+
+  const isVextab = type === "vextab";
 
   async function handle(formData: FormData) {
     setPending(true);
@@ -55,7 +59,8 @@ export function TabEditor({
         <select
           id="type"
           name="type"
-          defaultValue={defaultType}
+          value={type}
+          onChange={(e) => setType(e.target.value)}
           className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
         >
           <option value="tab">Tab</option>
@@ -97,7 +102,11 @@ export function TabEditor({
             className="overflow-x-auto font-mono text-sm"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Paste or type the tab here..."
+            placeholder={
+              isVextab
+                ? "tabstave notation=true\nnotes :q 5/2 6/2 7/2 5/2 | :h 7/3 5/3"
+                : "Paste or type the tab here..."
+            }
           />
         ) : (
           <>
@@ -105,9 +114,13 @@ export function TabEditor({
             <input type="hidden" name="content" value={content} />
             <div className="max-h-[45vh] min-h-[12rem] overflow-auto rounded-md border bg-card px-3 py-3 text-card-foreground">
               {content.trim() ? (
-                <pre className="whitespace-pre font-mono text-sm leading-snug">
-                  {content}
-                </pre>
+                isVextab ? (
+                  <VextabRenderer source={content} />
+                ) : (
+                  <pre className="whitespace-pre font-mono text-sm leading-snug">
+                    {content}
+                  </pre>
+                )
               ) : (
                 <p className="text-sm text-muted-foreground">
                   Nothing to preview yet.
@@ -116,10 +129,26 @@ export function TabEditor({
             </div>
           </>
         )}
-        <p className="text-xs text-muted-foreground">
-          Alignment is preserved exactly. Use spaces (not tab characters) so the
-          tab renders the same for everyone.
-        </p>
+        {isVextab ? (
+          <p className="text-xs text-muted-foreground">
+            Written in{" "}
+            <Link
+              href="https://vexflow.com/vextab/tutorial.html"
+              target="_blank"
+              rel="noreferrer"
+              className="underline hover:text-foreground"
+            >
+              VexTab notation
+            </Link>
+            , rendered as sheet music / tablature. Switch to{" "}
+            <span className="font-medium">Preview</span> to check it.
+          </p>
+        ) : (
+          <p className="text-xs text-muted-foreground">
+            Alignment is preserved exactly. Use spaces (not tab characters) so
+            the tab renders the same for everyone.
+          </p>
+        )}
       </div>
 
       <p className="text-xs text-muted-foreground">
