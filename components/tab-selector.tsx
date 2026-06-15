@@ -16,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { TabTypeBadge } from "@/components/tab-type-badge";
 import { Star } from "lucide-react";
 
 export function TabSelector({
@@ -62,14 +63,28 @@ export function TabSelector({
 
   const tabOptions = sortedTabs.map((tab) => ({
     value: tab.id,
-    label:
-      `${tab.name} (${tab.type}) ${tab.favorites ? `★${tab.favorites}` : ""}`.trim(),
-    icon: userFavoriteTabIds.includes(tab.id) ? (
-      <Star className="text-yellow-500 w-4 h-4" />
-    ) : undefined,
+    name: tab.name,
+    type: tab.type,
+    favorites: tab.favorites,
+    isFavorite: userFavoriteTabIds.includes(tab.id),
   }));
 
   const selected = tabOptions.find((o) => o.value === selectedTabId);
+
+  // Color-coded type pill on the left, author smaller in gray next to it.
+  const renderOptionContent = (option: (typeof tabOptions)[number]) => (
+    <span className="flex min-w-0 items-center gap-2">
+      <TabTypeBadge type={option.type} />
+      <span className="truncate text-sm text-muted-foreground">
+        {option.name}
+      </span>
+      {option.favorites > 0 && (
+        <span className="shrink-0 text-xs text-muted-foreground">
+          ★{option.favorites}
+        </span>
+      )}
+    </span>
+  );
 
   const ComboList = (
     <Command>
@@ -81,15 +96,18 @@ export function TabSelector({
             <CommandItem
               key={option.value}
               value={option.value}
+              keywords={[option.name, option.type]}
               onSelect={() => {
                 setSelectedTabId(option.value);
                 setOpen(false);
               }}
             >
-              {option.icon}
-              {option.label}
+              {option.isFavorite && (
+                <Star className="mr-1 h-4 w-4 shrink-0 text-yellow-500" />
+              )}
+              {renderOptionContent(option)}
               {option.value === selectedTabId && (
-                <Star className="w-4 h-4 ml-auto text-purple-600" />
+                <Star className="ml-auto h-4 w-4 shrink-0 text-purple-600" />
               )}
             </CommandItem>
           ))}
@@ -103,10 +121,16 @@ export function TabSelector({
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" className="w-full justify-between">
-            <span className="flex items-center gap-2">
-              {selected?.icon}
-              {selected ? selected.label : <>Select a tab...</>}
-            </span>
+            {selected ? (
+              <span className="flex min-w-0 items-center gap-2">
+                {selected.isFavorite && (
+                  <Star className="h-4 w-4 shrink-0 text-yellow-500" />
+                )}
+                {renderOptionContent(selected)}
+              </span>
+            ) : (
+              <span>Select a tab...</span>
+            )}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[300px] p-0" align="start">
@@ -120,10 +144,16 @@ export function TabSelector({
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Button variant="outline" className="w-full justify-between">
-          <span className="flex items-center gap-2">
-            {selected?.icon}
-            {selected ? selected.label : <>Select a tab...</>}
-          </span>
+          {selected ? (
+            <span className="flex min-w-0 items-center gap-2">
+              {selected.isFavorite && (
+                <Star className="h-4 w-4 shrink-0 text-yellow-500" />
+              )}
+              {renderOptionContent(selected)}
+            </span>
+          ) : (
+            <span>Select a tab...</span>
+          )}
         </Button>
       </DrawerTrigger>
       <DrawerContent>

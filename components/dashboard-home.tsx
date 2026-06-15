@@ -11,6 +11,7 @@ import {
 import { DashboardShell } from "@/components/dashboard-shell";
 import { SearchBar } from "@/components/search-bar";
 import { Button } from "@/components/ui/button";
+import { TabTypeBadge } from "@/components/tab-type-badge";
 import {
   getRecentTabs,
   getSetlists,
@@ -111,9 +112,9 @@ export default async function DashboardHome() {
                 >
                   <div className="min-w-0">
                     <p className="truncate font-medium">{tab.song.song}</p>
-                    <p className="text-xs capitalize text-muted-foreground">
-                      {tab.type}
-                    </p>
+                    <div className="mt-1">
+                      <TabTypeBadge type={tab.type} />
+                    </div>
                   </div>
                   <Heart className="h-4 w-4 shrink-0 fill-rose-500 text-rose-500" />
                 </Link>
@@ -145,10 +146,12 @@ export default async function DashboardHome() {
                   className="rounded-lg border bg-card p-3 transition-colors hover:border-primary"
                 >
                   <p className="truncate font-medium">{tab.song.song}</p>
-                  <p className="text-xs text-muted-foreground">
-                    <span className="capitalize">{tab.type}</span> · by{" "}
-                    {tab.user?.username ?? "Unknown"}
-                  </p>
+                  <div className="mt-1 flex items-center gap-2">
+                    <TabTypeBadge type={tab.type} />
+                    <span className="truncate text-xs text-muted-foreground">
+                      by {tab.user?.username ?? "Unknown"}
+                    </span>
+                  </div>
                 </Link>
               ))}
             </div>

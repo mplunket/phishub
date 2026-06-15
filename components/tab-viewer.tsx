@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { VextabRenderer } from "@/components/vextab-renderer";
+import { TabTypeBadge } from "@/components/tab-type-badge";
 import { cn } from "@/lib/utils";
 import { transposeChordSheet, formatSemitones } from "@/lib/chords";
 
@@ -297,9 +298,9 @@ export function TabViewer({ tab, title, fill = false }: TabViewerProps) {
             {title && (
               <p className="truncate text-sm font-semibold">{title}</p>
             )}
-            <p className="text-xs capitalize text-muted-foreground">
-              {tab.type}
-            </p>
+            <div className="mt-1">
+              <TabTypeBadge type={tab.type} />
+            </div>
           </div>
           {controls}
         </div>
