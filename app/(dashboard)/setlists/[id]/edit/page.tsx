@@ -1,4 +1,4 @@
-import { getSetlistById } from "@/lib/api";
+import { getSetlistById, getSongs } from "@/lib/api";
 import { SetlistEditor } from "@/components/setlist-editor";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/server";
@@ -29,6 +29,13 @@ export default async function EditSetlistPage({
     slug: entry.songs.slug,
   }));
 
+  const songs = await getSongs();
+  const songOptions = songs.map((s) => ({
+    songId: s.id,
+    song: s.song,
+    slug: s.slug,
+  }));
+
   return (
     <div className="container py-10">
       <div className="mx-auto max-w-2xl">
@@ -48,6 +55,7 @@ export default async function EditSetlistPage({
             date: setlist.date,
           }}
           initialSongs={initialSongs}
+          songOptions={songOptions}
         />
       </div>
     </div>
