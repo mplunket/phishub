@@ -5,12 +5,16 @@ import { TabViewer } from "@/components/tab-viewer";
 import { FavoriteButton } from "@/components/favorite-button";
 import { EditTabDialog } from "@/components/edit-tab-dialog";
 import { ReportDialog } from "@/components/report-dialog";
+import { AddTabDialog } from "@/components/add-tab-dialog";
 
 export function TabSection({
   tabs,
   userFavoriteTabIds = [],
   canFavorite = false,
+  canAddTab = false,
   currentUserId,
+  songId,
+  slug,
   revalidate,
 }: {
   tabs: Array<{
@@ -23,7 +27,10 @@ export function TabSection({
   }>;
   userFavoriteTabIds?: string[];
   canFavorite?: boolean;
+  canAddTab?: boolean;
   currentUserId?: string;
+  songId?: string;
+  slug?: string;
   revalidate?: string;
 }) {
   const [selectedTabId, setSelectedTabId] = React.useState<string | undefined>(
@@ -41,8 +48,10 @@ export function TabSection({
 
   return (
     <div>
-      <div className="flex items-center gap-2 mb-4">
-        <div className="flex-1">
+      {/* One toolbar: "which tab" on the left, actions on the selected tab
+          (plus the secondary "add tab") grouped together on the right. */}
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        <div className="min-w-0 flex-1">
           <TabSelector
             tabs={tabs.map((tab) => ({
               id: tab.id,
@@ -54,23 +63,28 @@ export function TabSection({
             onSelect={setSelectedTabId}
           />
         </div>
-        {canFavorite && selectedTab && (
-          <FavoriteButton
-            tabId={selectedTab.id}
-            initialFavorited={userFavoriteTabIds.includes(selectedTab.id)}
-            initialCount={selectedTab.favorites}
-            revalidate={revalidate}
-          />
-        )}
-        {selectedTab && currentUserId === selectedTab.author_id && (
-          <EditTabDialog tab={selectedTab} revalidate={revalidate} />
-        )}
-        {/* Signed-in users (who aren't the author) can flag a tab. */}
-        {canFavorite &&
-          selectedTab &&
-          currentUserId !== selectedTab.author_id && (
-            <ReportDialog tabId={selectedTab.id} />
+        <div className="flex items-center gap-1.5">
+          {canFavorite && selectedTab && (
+            <FavoriteButton
+              tabId={selectedTab.id}
+              initialFavorited={userFavoriteTabIds.includes(selectedTab.id)}
+              initialCount={selectedTab.favorites}
+              revalidate={revalidate}
+            />
           )}
+          {selectedTab && currentUserId === selectedTab.author_id && (
+            <EditTabDialog tab={selectedTab} revalidate={revalidate} />
+          )}
+          {/* Signed-in users (who aren't the author) can flag a tab. */}
+          {canFavorite &&
+            selectedTab &&
+            currentUserId !== selectedTab.author_id && (
+              <ReportDialog tabId={selectedTab.id} />
+            )}
+          {canAddTab && songId && slug && (
+            <AddTabDialog songId={songId} slug={slug} variant="outline" />
+          )}
+        </div>
       </div>
       <TabViewer tab={selectedTab} />
     </div>

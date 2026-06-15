@@ -15,16 +15,18 @@ import { Plus } from "lucide-react";
 export function AddTabDialog({
   songId,
   slug,
+  variant = "default",
 }: {
   songId: string;
   slug: string;
+  variant?: "default" | "outline";
 }) {
   const [open, setOpen] = React.useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm">
+        <Button size="sm" variant={variant}>
           <Plus className="h-4 w-4 mr-1" /> Add tab
         </Button>
       </DialogTrigger>
