@@ -17,7 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { TabTypeBadge } from "@/components/tab-type-badge";
-import { Star } from "lucide-react";
+import { ChevronsUpDown, Star } from "lucide-react";
 
 export function TabSelector({
   tabs,
@@ -71,12 +71,24 @@ export function TabSelector({
 
   const selected = tabOptions.find((o) => o.value === selectedTabId);
 
-  // Color-coded type pill on the left, author smaller in gray next to it.
-  const renderOptionContent = (option: (typeof tabOptions)[number]) => (
+  // Color-coded type pill, then the author ("by …"), then favorite count.
+  const renderAttribution = (
+    option: (typeof tabOptions)[number],
+    { emphasizeAuthor = false }: { emphasizeAuthor?: boolean } = {}
+  ) => (
     <span className="flex min-w-0 items-center gap-2">
+      {option.isFavorite && (
+        <Star className="h-4 w-4 shrink-0 text-yellow-500" />
+      )}
       <TabTypeBadge type={option.type} />
-      <span className="truncate text-sm text-muted-foreground">
-        {option.name}
+      <span
+        className={
+          emphasizeAuthor
+            ? "truncate text-sm"
+            : "truncate text-sm text-muted-foreground"
+        }
+      >
+        by {option.name}
       </span>
       {option.favorites > 0 && (
         <span className="shrink-0 text-xs text-muted-foreground">
@@ -86,9 +98,32 @@ export function TabSelector({
     </span>
   );
 
+  // Only one tab — there's nothing to switch between, so show a plain
+  // attribution line instead of a dropdown that implies a choice.
+  if (tabOptions.length <= 1) {
+    const only = tabOptions[0];
+    if (!only) return null;
+    return (
+      <div className="flex h-9 items-center px-1">
+        {renderAttribution(only)}
+      </div>
+    );
+  }
+
+  const triggerButton = (
+    <Button variant="outline" className="w-full justify-between">
+      {selected ? (
+        renderAttribution(selected, { emphasizeAuthor: true })
+      ) : (
+        <span className="text-muted-foreground">Select a tab…</span>
+      )}
+      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+    </Button>
+  );
+
   const ComboList = (
     <Command>
-      <CommandInput placeholder="Filter tabs..." />
+      <CommandInput placeholder="Filter tabs by author…" />
       <CommandList>
         <CommandEmpty>No tabs found.</CommandEmpty>
         <CommandGroup>
@@ -102,10 +137,7 @@ export function TabSelector({
                 setOpen(false);
               }}
             >
-              {option.isFavorite && (
-                <Star className="mr-1 h-4 w-4 shrink-0 text-yellow-500" />
-              )}
-              {renderOptionContent(option)}
+              {renderAttribution(option)}
               {option.value === selectedTabId && (
                 <Star className="ml-auto h-4 w-4 shrink-0 text-purple-600" />
               )}
@@ -119,20 +151,7 @@ export function TabSelector({
   if (!isMobile) {
     return (
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button variant="outline" className="w-full justify-between">
-            {selected ? (
-              <span className="flex min-w-0 items-center gap-2">
-                {selected.isFavorite && (
-                  <Star className="h-4 w-4 shrink-0 text-yellow-500" />
-                )}
-                {renderOptionContent(selected)}
-              </span>
-            ) : (
-              <span>Select a tab...</span>
-            )}
-          </Button>
-        </PopoverTrigger>
+        <PopoverTrigger asChild>{triggerButton}</PopoverTrigger>
         <PopoverContent className="w-[300px] p-0" align="start">
           {ComboList}
         </PopoverContent>
@@ -142,20 +161,7 @@ export function TabSelector({
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <Button variant="outline" className="w-full justify-between">
-          {selected ? (
-            <span className="flex min-w-0 items-center gap-2">
-              {selected.isFavorite && (
-                <Star className="h-4 w-4 shrink-0 text-yellow-500" />
-              )}
-              {renderOptionContent(selected)}
-            </span>
-          ) : (
-            <span>Select a tab...</span>
-          )}
-        </Button>
-      </DrawerTrigger>
+      <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
       <DrawerContent>
         <div className="mt-4 border-t">{ComboList}</div>
       </DrawerContent>

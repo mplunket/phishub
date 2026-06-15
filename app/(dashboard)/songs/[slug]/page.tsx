@@ -82,20 +82,16 @@ export default async function SongPage({
               )}
             </EmptyState>
           ) : (
-            <>
-              {isAuthed && (
-                <div className="flex justify-end mb-4">
-                  <AddTabDialog songId={song.id} slug={slug} />
-                </div>
-              )}
-              <TabSection
-                tabs={tabs}
-                userFavoriteTabIds={userFavoriteTabIds}
-                canFavorite={isAuthed}
-                currentUserId={user?.id}
-                revalidate={revalidatePath}
-              />
-            </>
+            <TabSection
+              tabs={tabs}
+              userFavoriteTabIds={userFavoriteTabIds}
+              canFavorite={isAuthed}
+              canAddTab={isAuthed}
+              currentUserId={user?.id}
+              songId={song.id}
+              slug={slug}
+              revalidate={revalidatePath}
+            />
           )}
         </TabsContent>
         <TabsContent value="videos">
