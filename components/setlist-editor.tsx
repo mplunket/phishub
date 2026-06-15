@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { ArrowUp, ArrowDown, Trash2, Check } from "lucide-react";
+import { ArrowUp, ArrowDown, Trash2, Check, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,13 +15,16 @@ type SongItem = { songId: string; song: string; slug: string };
 export function SetlistEditor({
   setlist,
   initialSongs,
+  songOptions,
 }: {
   setlist: { id: string; name: string; venue: string | null; date: string | null };
   initialSongs: SongItem[];
+  songOptions: SongItem[];
 }) {
   const router = useRouter();
 
   const [songs, setSongs] = React.useState<SongItem[]>(initialSongs);
+  const [query, setQuery] = React.useState("");
   const [savingDetails, setSavingDetails] = React.useState(false);
   const [detailsSaved, setDetailsSaved] = React.useState(false);
   const [savingOrder, setSavingOrder] = React.useState(false);
@@ -34,6 +37,20 @@ export function SetlistEditor({
       songs.some((s, i) => s.songId !== initialSongs[i]?.songId),
     [songs, initialSongs]
   );
+
+  const results = React.useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return songOptions
+      .filter((s) => s.song.toLowerCase().includes(q))
+      .slice(0, 25);
+  }, [query, songOptions]);
+
+  function add(option: SongItem) {
+    setSongs((prev) => [...prev, option]);
+    setQuery("");
+    setOrderSaved(false);
+  }
 
   function move(index: number, dir: -1 | 1) {
     setSongs((prev) => {
@@ -150,9 +167,34 @@ export function SetlistEditor({
               onClick={saveOrder}
               disabled={savingOrder || !dirty}
             >
-              {savingOrder ? "Saving…" : "Save order"}
+              {savingOrder ? "Saving…" : "Save songs"}
             </Button>
           </div>
+        </div>
+
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search songs to add..."
+            className="pl-9"
+          />
+          {results.length > 0 && (
+            <div className="absolute z-10 mt-1 max-h-64 w-full overflow-auto rounded-md border bg-popover shadow-md">
+              {results.map((s) => (
+                <button
+                  key={s.songId}
+                  type="button"
+                  onClick={() => add(s)}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-accent"
+                >
+                  <Plus className="h-4 w-4 text-muted-foreground" />
+                  {s.song}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {songs.length === 0 ? (
