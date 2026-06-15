@@ -7,7 +7,6 @@
     "sync:lyrics": "tsx scripts/syncLyrics.ts"
   },
   "dependencies": {
-    "cheerio": "^1.0.0",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.14",
@@ -24,6 +23,7 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/toolbar": "^0.1.38",
     "autoprefixer": "10.4.20",
+    "cheerio": "^1.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -37,7 +37,8 @@
     "react-avatar-editor": "^13.0.2",
     "react-country-state-city": "^1.1.12",
     "react-dom": "19.0.0",
-    "vaul": "^1.1.2"
+    "vaul": "^1.1.2",
+    "vextab": "^4.0.5"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
