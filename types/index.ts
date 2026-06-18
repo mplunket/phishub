@@ -75,6 +75,12 @@ export interface Report {
   created_at: string;
 }
 
+export interface BetaAllowlistEntry {
+  email: string;
+  note: string | null;
+  invited_at: string;
+}
+
 export type VideoType = "lesson" | "performance";
 export type VideoPlatform = "youtube" | "vimeo";
 

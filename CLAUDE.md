@@ -158,8 +158,15 @@ Core tables (RLS enabled on all; public `SELECT`, authenticated/owner writes):
 | `favorites` | Links users to tabs; counts aggregated in `getTabsBySongId`. |
 | `profiles` | `user_id`→auth.users PK, unique `username`, `avatar_url`, `country/state/city`. Required before accessing the app. |
 | `waitlist` | `email` (unique), `source`, `referrer_url`. |
+| `beta_allowlist` | Private-beta gate. `email` (PK, lowercased), `note`, `invited_at`. RLS lets a signed-in user read **only their own** row. Add invitee emails out-of-band (dashboard/SQL) before sending sign-up links. |
 
 `updated_at` columns are maintained by the `update_updated_at_column()` trigger.
+
+> 🔒 **Private-beta access gate:** `middleware.ts` redirects any authenticated
+> user whose email is **not** in `beta_allowlist` to `/pending`. The
+> `waitlistDisabled` flag only toggles landing-page UI — it does **not** gate
+> access. So a real private beta = keep the flag `false` (public sees the
+> waitlist) and admit people by adding their email to `beta_allowlist`.
 
 > ⚠️ **Schema history to be aware of:** the `songs` table was migrated from an
 > original shape (`title`, `composer`, `debut_date`, `history`) to the phish.net

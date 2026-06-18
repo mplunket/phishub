@@ -39,27 +39,51 @@ export const updateSession = async (request: NextRequest) => {
     // https://supabase.com/docs/guides/auth/server-side/nextjs
     const user = await supabase.auth.getUser();
 
-    // Guard: If user is authenticated, check for profile
+    // Guard: If user is authenticated, enforce the private-beta allowlist and
+    // profile completion before letting them into the app.
     if (user.data?.user) {
-      // Only check for profile on protected/dashboard routes (not /create-profile, /sign-in, /sign-up, /api, etc.)
       const path = request.nextUrl.pathname;
-      const isProtected =
-        !path.startsWith("/api") &&
-        !path.startsWith("/auth") &&
-        !path.startsWith("/sign-in") &&
-        !path.startsWith("/sign-up") &&
-        !path.startsWith("/create-profile") &&
-        !path.startsWith("/public") &&
-        !path.startsWith("/_next");
-      if (isProtected) {
-        // Query for profile
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("user_id")
-          .eq("user_id", user.data.user.id)
-          .single();
-        if (!profile) {
-          return NextResponse.redirect(new URL("/create-profile", request.url));
+      // Routes that an authenticated-but-not-yet-admitted user must still reach
+      // (auth flow, the "you're on the list" page, static assets, etc.).
+      const isOpenPath =
+        path.startsWith("/api") ||
+        path.startsWith("/auth") ||
+        path.startsWith("/sign-in") ||
+        path.startsWith("/sign-up") ||
+        path.startsWith("/pending") ||
+        path.startsWith("/public") ||
+        path.startsWith("/_next");
+
+      if (!isOpenPath) {
+        // Private-beta gate: only allowlisted emails may enter the app. The RLS
+        // policy on beta_allowlist limits this to the user's own email, so this
+        // returns at most their own row.
+        const email = user.data.user.email?.toLowerCase();
+        const { data: allowed } = email
+          ? await supabase
+              .from("beta_allowlist")
+              .select("email")
+              .eq("email", email)
+              .maybeSingle()
+          : { data: null };
+
+        if (!allowed) {
+          return NextResponse.redirect(new URL("/pending", request.url));
+        }
+
+        // Profile completion guard (allowlisted users only). /create-profile is
+        // itself gated by the allowlist above but must not require a profile.
+        if (!path.startsWith("/create-profile")) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("user_id")
+            .eq("user_id", user.data.user.id)
+            .single();
+          if (!profile) {
+            return NextResponse.redirect(
+              new URL("/create-profile", request.url)
+            );
+          }
         }
       }
     }
