@@ -1,21 +1,19 @@
 import { ReactNode } from "react";
 import {
   Music,
-  Users,
   Heart,
   List,
-  Upload,
-  MessageCircle,
-  Share2,
   Guitar,
-  Star,
   BookOpen,
   Video,
+  HelpCircle,
+  Bug,
 } from "lucide-react";
 import {
   Sidebar,
   SidebarProvider,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
@@ -36,6 +34,11 @@ const items = [
   { title: "Favorites", url: "/favorites", icon: Heart, color: "text-rose-500" },
   { title: "Setlists", url: "/setlists", icon: List, color: "text-emerald-500" },
 ];
+
+// Public GitHub repo used for beta bug/feature tracking. Keep in sync with the
+// link on the FAQ page.
+const GITHUB_ISSUES_URL =
+  "https://github.com/mplunket/phishub/issues/new/choose";
 
 export async function DashboardShell({ children }: { children: ReactNode }) {
   const waitlist = await waitlistDisabled();
@@ -70,6 +73,30 @@ export async function DashboardShell({ children }: { children: ReactNode }) {
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
+        <SidebarFooter>
+          <SidebarMenu className="gap-1">
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href="/faq">
+                  <HelpCircle className="!size-5 text-gray-500" />
+                  <span className="text-sm font-medium">FAQ</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <a
+                  href={GITHUB_ISSUES_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Bug className="!size-5 text-gray-500" />
+                  <span className="text-sm font-medium">Report a bug</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
       </Sidebar>
       <SidebarInset>
         <DashboardHeader hideWaitlist={waitlist} />

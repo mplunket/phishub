@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: ❓ Questions & general help
+    url: https://phishub.com/faq
+    about: Check the FAQ for how the private beta works and how to contribute.
+  - name: 📧 Email us
+    about: For anything you'd rather not post publicly, email hello@phishub.com.
+    url: mailto:hello@phishub.com

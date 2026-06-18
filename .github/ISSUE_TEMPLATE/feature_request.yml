@@ -1,0 +1,24 @@
+name: "💡 Feature request / idea"
+description: Suggest an improvement or a new capability for Phishub.
+title: "[Idea]: "
+labels: ["enhancement", "beta"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Got an idea to make Phishub better for the Phish community? We'd love to
+        hear it.
+  - type: textarea
+    id: idea
+    attributes:
+      label: What's the idea?
+      description: Describe the feature or improvement you'd like to see.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does it solve?
+      description: What are you trying to do that's hard or impossible today?
+    validations:
+      required: false
