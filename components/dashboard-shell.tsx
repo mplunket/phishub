@@ -46,7 +46,7 @@ export async function DashboardShell({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <Sidebar variant="inset">
-        <SidebarContent>
+        <SidebarContent className="overflow-hidden">
           <Link className="flex items-center pt-4 pl-4" href="/">
             <Guitar className="h-8 w-8 text-purple-600" />
             <span className="ml-2 text-2xl font-bold bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">

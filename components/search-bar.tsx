@@ -70,7 +70,7 @@ export function SearchBar({ shadow = true }: { shadow?: boolean }) {
           <Input
             type="text"
             placeholder={
-              loading ? "Loading songs..." : "Search for a Phish song..."
+              loading ? "Loading..." : "Search..."
             }
             value={searchTerm}
             onChange={(e) => {
