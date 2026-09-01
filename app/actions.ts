@@ -84,6 +84,31 @@ export const signInAction = async (formData: FormData) => {
   return redirect("/");
 };
 
+export const signInWithGitHubAction = async (formData: FormData) => {
+  const supabase = await createClient();
+  const origin = (await headers()).get("origin");
+  const errorPath =
+    formData.get("errorPath")?.toString() === "/sign-up" ? "/sign-up" : "/sign-in";
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "github",
+    options: {
+      redirectTo: `${origin}/auth/callback`,
+    },
+  });
+
+  if (error) {
+    console.error(error.message);
+    return encodedRedirect("error", errorPath, error.message);
+  }
+
+  if (data.url) {
+    return redirect(data.url);
+  }
+
+  return encodedRedirect("error", errorPath, "Could not start GitHub sign-in");
+};
+
 export const forgotPasswordAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const supabase = await createClient();

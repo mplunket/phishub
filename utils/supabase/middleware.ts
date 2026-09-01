@@ -55,17 +55,38 @@ export const updateSession = async (request: NextRequest) => {
         path.startsWith("/_next");
 
       if (!isOpenPath) {
-        // Private-beta gate: only allowlisted emails may enter the app. The RLS
-        // policy on beta_allowlist limits this to the user's own email, so this
-        // returns at most their own row.
+        // Private-beta gate: admit if the user's email or GitHub login is
+        // allowlisted. RLS limits this to the caller's own row (JWT email or
+        // GitHub identity on auth.identities — not user_metadata).
         const email = user.data.user.email?.toLowerCase();
-        const { data: allowed } = email
-          ? await supabase
-              .from("beta_allowlist")
-              .select("email")
-              .eq("email", email)
-              .maybeSingle()
-          : { data: null };
+        const githubIdentity = user.data.user.identities?.find(
+          (identity) => identity.provider === "github"
+        );
+        const githubLogin = [
+          githubIdentity?.identity_data?.user_name,
+          githubIdentity?.identity_data?.login,
+          githubIdentity?.identity_data?.preferred_username,
+        ]
+          .find((value): value is string => typeof value === "string" && value.length > 0)
+          ?.toLowerCase();
+
+        let allowed: { email: string | null } | null = null;
+        if (email) {
+          const { data } = await supabase
+            .from("beta_allowlist")
+            .select("email")
+            .eq("email", email)
+            .maybeSingle();
+          allowed = data;
+        }
+        if (!allowed && githubLogin) {
+          const { data } = await supabase
+            .from("beta_allowlist")
+            .select("email")
+            .eq("github_login", githubLogin)
+            .maybeSingle();
+          allowed = data;
+        }
 
         if (!allowed) {
           return NextResponse.redirect(new URL("/pending", request.url));

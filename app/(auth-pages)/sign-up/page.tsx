@@ -1,4 +1,4 @@
-import { signUpAction } from "@/app/actions";
+import { signUpAction, signInWithGitHubAction } from "@/app/actions";
 import { FormMessage, Message } from "@/components/form-message";
 import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
@@ -69,6 +69,21 @@ export default async function Signup(props: {
             Sign up
           </SubmitButton>
           <FormMessage message={searchParams} />
+        </form>
+        <div className="w-full flex items-center gap-3 my-2">
+          <div className="h-px flex-1 bg-gray-200" />
+          <span className="text-xs text-gray-500">or</span>
+          <div className="h-px flex-1 bg-gray-200" />
+        </div>
+        <form className="w-full" action={signInWithGitHubAction}>
+          <input type="hidden" name="errorPath" value="/sign-up" />
+          <SubmitButton
+            variant="outline"
+            className="w-full border-gray-300 text-gray-800 hover:bg-gray-50"
+            pendingText="Redirecting to GitHub..."
+          >
+            Continue with GitHub
+          </SubmitButton>
         </form>
       </div>
     </div>
