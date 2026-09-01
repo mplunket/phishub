@@ -29,7 +29,25 @@ export function UserMenu({ hideWaitlist }: { hideWaitlist: boolean }) {
   };
 
   if (!user) {
-    if (!hideWaitlist) return null;
+    // During the private beta the waitlist is the default call to action, but
+    // invited people still need a way in — keep sign in/up available, just
+    // visually subordinate to the waitlist form.
+    if (!hideWaitlist) {
+      return (
+        <div className="flex shrink-0 gap-2">
+          <Link href="/sign-in">
+            <Button variant="outline" size="sm" className="sm:h-9 sm:px-4">
+              Sign In
+            </Button>
+          </Link>
+          <Link href="/sign-up">
+            <Button variant="ghost" size="sm" className="sm:h-9 sm:px-4">
+              Sign Up
+            </Button>
+          </Link>
+        </div>
+      );
+    }
     return (
       <div className="flex shrink-0 gap-2">
         <Link href="/sign-in">

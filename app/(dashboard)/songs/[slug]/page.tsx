@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, BookOpen, Video, FileText } from "lucide-react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function SongPage({
@@ -26,6 +27,8 @@ export default async function SongPage({
 }) {
   const { slug } = await params;
   const song = await getSongBySlug(slug);
+  // Unknown or misspelled slugs (e.g. /songs/yem) render the 404 page.
+  if (!song) notFound();
   const [tabs, comments, videos] = await Promise.all([
     getTabsBySongId(song.id),
     getCommentsBySongId(song.id),

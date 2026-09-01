@@ -7,38 +7,59 @@ import { Button } from "@/components/ui/button";
 import { Music } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
+type SongSuggestion = { song: string; slug: string; times_played?: number };
+
+// Give up on the suggestion prefetch after this long so a hung request can
+// never leave the field unusable.
+const SUGGESTION_FETCH_TIMEOUT_MS = 8000;
+
 export function SearchBar({ shadow = true }: { shadow?: boolean }) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [songs, setSongs] = useState<
-    { song: string; slug: string; times_played?: number }[]
-  >([]);
-  const [loading, setLoading] = useState(true);
+  const [songs, setSongs] = useState<SongSuggestion[]>([]);
 
   useEffect(() => {
-    // Fetch all song names, slugs, and times_played once and cache in state
+    // Prefetch song names/slugs once and cache them for the suggestions
+    // dropdown. This is a progressive enhancement: the input stays usable and
+    // submitting always falls back to the server-side search on /songs, so a
+    // slow, failed, or aborted request never blocks typing.
+    let active = true;
+    const controller = new AbortController();
+    const timeout = setTimeout(
+      () => controller.abort(),
+      SUGGESTION_FETCH_TIMEOUT_MS
+    );
+
     async function fetchSongs() {
-      setLoading(true);
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from("songs")
-        .select("song,slug,times_played")
-        .order("times_played", { ascending: false });
-      if (!error && data) {
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from("songs")
+          .select("song,slug,times_played")
+          .order("times_played", { ascending: false })
+          .abortSignal(controller.signal);
+        if (!active || error || !data) return;
         setSongs(
-          data.map(
-            (row: { song: string; slug: string; times_played?: number }) => ({
-              song: row.song,
-              slug: row.slug,
-              times_played: row.times_played,
-            })
-          )
+          data.map((row: SongSuggestion) => ({
+            song: row.song,
+            slug: row.slug,
+            times_played: row.times_played,
+          }))
         );
+      } catch {
+        // Aborted or network failure — suggestions stay empty, search still works.
+      } finally {
+        clearTimeout(timeout);
       }
-      setLoading(false);
     }
     fetchSongs();
+
+    return () => {
+      active = false;
+      clearTimeout(timeout);
+      controller.abort();
+    };
   }, []);
 
   const filteredSongs = songs.filter(
@@ -69,9 +90,7 @@ export function SearchBar({ shadow = true }: { shadow?: boolean }) {
         <form onSubmit={handleSubmit} className="relative">
           <Input
             type="text"
-            placeholder={
-              loading ? "Loading..." : "Search..."
-            }
+            placeholder="Search..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -80,13 +99,11 @@ export function SearchBar({ shadow = true }: { shadow?: boolean }) {
             onFocus={() => setShowSuggestions(true)}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             className="w-full h-12 pl-4 pr-12 text-base border-2 border-purple-200 focus:border-purple-500 focus:ring-purple-500 rounded-lg bg-white/95"
-            disabled={loading}
           />
           <Button
             type="submit"
             size="sm"
             className="absolute right-1 top-1 h-10 bg-purple-600 hover:bg-purple-700"
-            disabled={loading}
           >
             <Music className="h-4 w-4" />
           </Button>

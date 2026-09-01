@@ -55,15 +55,17 @@ export async function getSongsPage(page = 1, pageSize = 50) {
   return { songs: cards, total: count ?? 0 };
 }
 
-export async function getSongBySlug(slug: string) {
+// Returns null when no song matches the slug so callers can render a 404
+// instead of surfacing a PostgREST "no rows" (PGRST116) error.
+export async function getSongBySlug(slug: string): Promise<Song | null> {
   const supabase = await createClient();
   const { data: song, error } = await supabase
     .from("songs")
     .select("*")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
   if (error) throw error;
-  return song as Song;
+  return (song as Song) ?? null;
 }
 
 export async function getSetlists(limit = 10) {
