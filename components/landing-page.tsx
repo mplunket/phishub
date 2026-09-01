@@ -45,16 +45,44 @@ export default async function LandingPage() {
                   🎸 A new home for Phish guitar tabs · now in private beta
                 </Badge>
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none bg-gradient-to-r from-purple-600 via-purple-700 to-orange-500 bg-clip-text text-transparent">
-                  Your Ultimate Phish
+                  A Community Home for
                   <br />
-                  Music Education Hub
+                  Phish Tabs &amp; Lessons
                 </h1>
                 <p className="mx-auto mt-4 max-w-[700px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  A dynamic, collaborative platform for guitar tabs, video
-                  lessons, and community-driven Phish music education.
+                  A collaborative platform for guitar tabs, video lessons, and
+                  community-driven Phish music education. We&rsquo;re early —
+                  the catalog is complete and the library is being built by the
+                  first round of beta contributors.
                 </p>
               </div>
-              {hideWaitlist ? <SearchBar /> : <WaitlistForm source="hero" />}
+              {hideWaitlist ? (
+                <SearchBar />
+              ) : (
+                <>
+                  <WaitlistForm source="hero" />
+                  {/* Invited beta users need a way in without hunting for the
+                      header — kept as a quiet link so the waitlist stays the
+                      primary action for everyone else. */}
+                  <p className="text-sm text-gray-600">
+                    Already invited?{" "}
+                    <Link
+                      href="/sign-in"
+                      className="font-medium text-purple-700 underline underline-offset-4 hover:text-purple-800"
+                    >
+                      Sign in
+                    </Link>{" "}
+                    or{" "}
+                    <Link
+                      href="/sign-up"
+                      className="font-medium text-purple-700 underline underline-offset-4 hover:text-purple-800"
+                    >
+                      create your account
+                    </Link>
+                    .
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </section>
@@ -69,8 +97,8 @@ export default async function LandingPage() {
                 Everything You Need in One Place
               </h2>
               <p className="mt-4 text-gray-600 md:text-lg">
-                From tabs to video lessons, build your Phish knowledge with our
-                comprehensive platform
+                Here&rsquo;s what we&rsquo;re building — tabs, video lessons,
+                setlists, and discussion, all in one place
               </p>
             </div>
             <div className="grid gap-6 lg:grid-cols-3 md:grid-cols-2">
@@ -144,11 +172,11 @@ export default async function LandingPage() {
           <div className="container px-4 md:px-6 mx-auto">
             <div className="text-center text-white">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">
-                Join the Community
+                Help Build the Community
               </h2>
               <p className="mx-auto max-w-[600px] text-purple-100 md:text-lg mb-8">
-                Connect with passionate Phish fans, share your knowledge, and
-                learn from others in our vibrant community
+                Phishub is just getting started. The first contributors shape
+                what it becomes — here&rsquo;s what you can do here
               </p>
               <div className="grid gap-6 lg:grid-cols-3 md:grid-cols-1 max-w-4xl mx-auto">
                 <div className="flex flex-col items-center space-y-2">
@@ -203,7 +231,7 @@ export default async function LandingPage() {
                   Tabs &amp; chords
                 </div>
                 <div className="text-gray-600 text-xl">
-                  Contributed by fans
+                  Contribute the ones you know
                 </div>
               </div>
               <div className="space-y-2">
@@ -211,7 +239,7 @@ export default async function LandingPage() {
                   Video lessons
                 </div>
                 <div className="text-gray-600 text-xl">
-                  Learn the parts note for note
+                  Link the ones that helped you
                 </div>
               </div>
             </div>
@@ -226,8 +254,8 @@ export default async function LandingPage() {
                   Ready to Dive In?
                 </h2>
                 <p className="mx-auto max-w-[600px] text-gray-600 md:text-lg">
-                  Join thousands of Phish fans already using Phishub to enhance
-                  their musical journey
+                  Phishub is in a small, invite-only private beta. Leave your
+                  email and we&rsquo;ll get in touch as spots open up.
                 </p>
               </div>
               <div className="space-x-4 w-full flex justify-center">
@@ -243,7 +271,19 @@ export default async function LandingPage() {
                     </Link>
                   </Button>
                 ) : (
-                  <WaitlistForm source="cta" />
+                  <div className="flex flex-col items-center">
+                    <WaitlistForm source="cta" />
+                    <p className="mt-4 text-sm text-gray-600">
+                      Got an invite?{" "}
+                      <Link
+                        href="/sign-in"
+                        className="font-medium text-purple-700 underline underline-offset-4 hover:text-purple-800"
+                      >
+                        Sign in
+                      </Link>
+                      .
+                    </p>
+                  </div>
                 )}
               </div>
             </div>

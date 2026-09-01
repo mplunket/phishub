@@ -30,11 +30,11 @@ export const metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Phishub - Your Source for Phish Music Resources",
   description:
-    "The ultimate resource for learning and sharing Phish songs, tabs, lyrics, and setlists.",
+    "A community platform for learning and sharing Phish songs, tabs, lyrics, and setlists. Currently in private beta.",
   openGraph: {
     title: "Phishub - Your Source for Phish Music Resources",
     description:
-      "The ultimate resource for learning and sharing Phish songs, tabs, lyrics, and setlists.",
+      "A community platform for learning and sharing Phish songs, tabs, lyrics, and setlists. Currently in private beta.",
     url: "https://phishub.com",
     siteName: "Phishub",
     type: "website",
@@ -43,7 +43,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "Phishub - Your Source for Phish Music Resources",
     description:
-      "The ultimate resource for learning and sharing Phish songs, tabs, lyrics, and setlists.",
+      "A community platform for learning and sharing Phish songs, tabs, lyrics, and setlists. Currently in private beta.",
   },
 };
 
