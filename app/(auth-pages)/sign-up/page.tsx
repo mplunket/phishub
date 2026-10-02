@@ -1,6 +1,7 @@
 import { signUpAction, signInWithGitHubAction } from "@/app/actions";
 import { FormMessage, Message } from "@/components/form-message";
 import { SubmitButton } from "@/components/submit-button";
+import { TurnstileField } from "@/components/turnstile-field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
@@ -17,6 +18,13 @@ export default async function Signup(props: {
       </div>
     );
   }
+
+  const turnstileConfigured = Boolean(
+    process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+  );
+  // Allow submit without a site key only in local development (see TurnstileField).
+  const canSubmitEmailSignup =
+    turnstileConfigured || process.env.NODE_ENV === "development";
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-purple-700 to-purple-900">
@@ -64,10 +72,21 @@ export default async function Signup(props: {
                 required
               />
             </div>
+            <TurnstileField action="sign-up" />
           </div>
-          <SubmitButton formAction={signUpAction} pendingText="Signing up...">
-            Sign up
-          </SubmitButton>
+          {canSubmitEmailSignup ? (
+            <SubmitButton formAction={signUpAction} pendingText="Signing up...">
+              Sign up
+            </SubmitButton>
+          ) : (
+            <button
+              type="button"
+              disabled
+              className="w-full rounded-md bg-gray-300 text-gray-600 py-2 px-4 text-sm font-medium cursor-not-allowed"
+            >
+              Sign up unavailable
+            </button>
+          )}
           <FormMessage message={searchParams} />
         </form>
         <div className="w-full flex items-center gap-3 my-2">

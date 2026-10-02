@@ -1,6 +1,7 @@
 import { signInAction, signInWithGitHubAction } from "@/app/actions";
 import { FormMessage, Message } from "@/components/form-message";
 import { SubmitButton } from "@/components/submit-button";
+import { TurnstileField } from "@/components/turnstile-field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
@@ -8,6 +9,13 @@ import { Guitar } from "lucide-react";
 
 export default async function Login(props: { searchParams: Promise<Message> }) {
   const searchParams = await props.searchParams;
+  const turnstileConfigured = Boolean(
+    process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+  );
+  // Allow submit without a site key only in local development (see TurnstileField).
+  const canSubmitEmailSignIn =
+    turnstileConfigured || process.env.NODE_ENV === "development";
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-purple-700 to-purple-900">
       <div className="w-full max-w-md mx-auto p-8 bg-white/95 rounded-2xl shadow-2xl ring-1 ring-black/5 flex flex-col items-center">
@@ -59,8 +67,19 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
                 required
               />
             </div>
+            <TurnstileField action="sign-in" />
           </div>
-          <SubmitButton pendingText="Signing In...">Sign in</SubmitButton>
+          {canSubmitEmailSignIn ? (
+            <SubmitButton pendingText="Signing In...">Sign in</SubmitButton>
+          ) : (
+            <button
+              type="button"
+              disabled
+              className="w-full rounded-md bg-gray-300 text-gray-600 py-2 px-4 text-sm font-medium cursor-not-allowed"
+            >
+              Sign in unavailable
+            </button>
+          )}
           <FormMessage message={searchParams} />
         </form>
         <div className="w-full flex items-center gap-3 my-2">

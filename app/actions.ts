@@ -36,6 +36,7 @@ async function assertWithinRateLimit(
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
+  const captchaToken = formData.get("captchaToken")?.toString();
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
 
@@ -47,11 +48,24 @@ export const signUpAction = async (formData: FormData) => {
     );
   }
 
+  // Fail closed without a Turnstile token outside development.
+  // In NODE_ENV=development only, allow missing token so local signup works
+  // without Cloudflare credentials. Supabase verifies captchaToken with the
+  // Turnstile *secret* configured in the dashboard (do not put the secret here).
+  if (!captchaToken && process.env.NODE_ENV !== "development") {
+    return encodedRedirect(
+      "error",
+      "/sign-up",
+      "Please complete the CAPTCHA challenge"
+    );
+  }
+
   const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       emailRedirectTo: `${origin}/auth/callback`,
+      ...(captchaToken ? { captchaToken } : {}),
     },
   });
 
@@ -70,11 +84,23 @@ export const signUpAction = async (formData: FormData) => {
 export const signInAction = async (formData: FormData) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  const captchaToken = formData.get("captchaToken")?.toString();
   const supabase = await createClient();
+
+  // Same fail-closed rule as sign-up. Once CAPTCHA is enabled project-wide in
+  // Supabase, sign-in also requires captchaToken.
+  if (!captchaToken && process.env.NODE_ENV !== "development") {
+    return encodedRedirect(
+      "error",
+      "/sign-in",
+      "Please complete the CAPTCHA challenge"
+    );
+  }
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
     password,
+    options: captchaToken ? { captchaToken } : undefined,
   });
 
   if (error) {
