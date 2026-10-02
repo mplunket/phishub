@@ -141,4 +141,16 @@ phishub/
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anonymous API key |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Yes (prod) | Cloudflare Turnstile *site* key for email/password sign-up and sign-in. Missing in production disables those submit buttons (fail closed). Optional in local `NODE_ENV=development` (CAPTCHA bypassed with a visible notice). |
 | `NEXT_PUBLIC_PHISHNET_API_KEY` | No | phish.net API key for song sync script |
+
+### Cloudflare Turnstile (bot protection)
+
+Email/password auth sends a Turnstile token as `options.captchaToken` to Supabase Auth. Supabase verifies it with the Turnstile *secret* key from the dashboard — **do not** put the secret in the Next.js app.
+
+1. Create a Turnstile widget in the [Cloudflare dashboard](https://dash.cloudflare.com/?to=/:account/turnstile) for `phishub.com` (and any Vercel preview hostnames you use).
+2. Set `NEXT_PUBLIC_TURNSTILE_SITE_KEY` in Vercel project env (Production + Preview) and in local `.env.local`.
+3. In Supabase project **qvnvcwtjanvsatxbearq**: **Authentication → Bot and Abuse Protection → Enable CAPTCHA protection**, provider **Cloudflare Turnstile**, paste the Turnstile *secret* key, Save.
+4. Redeploy the Vercel app so the site key is available at build/runtime.
+
+GitHub OAuth is unchanged and does not use the Turnstile widget.
